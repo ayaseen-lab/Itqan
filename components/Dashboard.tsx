@@ -7,8 +7,8 @@ import { computeStats } from "@/lib/srs";
 
 function Stat({ label, value, accent }: { label: string; value: number; accent?: boolean }) {
   return (
-    <div className="card p-4">
-      <div className={`text-2xl font-bold ${accent ? "text-itqan-600" : ""}`}>{value}</div>
+    <div className="card card-hover p-4">
+      <div className={`text-2xl font-bold ${accent ? "text-itqan-500" : ""}`}>{value}</div>
       <div className="muted text-sm">{label}</div>
     </div>
   );

@@ -182,10 +182,189 @@ body {
   margin: 0.75rem 0 0.35rem;
 }
 
+/* ============================================================
+   Motion system — keyframes + utilities
+   ============================================================ */
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-14px); }
+}
+@keyframes float-slow {
+  0%, 100% { transform: translateY(0) translateX(0); }
+  50% { transform: translateY(-22px) translateX(10px); }
+}
+@keyframes twinkle {
+  0%, 100% { opacity: 0.15; transform: scale(0.7); }
+  50% { opacity: 1; transform: scale(1.15); }
+}
+@keyframes gradient-pan {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(22px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes scale-in {
+  from { opacity: 0; transform: scale(0.92); }
+  to { opacity: 1; transform: scale(1); }
+}
+@keyframes glow-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgb(var(--glow) / 0.35); }
+  50% { box-shadow: 0 0 34px 6px rgb(var(--glow) / 0.28); }
+}
+@keyframes shimmer {
+  0% { transform: translateX(-120%); }
+  100% { transform: translateX(220%); }
+}
+@keyframes spin-slow {
+  to { transform: rotate(360deg); }
+}
+@keyframes ring-pulse {
+  0% { transform: translate(-50%, -50%) scale(0.6); opacity: 0.9; }
+  100% { transform: translate(-50%, -50%) scale(1); opacity: 0; }
+}
+
+.animate-float { animation: float 6s ease-in-out infinite; }
+.animate-float-slow { animation: float-slow 9s ease-in-out infinite; }
+.animate-twinkle { animation: twinkle 3.5s ease-in-out infinite; }
+.animate-spin-slow { animation: spin-slow 26s linear infinite; }
+.animate-glow { animation: glow-pulse 3.4s ease-in-out infinite; }
+.animate-fade-up { animation: fade-up 0.7s cubic-bezier(0.22, 1, 0.36, 1) both; }
+.animate-scale-in { animation: scale-in 0.5s cubic-bezier(0.22, 1, 0.36, 1) both; }
+
+/* Animated brand gradient text */
+.text-gradient {
+  background-image: linear-gradient(110deg, #45bd88, #1fa16b 40%, #7dd8ac 70%, #1fa16b);
+  background-size: 220% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: gradient-pan 6s ease infinite;
+}
+
+/* Animated gradient banner surface */
+.gradient-anim {
+  background-size: 220% 220%;
+  animation: gradient-pan 14s ease infinite;
+}
+
+/* Shimmer sweep for primary buttons / cards */
+.shine {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+}
+.shine::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  transform: translateX(-120%);
+  background: linear-gradient(
+    100deg,
+    transparent 20%,
+    rgb(255 255 255 / 0.28) 50%,
+    transparent 80%
+  );
+  pointer-events: none;
+}
+.shine:hover::after {
+  animation: shimmer 0.9s ease;
+}
+
+/* Scroll-reveal (paired with the Reveal component) */
+.reveal {
+  opacity: 0;
+  transform: translateY(26px);
+  transition: opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: opacity, transform;
+}
+.reveal.is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+/* Richer card hover */
+.card {
+  transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.25s ease, border-color 0.25s ease;
+}
+.card-hover:hover {
+  transform: translateY(-4px);
+  border-color: rgb(var(--accent) / 0.4);
+  box-shadow:
+    0 1px 2px rgb(0 0 0 / 0.05),
+    0 26px 52px -24px rgb(var(--glow) / 0.5);
+}
+
+/* ============================================================
+   Themed custom cursor (crescent-glow). Desktop + fine pointer only.
+   ============================================================ */
+@media (hover: hover) and (pointer: fine) {
+  .cursor-ready,
+  .cursor-ready a,
+  .cursor-ready button,
+  .cursor-ready [role="button"],
+  .cursor-ready input,
+  .cursor-ready textarea,
+  .cursor-ready select,
+  .cursor-ready label {
+    cursor: none;
+  }
+
+  .cursor-dot,
+  .cursor-ring {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 9999;
+    pointer-events: none;
+    border-radius: 9999px;
+    mix-blend-mode: normal;
+    will-change: transform;
+  }
+  .cursor-dot {
+    width: 9px;
+    height: 9px;
+    margin: -4.5px 0 0 -4.5px;
+    background: radial-gradient(circle, #d6f5e3 0%, #1fa16b 70%);
+    box-shadow: 0 0 12px 2px rgb(var(--glow) / 0.7);
+    transition: width 0.18s ease, height 0.18s ease, background 0.18s ease;
+  }
+  .cursor-ring {
+    width: 34px;
+    height: 34px;
+    margin: -17px 0 0 -17px;
+    border: 1.5px solid rgb(var(--accent) / 0.8);
+    box-shadow: 0 0 18px rgb(var(--glow) / 0.35), inset 0 0 10px rgb(var(--glow) / 0.15);
+    transition: width 0.22s ease, height 0.22s ease, border-color 0.22s ease, opacity 0.22s ease;
+  }
+  .cursor-ring.is-pointer {
+    width: 52px;
+    height: 52px;
+    margin: -26px 0 0 -26px;
+    border-color: rgb(var(--accent));
+  }
+  .cursor-dot.is-pointer {
+    width: 13px;
+    height: 13px;
+    margin: -6.5px 0 0 -6.5px;
+  }
+  .cursor-ring.is-down {
+    width: 24px;
+    height: 24px;
+    margin: -12px 0 0 -12px;
+  }
+}
+
 /* Reduce motion for users who prefer it */
 @media (prefers-reduced-motion: reduce) {
   * {
     animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
     transition-duration: 0.001ms !important;
   }
+  .reveal { opacity: 1; transform: none; }
 }

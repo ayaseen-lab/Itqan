@@ -28,16 +28,16 @@ export function HomeWidgets() {
           <Link
             key={q.href}
             href={q.href}
-            className="card group p-4 transition-all hover:-translate-y-0.5 hover:shadow-lg"
+            className="card card-hover shine group p-4"
           >
-            <span className="font-semibold group-hover:text-itqan-600">{q.label}</span>
+            <span className="font-semibold group-hover:text-itqan-500">{q.label}</span>
             <span className="muted block text-xs">{q.desc}</span>
           </Link>
         ))}
       </div>
 
       {mounted && lastRead && (
-        <Link href={`/surah/${lastRead.surahId}`} className="card flex items-center justify-between p-4">
+        <Link href={`/surah/${lastRead.surahId}`} className="card card-hover flex items-center justify-between p-4">
           <div>
             <span className="chip">Continue</span>
             <p className="mt-1 font-semibold">{lastRead.surahName}</p>
@@ -47,7 +47,7 @@ export function HomeWidgets() {
         </Link>
       )}
 
-      <Link href="/hadith" className="card block p-5 transition-transform hover:-translate-y-0.5">
+      <Link href="/hadith" className="card card-hover block p-5">
         <span className="chip">Hadith of the day</span>
         <p className="quran-text mt-3 text-right text-xl" dir="rtl">
           {hadith.arabic}

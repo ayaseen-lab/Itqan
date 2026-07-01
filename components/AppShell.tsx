@@ -87,23 +87,37 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         className="glass fixed left-0 top-0 z-40 hidden h-full w-56 flex-col border-r lg:flex"
         style={{ borderColor: "rgb(var(--border))" }}
       >
-        <Link href="/" className="flex items-center gap-2.5 border-b px-5 py-5 font-bold" style={{ borderColor: "rgb(var(--border))" }}>
-          <Logo size={40} />
+        <Link href="/" className="group flex items-center gap-2.5 border-b px-5 py-5 font-bold" style={{ borderColor: "rgb(var(--border))" }}>
+          <span className="transition-transform duration-300 group-hover:scale-105 group-hover:rotate-3">
+            <Logo size={40} />
+          </span>
           <LogoWordmark subtitle="إتقان · Quran System" />
         </Link>
 
-        <nav className="flex-1 space-y-0.5 p-3">
+        <nav className="flex-1 space-y-1 p-3">
           {NAV.map((item) => {
             const active = pathname === item.href || (item.href !== "/" && pathname.startsWith(item.href));
             return (
               <Link
                 key={item.href}
                 href={item.href}
-                className={`flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-colors ${
-                  active ? "bg-itqan-600 text-white shadow-md" : "hover:bg-itqan-100 dark:hover:bg-itqan-950"
+                className={`group relative flex items-center gap-3 overflow-hidden rounded-xl px-3 py-2.5 text-sm font-medium transition-all duration-200 ${
+                  active
+                    ? "text-white shadow-md"
+                    : "hover:translate-x-0.5 hover:bg-itqan-100 dark:hover:bg-itqan-950"
                 }`}
+                style={
+                  active
+                    ? { backgroundImage: "linear-gradient(135deg, #1fa16b, #0f6746)" }
+                    : undefined
+                }
               >
-                <NavIcon name={item.icon} />
+                {active && (
+                  <span className="absolute left-0 top-1/2 h-6 w-1 -translate-y-1/2 rounded-r bg-emerald-200" />
+                )}
+                <span className={`transition-transform duration-200 ${active ? "" : "group-hover:scale-110"}`}>
+                  <NavIcon name={item.icon} />
+                </span>
                 {item.label}
                 {item.badge && <DueBadge />}
               </Link>

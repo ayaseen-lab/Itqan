@@ -5,6 +5,7 @@ import { AppShell } from "@/components/AppShell";
 import { ChatAssistant } from "@/components/ChatAssistant";
 import { StoreHydrator } from "@/components/StoreHydrator";
 import { QuranBackground } from "@/components/QuranBackground";
+import { CursorFX } from "@/components/CursorFX";
 
 const amiri = Amiri({
   weight: ["400", "700"],
@@ -53,6 +54,7 @@ export default function RootLayout({
       </head>
       <body className={`${amiri.variable} ${notoUrdu.variable} relative min-h-screen`}>
         <QuranBackground />
+        <CursorFX />
         <div className="relative z-10">
           <StoreHydrator />
           <AppShell>{children}</AppShell>
