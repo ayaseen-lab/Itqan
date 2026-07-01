@@ -3,29 +3,39 @@
 @tailwind utilities;
 
 :root {
-  --background: 247 249 248;
+  --background: 248 250 252;
   --surface: 255 255 255;
   --card: 255 255 255;
-  --foreground: 14 23 20;
-  --muted: 92 108 101;
-  --border: 226 232 229;
-  --accent: 18 129 85; /* itqan-600 */
-  --accent-soft: 214 245 227;
-  --ring: 31 161 107;
-  --glow: 16 129 85;
+  --foreground: 15 23 42;
+  --muted: 100 116 139;
+  --border: 226 232 240;
+  --accent: 20 184 166; /* teal-500 */
+  --accent-soft: 204 251 241; /* teal-100 */
+  --ring: 45 212 191;
+  --glow: 20 184 166;
+  --gold: 245 158 11;
+  /* Tajweed rule colours — shared with legend swatches */
+  --tj-ghunnah: #f97316;
+  --tj-qalqalah: #ef4444;
+  --tj-ikhfa: #a855f7;
+  --tj-idgham: #10b981;
+  --tj-iqlab: #06b6d4;
+  --tj-madd: #6366f1;
+  --tj-silent: #94a3b8;
 }
 
 .dark {
-  --background: 6 12 10;
-  --surface: 13 21 18;
-  --card: 15 24 20;
-  --foreground: 232 240 236;
-  --muted: 148 166 158;
-  --border: 30 44 38;
-  --accent: 45 189 136; /* itqan-400/500 */
-  --accent-soft: 6 38 28;
-  --ring: 69 189 136;
-  --glow: 20 129 85;
+  --background: 8 15 20;
+  --surface: 12 22 28;
+  --card: 15 28 36;
+  --foreground: 241 245 249;
+  --muted: 148 163 184;
+  --border: 30 48 58;
+  --accent: 45 212 191; /* teal-400 */
+  --accent-soft: 19 78 74; /* teal-900 */
+  --ring: 45 212 191;
+  --glow: 20 184 166;
+  --gold: 251 191 36;
 }
 
 html {
@@ -70,7 +80,7 @@ body {
 
   .btn-primary {
     @apply btn text-white;
-    background-image: linear-gradient(135deg, rgb(31 161 107), rgb(15 103 70));
+    background-image: linear-gradient(135deg, rgb(20 184 166), rgb(13 148 136));
     box-shadow: 0 6px 20px -8px rgb(var(--glow) / 0.7);
   }
   .btn-primary:hover {
@@ -103,6 +113,14 @@ body {
     border-color: rgb(var(--border));
     --tw-ring-color: rgb(var(--ring));
   }
+
+  /* Reusable brand gradients so every banner/icon follows the theme. */
+  .banner-grad {
+    background-image: linear-gradient(120deg, #042f2e 0%, #0f766e 35%, #14b8a6 70%, #2dd4bf 100%);
+  }
+  .icon-grad {
+    background-image: linear-gradient(135deg, #14b8a6, #0d9488);
+  }
 }
 
 /* Arabic Quran text */
@@ -132,41 +150,33 @@ body {
 .tajweed-text .ham_wasl,
 .tajweed-text .laam_shamsiyah,
 .tajweed-text .slnt {
-  color: #9ca3af;
+  color: var(--tj-silent);
 }
-.tajweed-text .madda_normal {
-  color: #4050ff;
-}
-.tajweed-text .madda_permissible {
-  color: #6a70ff;
-}
-.tajweed-text .madda_necessary {
-  color: #1b2ce0;
-}
+.tajweed-text .madda_normal,
+.tajweed-text .madda_permissible,
+.tajweed-text .madda_necessary,
 .tajweed-text .madda_obligatory {
-  color: #2144c1;
+  color: var(--tj-madd);
 }
 .tajweed-text .qalqalah {
-  color: #e11d2a;
+  color: var(--tj-qalqalah);
 }
 .tajweed-text .ikhafa,
 .tajweed-text .ikhafa_shafawi {
-  color: #a21caf;
+  color: var(--tj-ikhfa);
 }
 .tajweed-text .idgham_ghunnah,
 .tajweed-text .idgham_shafawi,
 .tajweed-text .idgham_mutajanisayn,
-.tajweed-text .idgham_mutaqaribayn {
-  color: #169777;
-}
+.tajweed-text .idgham_mutaqaribayn,
 .tajweed-text .idgham_wo_ghunnah {
-  color: #16a34a;
+  color: var(--tj-idgham);
 }
 .tajweed-text .iqlab {
-  color: #0ea5e9;
+  color: var(--tj-iqlab);
 }
 .tajweed-text .ghunnah {
-  color: #f97316;
+  color: var(--tj-ghunnah);
 }
 
 /* Rendered HTML tafsir content */
@@ -236,7 +246,7 @@ body {
 
 /* Animated brand gradient text */
 .text-gradient {
-  background-image: linear-gradient(110deg, #45bd88, #1fa16b 40%, #7dd8ac 70%, #1fa16b);
+  background-image: linear-gradient(110deg, #2dd4bf, #14b8a6 35%, #fbbf24 65%, #14b8a6);
   background-size: 220% auto;
   -webkit-background-clip: text;
   background-clip: text;
@@ -329,7 +339,7 @@ body {
     width: 9px;
     height: 9px;
     margin: -4.5px 0 0 -4.5px;
-    background: radial-gradient(circle, #d6f5e3 0%, #1fa16b 70%);
+    background: radial-gradient(circle, #ccfbf1 0%, #14b8a6 70%);
     box-shadow: 0 0 12px 2px rgb(var(--glow) / 0.7);
     transition: width 0.18s ease, height 0.18s ease, background 0.18s ease;
   }

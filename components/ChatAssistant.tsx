@@ -85,8 +85,8 @@ export function ChatAssistant() {
             {messages.length === 0 && (
               <div className="space-y-3">
                 <p className="muted text-sm">
-                  Ask about meanings, Tafseer, Tajweed, or memorization tips. Answers are grounded
-                  in authentic sources and mark commentary as commentary.
+                  Ask about Tajweed, Hifz tips, Surah virtues, or ayah meanings. Powered by Itqan&apos;s
+                  built-in knowledge — no API key needed.
                 </p>
                 <div className="flex flex-col gap-2">
                   {SUGGESTIONS.map((s) => (

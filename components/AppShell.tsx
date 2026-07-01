@@ -2,68 +2,107 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ThemeToggle } from "./ThemeToggle";
 import { DueBadge } from "./DueBadge";
 import { SignInModal } from "./SignInModal";
+import { RecitationMicButton } from "./RecitationMicButton";
 import { useAuthStore } from "@/lib/authStore";
 import { Logo, LogoWordmark } from "./Logo";
 
-const NAV = [
+type NavItem = { href: string; label: string; icon: string; badge?: boolean };
+
+/** All features shown flat — no "More" submenu. */
+const NAV: NavItem[] = [
   { href: "/", label: "Home", icon: "home" },
   { href: "/quran", label: "Quran", icon: "book" },
   { href: "/memorize", label: "Hifz", icon: "brain", badge: true },
   { href: "/hadith", label: "Hadith", icon: "scroll" },
   { href: "/juz", label: "Juz", icon: "layers" },
+  { href: "/names", label: "99 Names", icon: "sparkles" },
+  { href: "/duas", label: "Duas", icon: "heart" },
+  { href: "/tasbih", label: "Tasbih", icon: "beads" },
+  { href: "/prayer", label: "Prayer", icon: "clock" },
   { href: "/bookmarks", label: "Saved", icon: "bookmark" },
   { href: "/profile", label: "Profile", icon: "user" },
 ];
 
-function NavIcon({ name }: { name: string }) {
-  const cls = "h-5 w-5";
+const MOBILE_BOTTOM = ["/", "/quran", "/memorize", "/hadith"];
+
+function NavIcon({ name, className = "h-5 w-5" }: { name: string; className?: string }) {
   switch (name) {
     case "home":
       return (
-        <svg className={cls} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+        <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
           <path d="M3 9.5 12 3l9 6.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1V9.5z" />
         </svg>
       );
     case "book":
       return (
-        <svg className={cls} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+        <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
           <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
           <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
         </svg>
       );
     case "brain":
       return (
-        <svg className={cls} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+        <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
           <path d="M12 2a4 4 0 0 1 4 4v1a3 3 0 0 1 3 3 3 3 0 0 1-3 3v1a4 4 0 0 1-8 0v-1a3 3 0 0 1-3-3 3 3 0 0 1 3-3V6a4 4 0 0 1 4-4z" />
         </svg>
       );
     case "scroll":
       return (
-        <svg className={cls} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+        <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
           <path d="M8 21h12a2 2 0 0 0 2-2v-2H10v2a2 2 0 1 1-4 0V5a2 2 0 1 0-4 0v3" />
           <path d="M19 17V5a2 2 0 0 0-2-2H4" />
         </svg>
       );
     case "layers":
       return (
-        <svg className={cls} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+        <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
           <path d="m12.83 2.18 8 4.5a1 1 0 0 1 0 1.74l-8 4.5a2 2 0 0 1-2 0l-8-4.5a1 1 0 0 1 0-1.74l8-4.5a2 2 0 0 1 2 0z" />
           <path d="M2 12.5l10 5.6 10-5.6M2 17.5l10 5.6 10-5.6" />
         </svg>
       );
     case "bookmark":
       return (
-        <svg className={cls} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+        <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
           <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z" />
+        </svg>
+      );
+    case "sparkles":
+      return (
+        <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinejoin="round" aria-hidden="true">
+          <path d="M12 3l1.8 4.6L18.5 9.5 13.8 11.3 12 16l-1.8-4.7L5.5 9.5l4.7-1.9L12 3z" />
+          <path d="M19 14l.7 1.9 1.9.7-1.9.7L19 19.9l-.7-1.9-1.9-.7 1.9-.7z" />
+        </svg>
+      );
+    case "heart":
+      return (
+        <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinejoin="round" aria-hidden="true">
+          <path d="M20.8 6.6a5 5 0 0 0-7.1 0L12 8.3l-1.7-1.7a5 5 0 1 0-7.1 7.1L12 22l8.8-8.3a5 5 0 0 0 0-7.1z" />
+        </svg>
+      );
+    case "beads":
+      return (
+        <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+          <circle cx="12" cy="12" r="7" />
+          <circle cx="12" cy="5" r="1.5" fill="currentColor" stroke="none" />
+          <circle cx="19" cy="12" r="1.5" fill="currentColor" stroke="none" />
+          <circle cx="12" cy="19" r="1.5" fill="currentColor" stroke="none" />
+          <circle cx="5" cy="12" r="1.5" fill="currentColor" stroke="none" />
+        </svg>
+      );
+    case "clock":
+      return (
+        <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true">
+          <circle cx="12" cy="12" r="9" />
+          <path d="M12 7v5l3 2" />
         </svg>
       );
     default:
       return (
-        <svg className={cls} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+        <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
           <path d="M20 21a8 8 0 1 0-16 0" />
           <circle cx="12" cy="7" r="4" />
         </svg>
@@ -71,126 +110,173 @@ function NavIcon({ name }: { name: string }) {
   }
 }
 
+function isActive(pathname: string, href: string) {
+  return pathname === href || (href !== "/" && pathname.startsWith(href));
+}
+
 export function AppShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const user = useAuthStore((s) => s.user);
   const [signInOpen, setSignInOpen] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
 
-  const mobileNav = NAV.filter((n) =>
-    ["/", "/quran", "/memorize", "/hadith", "/profile"].includes(n.href),
-  );
+  useEffect(() => {
+    setMenuOpen(false);
+  }, [pathname]);
 
   return (
-    <div className="flex min-h-screen">
-      {/* Desktop sidebar */}
-      <aside
-        className="glass fixed left-0 top-0 z-40 hidden h-full w-56 flex-col border-r lg:flex"
+    <div className="flex min-h-screen flex-col">
+      <header
+        className="glass sticky top-0 z-40 border-b"
         style={{ borderColor: "rgb(var(--border))" }}
       >
-        <Link href="/" className="group flex items-center gap-2.5 border-b px-5 py-5 font-bold" style={{ borderColor: "rgb(var(--border))" }}>
-          <span className="transition-transform duration-300 group-hover:scale-105 group-hover:rotate-3">
-            <Logo size={40} />
-          </span>
-          <LogoWordmark subtitle="إتقان · Quran System" />
-        </Link>
-
-        <nav className="flex-1 space-y-1 p-3">
-          {NAV.map((item) => {
-            const active = pathname === item.href || (item.href !== "/" && pathname.startsWith(item.href));
-            return (
-              <Link
-                key={item.href}
-                href={item.href}
-                className={`group relative flex items-center gap-3 overflow-hidden rounded-xl px-3 py-2.5 text-sm font-medium transition-all duration-200 ${
-                  active
-                    ? "text-white shadow-md"
-                    : "hover:translate-x-0.5 hover:bg-itqan-100 dark:hover:bg-itqan-950"
-                }`}
-                style={
-                  active
-                    ? { backgroundImage: "linear-gradient(135deg, #1fa16b, #0f6746)" }
-                    : undefined
-                }
-              >
-                {active && (
-                  <span className="absolute left-0 top-1/2 h-6 w-1 -translate-y-1/2 rounded-r bg-emerald-200" />
-                )}
-                <span className={`transition-transform duration-200 ${active ? "" : "group-hover:scale-110"}`}>
-                  <NavIcon name={item.icon} />
-                </span>
-                {item.label}
-                {item.badge && <DueBadge />}
-              </Link>
-            );
-          })}
-        </nav>
-
-        <div className="border-t p-3" style={{ borderColor: "rgb(var(--border))" }}>
-          {user ? (
-            <Link href="/profile" className="flex items-center gap-2 rounded-xl px-2 py-2 hover:bg-itqan-100 dark:hover:bg-itqan-950">
-              <span className="grid h-8 w-8 place-items-center rounded-full bg-itqan-600 text-xs font-bold text-white">
-                {user.name.charAt(0).toUpperCase()}
-              </span>
-              <span className="min-w-0 truncate text-sm font-medium">{user.name}</span>
-            </Link>
-          ) : (
-            <button type="button" onClick={() => setSignInOpen(true)} className="btn-primary w-full">
-              Sign in
-            </button>
-          )}
-          <div className="mt-2 flex justify-end">
-            <ThemeToggle />
-          </div>
-        </div>
-      </aside>
-
-      {/* Main content */}
-      <div className="flex min-h-screen flex-1 flex-col lg:pl-56">
-        {/* Mobile top bar */}
-        <header
-          className="glass sticky top-0 z-30 flex items-center justify-between border-b px-4 py-3 lg:hidden"
-          style={{ borderColor: "rgb(var(--border))" }}
-        >
-          <Link href="/" className="flex items-center gap-2 font-bold">
-            <Logo size={32} />
-            <LogoWordmark />
+        <div className="mx-auto flex w-full max-w-7xl items-center justify-between gap-2 px-3 py-2.5 sm:px-4">
+          <Link href="/" className="group flex shrink-0 items-center gap-2 font-bold">
+            <span className="transition-transform duration-300 group-hover:scale-105">
+              <Logo size={36} />
+            </span>
+            <LogoWordmark subtitle="إتقان" />
           </Link>
-          <div className="flex items-center gap-2">
-            {!user && (
-              <button type="button" onClick={() => setSignInOpen(true)} className="btn-ghost text-xs">
+
+          {/* Desktop: scrollable flat nav — all features visible */}
+          <nav className="hidden flex-1 items-center gap-0.5 overflow-x-auto px-2 lg:flex [scrollbar-width:none]">
+            {NAV.map((item) => {
+              const active = isActive(pathname, item.href);
+              return (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className={`relative shrink-0 whitespace-nowrap rounded-lg px-2.5 py-1.5 text-xs font-medium transition-colors xl:px-3 xl:text-sm ${
+                    active ? "text-itqan-500" : "muted hover:text-itqan-500"
+                  }`}
+                >
+                  {item.label}
+                  {item.badge && <DueBadge />}
+                  {active && (
+                    <span className="absolute inset-x-1 -bottom-0.5 h-0.5 rounded-full bg-itqan-500" />
+                  )}
+                </Link>
+              );
+            })}
+          </nav>
+
+          <div className="flex shrink-0 items-center gap-1.5">
+            <RecitationMicButton />
+            {user ? (
+              <Link
+                href="/profile"
+                className="hidden items-center gap-2 rounded-full border px-1.5 py-1 pr-2.5 sm:flex"
+                style={{ borderColor: "rgb(var(--border))" }}
+              >
+                <span className="grid h-7 w-7 place-items-center rounded-full bg-itqan-600 text-xs font-bold text-white">
+                  {user.name.charAt(0).toUpperCase()}
+                </span>
+                <span className="max-w-[6rem] truncate text-sm font-medium">{user.name}</span>
+              </Link>
+            ) : (
+              <button
+                type="button"
+                onClick={() => setSignInOpen(true)}
+                className="btn-ghost hidden !px-2.5 text-xs sm:inline-flex"
+              >
                 Sign in
               </button>
             )}
             <ThemeToggle />
+            <button
+              type="button"
+              onClick={() => setMenuOpen((o) => !o)}
+              className="btn-ghost h-9 w-9 !px-0 lg:hidden"
+              aria-label="All features menu"
+              aria-expanded={menuOpen}
+            >
+              <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true">
+                {menuOpen ? <path d="M6 6l12 12M18 6 6 18" /> : <path d="M3 6h18M3 12h18M3 18h18" />}
+              </svg>
+            </button>
           </div>
-        </header>
+        </div>
+      </header>
 
-        <main className="mx-auto w-full max-w-5xl flex-1 px-4 pb-28 pt-5 lg:pb-8">
-          {children}
-        </main>
+      {/* Mobile: all features sheet */}
+      {menuOpen && (
+        <div className="fixed inset-0 z-50 lg:hidden" role="dialog" aria-modal="true">
+          <button
+            type="button"
+            aria-label="Close menu"
+            onClick={() => setMenuOpen(false)}
+            className="absolute inset-0 bg-black/50 backdrop-blur-sm"
+          />
+          <div
+            className="glass animate-fade-up absolute inset-x-0 bottom-0 max-h-[85vh] overflow-y-auto rounded-t-3xl border-t p-5 pb-8"
+            style={{ borderColor: "rgb(var(--border))" }}
+          >
+            <div className="mx-auto mb-4 h-1.5 w-12 rounded-full bg-current opacity-20" />
+            <h2 className="mb-3 text-base font-semibold">All features</h2>
+            <div className="grid grid-cols-2 gap-2.5">
+              {NAV.map((item) => {
+                const active = isActive(pathname, item.href);
+                return (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    className={`flex items-center gap-2.5 rounded-2xl px-3.5 py-3 text-sm font-medium transition-colors ${
+                      active ? "bg-itqan-600 text-white shadow" : "border hover:border-itqan-400"
+                    }`}
+                    style={active ? undefined : { borderColor: "rgb(var(--border))" }}
+                  >
+                    <NavIcon name={item.icon} />
+                    {item.label}
+                    {item.badge && <DueBadge />}
+                  </Link>
+                );
+              })}
+            </div>
+          </div>
+        </div>
+      )}
 
-        {/* Mobile bottom nav */}
-        <nav
-          className="glass fixed bottom-0 left-0 right-0 z-30 flex border-t lg:hidden"
-          style={{ borderColor: "rgb(var(--border))" }}
+      <main className="mx-auto w-full max-w-7xl flex-1 px-4 pb-28 pt-5 lg:pb-10">
+        {children}
+      </main>
+
+      <nav
+        className="glass fixed bottom-0 left-0 right-0 z-30 flex border-t pb-[env(safe-area-inset-bottom)] lg:hidden"
+        style={{ borderColor: "rgb(var(--border))" }}
+      >
+        {NAV.filter((n) => MOBILE_BOTTOM.includes(n.href)).map((item) => {
+          const active = isActive(pathname, item.href);
+          return (
+            <Link
+              key={item.href}
+              href={item.href}
+              className={`relative flex flex-1 flex-col items-center gap-0.5 py-2 text-[10px] font-medium ${
+                active ? "text-itqan-500" : "muted"
+              }`}
+            >
+              {active && <span className="absolute top-0 h-0.5 w-8 rounded-full bg-itqan-500" />}
+              <NavIcon name={item.icon} />
+              {item.label}
+            </Link>
+          );
+        })}
+        <button
+          type="button"
+          onClick={() => setMenuOpen(true)}
+          className={`flex flex-1 flex-col items-center gap-0.5 py-2 text-[10px] font-medium ${
+            menuOpen ? "text-itqan-500" : "muted"
+          }`}
+          aria-label="All features"
         >
-          {mobileNav.map((item) => {
-            const active = pathname === item.href || (item.href !== "/" && pathname.startsWith(item.href));
-            return (
-              <Link
-                key={item.href}
-                href={item.href}
-                className={`flex flex-1 flex-col items-center gap-0.5 py-2 text-[10px] font-medium ${
-                  active ? "text-itqan-600" : "muted"
-                }`}
-              >
-                <NavIcon name={item.icon} />
-                {item.label}
-              </Link>
-            );
-          })}
-        </nav>
-      </div>
+          <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+            <rect x="3" y="3" width="7" height="7" rx="1" />
+            <rect x="14" y="3" width="7" height="7" rx="1" />
+            <rect x="3" y="14" width="7" height="7" rx="1" />
+            <rect x="14" y="14" width="7" height="7" rx="1" />
+          </svg>
+          All
+        </button>
+      </nav>
 
       <SignInModal open={signInOpen} onClose={() => setSignInOpen(false)} />
     </div>

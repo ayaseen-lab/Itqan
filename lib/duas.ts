@@ -1,0 +1,166 @@
+/** Curated everyday duʿāʾ (supplications) with Arabic, transliteration & meaning. */
+export interface Dua {
+  id: string;
+  category: string;
+  title: string;
+  arabic: string;
+  transliteration: string;
+  translation: string;
+  reference?: string;
+}
+
+export const DUA_CATEGORIES = [
+  "Morning & Evening",
+  "Daily Life",
+  "Food",
+  "Travel",
+  "Forgiveness",
+  "Protection",
+] as const;
+
+export const DUAS: Dua[] = [
+  {
+    id: "waking",
+    category: "Morning & Evening",
+    title: "Upon waking up",
+    arabic: "الْحَمْدُ لِلَّهِ الَّذِي أَحْيَانَا بَعْدَ مَا أَمَاتَنَا وَإِلَيْهِ النُّشُورُ",
+    transliteration: "Alhamdu lillahil-ladhi ahyana ba'da ma amatana wa ilayhin-nushur",
+    translation: "All praise is for Allah who gave us life after causing us to die, and to Him is the resurrection.",
+    reference: "Bukhari",
+  },
+  {
+    id: "morning",
+    category: "Morning & Evening",
+    title: "Morning remembrance",
+    arabic: "أَصْبَحْنَا وَأَصْبَحَ الْمُلْكُ لِلَّهِ رَبِّ الْعَالَمِينَ",
+    transliteration: "Asbahna wa asbahal-mulku lillahi Rabbil-'alamin",
+    translation: "We have entered the morning and with it all dominion belongs to Allah, Lord of the worlds.",
+    reference: "Muslim",
+  },
+  {
+    id: "evening",
+    category: "Morning & Evening",
+    title: "Evening remembrance",
+    arabic: "أَمْسَيْنَا وَأَمْسَى الْمُلْكُ لِلَّهِ رَبِّ الْعَالَمِينَ",
+    transliteration: "Amsayna wa amsal-mulku lillahi Rabbil-'alamin",
+    translation: "We have entered the evening and with it all dominion belongs to Allah, Lord of the worlds.",
+    reference: "Muslim",
+  },
+  {
+    id: "sleep",
+    category: "Morning & Evening",
+    title: "Before sleeping",
+    arabic: "بِاسْمِكَ اللَّهُمَّ أَمُوتُ وَأَحْيَا",
+    transliteration: "Bismika Allahumma amutu wa ahya",
+    translation: "In Your name, O Allah, I die and I live.",
+    reference: "Bukhari",
+  },
+  {
+    id: "before-eating",
+    category: "Food",
+    title: "Before eating",
+    arabic: "بِسْمِ اللَّهِ",
+    transliteration: "Bismillah",
+    translation: "In the name of Allah.",
+    reference: "Abu Dawud",
+  },
+  {
+    id: "after-eating",
+    category: "Food",
+    title: "After eating",
+    arabic: "الْحَمْدُ لِلَّهِ الَّذِي أَطْعَمَنِي هَٰذَا وَرَزَقَنِيهِ",
+    transliteration: "Alhamdu lillahil-ladhi at'amani hadha wa razaqanih",
+    translation: "All praise is for Allah who fed me this and provided it for me.",
+    reference: "Tirmidhi",
+  },
+  {
+    id: "enter-home",
+    category: "Daily Life",
+    title: "Entering the home",
+    arabic: "اللَّهُمَّ إِنِّي أَسْأَلُكَ خَيْرَ الْمَوْلِجِ وَخَيْرَ الْمَخْرَجِ",
+    transliteration: "Allahumma inni as'aluka khayral-mawliji wa khayral-makhraj",
+    translation: "O Allah, I ask You for the best of entrances and the best of exits.",
+    reference: "Abu Dawud",
+  },
+  {
+    id: "leave-home",
+    category: "Daily Life",
+    title: "Leaving the home",
+    arabic: "بِسْمِ اللَّهِ تَوَكَّلْتُ عَلَى اللَّهِ وَلَا حَوْلَ وَلَا قُوَّةَ إِلَّا بِاللَّهِ",
+    transliteration: "Bismillah, tawakkaltu 'alallah, wa la hawla wa la quwwata illa billah",
+    translation: "In the name of Allah, I place my trust in Allah; there is no might nor power except with Allah.",
+    reference: "Abu Dawud",
+  },
+  {
+    id: "mosque",
+    category: "Daily Life",
+    title: "Entering the mosque",
+    arabic: "اللَّهُمَّ افْتَحْ لِي أَبْوَابَ رَحْمَتِكَ",
+    transliteration: "Allahumma-ftah li abwaba rahmatik",
+    translation: "O Allah, open for me the gates of Your mercy.",
+    reference: "Muslim",
+  },
+  {
+    id: "travel",
+    category: "Travel",
+    title: "For travelling",
+    arabic: "سُبْحَانَ الَّذِي سَخَّرَ لَنَا هَٰذَا وَمَا كُنَّا لَهُ مُقْرِنِينَ",
+    transliteration: "Subhanal-ladhi sakhkhara lana hadha wa ma kunna lahu muqrinin",
+    translation: "Glory to Him who has subjected this to us, and we could never have accomplished it by ourselves.",
+    reference: "Muslim",
+  },
+  {
+    id: "sayyidul-istighfar",
+    category: "Forgiveness",
+    title: "The chief of seeking forgiveness",
+    arabic: "اللَّهُمَّ أَنْتَ رَبِّي لَا إِلَٰهَ إِلَّا أَنْتَ خَلَقْتَنِي وَأَنَا عَبْدُكَ",
+    transliteration: "Allahumma anta Rabbi la ilaha illa anta, khalaqtani wa ana 'abduk",
+    translation: "O Allah, You are my Lord, there is no god but You. You created me and I am Your servant.",
+    reference: "Bukhari",
+  },
+  {
+    id: "forgiveness",
+    category: "Forgiveness",
+    title: "Seeking forgiveness",
+    arabic: "رَبِّ اغْفِرْ لِي وَتُبْ عَلَيَّ إِنَّكَ أَنْتَ التَّوَّابُ الرَّحِيمُ",
+    transliteration: "Rabbi-ghfir li wa tub 'alayya innaka antat-Tawwabur-Rahim",
+    translation: "My Lord, forgive me and accept my repentance; You are the Ever-Relenting, the Most Merciful.",
+    reference: "Tirmidhi",
+  },
+  {
+    id: "distress",
+    category: "Protection",
+    title: "In times of distress",
+    arabic: "لَا إِلَٰهَ إِلَّا اللَّهُ الْعَظِيمُ الْحَلِيمُ لَا إِلَٰهَ إِلَّا اللَّهُ رَبُّ الْعَرْشِ الْعَظِيمِ",
+    transliteration: "La ilaha illallahul-'Azimul-Halim, la ilaha illallahu Rabbul-'Arshil-'Azim",
+    translation: "There is no god but Allah, the Magnificent, the Forbearing; no god but Allah, Lord of the Mighty Throne.",
+    reference: "Bukhari",
+  },
+  {
+    id: "protection",
+    category: "Protection",
+    title: "Protection from harm",
+    arabic: "بِسْمِ اللَّهِ الَّذِي لَا يَضُرُّ مَعَ اسْمِهِ شَيْءٌ فِي الْأَرْضِ وَلَا فِي السَّمَاءِ",
+    transliteration: "Bismillahil-ladhi la yadurru ma'asmihi shay'un fil-ardi wa la fis-sama'",
+    translation: "In the name of Allah, with whose name nothing on earth or in heaven can cause harm.",
+    reference: "Abu Dawud",
+  },
+  {
+    id: "goodness",
+    category: "Daily Life",
+    title: "For good in both worlds",
+    arabic: "رَبَّنَا آتِنَا فِي الدُّنْيَا حَسَنَةً وَفِي الْآخِرَةِ حَسَنَةً وَقِنَا عَذَابَ النَّارِ",
+    transliteration: "Rabbana atina fid-dunya hasanatan wa fil-akhirati hasanatan wa qina 'adhaban-nar",
+    translation: "Our Lord, give us good in this world and good in the Hereafter, and protect us from the punishment of the Fire.",
+    reference: "Al-Baqarah 2:201",
+  },
+  {
+    id: "knowledge",
+    category: "Daily Life",
+    title: "For increase in knowledge",
+    arabic: "رَبِّ زِدْنِي عِلْمًا",
+    transliteration: "Rabbi zidni 'ilma",
+    translation: "My Lord, increase me in knowledge.",
+    reference: "Ta-Ha 20:114",
+  },
+];

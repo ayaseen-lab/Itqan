@@ -33,7 +33,10 @@ export default function SettingsPage() {
         </div>
         <div className="p-4">
           <h2 className="font-semibold">AI Assistant</h2>
-          <p className="muted text-sm">Powered by free Gemini models. Configure GEMINI_API_KEY in .env.local.</p>
+          <p className="muted text-sm">
+            Built-in Itqan knowledge engine works free with no API key. For advanced answers,
+            add a free <code className="text-xs">GROQ_API_KEY</code> in .env.local (console.groq.com).
+          </p>
         </div>
         <div className="p-4">
           <h2 className="font-semibold">Data</h2>

@@ -7,19 +7,40 @@ import { useChatStore } from "@/lib/chatStore";
 import { useAppStore } from "@/lib/appStore";
 import { AudioPlayer } from "./AudioPlayer";
 import { WordByWord } from "./WordByWord";
-import { TajweedText } from "./TajweedText";
+import { TajweedText, TajweedLegend } from "./TajweedText";
 import { TafseerPanel } from "./TafseerPanel";
 import { TarteelPractice } from "./TarteelPractice";
 
-type Tab = "translation" | "words" | "tajweed" | "tafseer" | "practice";
+type Tab = "words" | "tajweed" | "tafseer" | "practice";
 
 const TABS: { id: Tab; label: string }[] = [
-  { id: "translation", label: "Translation" },
   { id: "words", label: "Word by word" },
   { id: "tajweed", label: "Tajweed" },
   { id: "tafseer", label: "Tafseer" },
   { id: "practice", label: "Practice" },
 ];
+
+function TranslationBlock({ verse }: { verse: Verse }) {
+  const { urdu, english } = verse.translations;
+  if (!urdu && !english) {
+    return <p className="muted text-sm">Translation not available.</p>;
+  }
+  return (
+    <div className="space-y-2 rounded-xl border p-3" style={{ borderColor: "rgb(var(--border))", backgroundColor: "rgb(var(--surface) / 0.4)" }}>
+      {urdu && (
+        <p className="urdu-text text-lg leading-relaxed" dir="rtl">
+          {urdu}
+        </p>
+      )}
+      {english && (
+        <p className="text-sm leading-relaxed">
+          <span className="muted text-xs font-medium uppercase tracking-wide">English · </span>
+          {english}
+        </p>
+      )}
+    </div>
+  );
+}
 
 export function VerseCard({ verse, surahName }: { verse: Verse; surahName: string }) {
   const [tab, setTab] = useState<Tab | null>(null);
@@ -66,10 +87,6 @@ export function VerseCard({ verse, surahName }: { verse: Verse; surahName: strin
     );
   }
 
-  function selectTab(t: Tab) {
-    setTab((cur) => (cur === t ? null : t));
-  }
-
   return (
     <article className="card p-5">
       <div className="mb-3 flex items-center justify-between">
@@ -79,9 +96,14 @@ export function VerseCard({ verse, surahName }: { verse: Verse; surahName: strin
         <AudioPlayer src={verse.audioUrl} />
       </div>
 
-      <p className="quran-text mb-4 text-right text-3xl" dir="rtl">
-        {verse.textUthmani}
-      </p>
+      <div className="mb-4 space-y-3">
+        <TajweedText
+          html={verse.textTajweed}
+          plainText={verse.textUthmani}
+          showLegend
+        />
+        <TranslationBlock verse={verse} />
+      </div>
 
       <div className="flex flex-wrap gap-2 border-t pt-3" style={{ borderColor: "rgb(var(--border))" }}>
         <button type="button" onClick={toggleHifz} className={inHifz ? "btn bg-itqan-100 text-itqan-800 dark:bg-itqan-950 dark:text-itqan-200" : "btn-primary"}>
@@ -110,7 +132,7 @@ export function VerseCard({ verse, surahName }: { verse: Verse; surahName: strin
               type="button"
               role="tab"
               aria-selected={tab === t.id}
-              onClick={() => selectTab(t.id)}
+              onClick={() => setTab((cur) => (cur === t.id ? null : t.id))}
               className={`rounded-lg px-3 py-1.5 text-sm font-medium transition-colors ${
                 tab === t.id
                   ? "bg-itqan-600 text-white"
@@ -125,28 +147,16 @@ export function VerseCard({ verse, surahName }: { verse: Verse; surahName: strin
 
         {tab && (
           <div className="mt-4 border-t pt-4" style={{ borderColor: "rgb(var(--border))" }}>
-            {tab === "translation" && (
-              <div className="space-y-2">
-                {verse.translations.urdu && (
-                  <p className="urdu-text text-lg leading-relaxed" dir="rtl">
-                    {verse.translations.urdu}
-                  </p>
-                )}
-                {verse.translations.english && (
-                  <p className="text-sm">
-                    <span className="muted">EN: </span>
-                    {verse.translations.english}
-                  </p>
-                )}
-                {!verse.translations.urdu && !verse.translations.english && (
-                  <p className="muted text-sm">Translation not available.</p>
-                )}
-              </div>
-            )}
-
             {tab === "words" && <WordByWord words={verse.words} />}
 
-            {tab === "tajweed" && <TajweedText html={verse.textTajweed} />}
+            {tab === "tajweed" && (
+              <div className="space-y-3">
+                <p className="muted text-sm">
+                  Tajweed colours are applied to the Arabic text above. Tap each rule to learn what it means.
+                </p>
+                <TajweedLegend detailed />
+              </div>
+            )}
 
             {tab === "tafseer" && (
               <TafseerPanel

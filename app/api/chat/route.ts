@@ -1,9 +1,10 @@
 import { NextResponse } from "next/server";
+import { answerFromKnowledge } from "@/lib/itqanKnowledge";
 
 /**
- * AI assistant proxy. Uses Google Gemini's free tier.
- * Set GEMINI_API_KEY (from https://aistudio.google.com/apikey) as an env var.
- * With no key, the endpoint responds gracefully so the app still works.
+ * Itqan AI assistant — no Gemini required.
+ * 1. Built-in knowledge engine (always free, works offline)
+ * 2. Optional Groq API (free tier, llama models) if GROQ_API_KEY is set
  */
 
 export const runtime = "edge";
@@ -21,31 +22,57 @@ interface ChatMessage {
   content: string;
 }
 
-const SYSTEM_PROMPT = `You are Itqan, a knowledgeable and humble AI assistant for a Quran learning and memorization app. Your users are often Urdu-speaking Muslims in Pakistan.
+const SYSTEM = `You are Itqan, a humble Quran learning assistant for Urdu-speaking Muslims.
+- Ground answers in Quran, authentic Hadith, and recognized Tafseer.
+- Distinguish Quranic text from your commentary. Label commentary clearly.
+- Be encouraging about Hifz. Keep answers concise and practical.
+- Respond in the user's language (English, Urdu, or Roman Urdu).`;
 
-Guidelines you MUST follow:
-- Ground answers in authentic Islamic scholarship (Quran, authentic Hadith, and recognized Tafseer such as Ibn Kathir, Tafsir al-Tabari, Ma'ariful Quran).
-- ALWAYS clearly distinguish the literal text/translation of the Quran from your own explanatory commentary. Label commentary as commentary.
-- When scholars hold multiple valid opinions, present them fairly and note the difference rather than asserting one as definitive.
-- If you are unsure or a matter requires a qualified scholar (mufti), say so and encourage consulting one. Never fabricate references, ayah numbers, or Hadith.
-- Be encouraging and supportive of the learner's memorization (Hifz) journey.
-- Respond in the language the user writes in. If they write in Urdu or Roman Urdu, reply in that style. Keep explanations clear and simple.
-- Keep responses reasonably concise unless asked for detail.`;
-
-function buildContextBlock(ctx?: AyahContext): string {
+function buildContext(ctx?: AyahContext): string {
   if (!ctx) return "";
-  const parts = [
-    `The learner is currently viewing Surah ${ctx.surahName}, ayah ${ctx.verseKey}.`,
+  return [
+    `Learner is viewing Surah ${ctx.surahName}, ayah ${ctx.verseKey}.`,
     `Arabic: ${ctx.arabic}`,
-  ];
-  if (ctx.english) parts.push(`English translation: ${ctx.english}`);
-  if (ctx.urdu) parts.push(`Urdu translation: ${ctx.urdu}`);
-  return parts.join("\n");
+    ctx.english && `English: ${ctx.english}`,
+    ctx.urdu && `Urdu: ${ctx.urdu}`,
+  ]
+    .filter(Boolean)
+    .join("\n");
+}
+
+async function askGroq(
+  messages: ChatMessage[],
+  context?: AyahContext,
+): Promise<string | null> {
+  const key = process.env.GROQ_API_KEY;
+  if (!key) return null;
+
+  const model = process.env.GROQ_MODEL ?? "llama-3.3-70b-versatile";
+  const systemContent = SYSTEM + (context ? `\n\nContext:\n${buildContext(context)}` : "");
+
+  const res = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${key}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      model,
+      temperature: 0.4,
+      max_tokens: 1024,
+      messages: [
+        { role: "system", content: systemContent },
+        ...messages.map((m) => ({ role: m.role, content: m.content })),
+      ],
+    }),
+  });
+
+  if (!res.ok) return null;
+  const data = await res.json();
+  return data?.choices?.[0]?.message?.content?.trim() ?? null;
 }
 
 export async function POST(req: Request) {
-  const apiKey = process.env.GEMINI_API_KEY;
-
   let body: { messages?: ChatMessage[]; context?: AyahContext };
   try {
     body = await req.json();
@@ -58,66 +85,35 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "No messages provided" }, { status: 400 });
   }
 
-  if (!apiKey) {
-    return NextResponse.json({
-      disabled: true,
-      reply:
-        "The AI assistant is not configured yet. Add a free GEMINI_API_KEY (from Google AI Studio) to enable it. Everything else in the app works without it.",
-    });
+  const lastUser = [...messages].reverse().find((m) => m.role === "user");
+  const query = lastUser?.content ?? "";
+
+  // 1. Built-in knowledge engine (instant, free, no key)
+  const local = answerFromKnowledge(query, body.context);
+  if (local) {
+    return NextResponse.json({ reply: local, source: "itqan-knowledge" });
   }
 
-  const preferred = process.env.GEMINI_MODEL;
-  const freeModels = preferred
-    ? [preferred, "gemini-2.0-flash", "gemini-2.5-flash", "gemini-flash-latest"]
-    : ["gemini-2.0-flash", "gemini-2.5-flash", "gemini-flash-latest"];
-  const contextBlock = buildContextBlock(body.context);
-
-  const contents = messages.map((m) => ({
-    role: m.role === "assistant" ? "model" : "user",
-    parts: [{ text: m.content }],
-  }));
-
-  const systemInstruction = {
-    parts: [
-      { text: SYSTEM_PROMPT + (contextBlock ? `\n\nContext:\n${contextBlock}` : "") },
-    ],
-  };
-
-  let lastError = "All free models failed";
-  for (const model of freeModels) {
-    try {
-      const res = await fetch(
-        `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            system_instruction: systemInstruction,
-            contents,
-            generationConfig: { temperature: 0.4, maxOutputTokens: 1024 },
-          }),
-        },
-      );
-
-      if (!res.ok) {
-        const detail = await res.text();
-        lastError = `Provider error (${res.status}): ${detail.slice(0, 200)}`;
-        if (res.status === 404) continue; // try next free model
-        return NextResponse.json({ error: lastError }, { status: 502 });
-      }
-
-      const data = await res.json();
-      const reply =
-        data?.candidates?.[0]?.content?.parts
-          ?.map((p: { text?: string }) => p.text ?? "")
-          .join("")
-          .trim() || "I could not generate a response. Please try again.";
-
-      return NextResponse.json({ reply, model });
-    } catch (e) {
-      lastError = e instanceof Error ? e.message : "Unknown error";
+  // 2. Optional Groq (free cloud LLM)
+  try {
+    const groq = await askGroq(messages, body.context);
+    if (groq) {
+      return NextResponse.json({ reply: groq, source: "groq" });
     }
+  } catch {
+    // fall through
   }
 
-  return NextResponse.json({ error: lastError }, { status: 502 });
+  // 3. Graceful fallback
+  return NextResponse.json({
+    reply:
+      "I'm Itqan's built-in assistant. I can help with:\n\n" +
+      "• **Tajweed rules** and pronunciation tips\n" +
+      "• **Hifz/memorisation** techniques\n" +
+      "• **Surah virtues** (Al-Fatihah, Al-Ikhlas, Ayat al-Kursi…)\n" +
+      "• **How to use** Itqan features\n\n" +
+      "Try asking: *\"Give me a tip to memorize faster\"* or *\"Explain tajweed colours\"*\n\n" +
+      "For advanced AI answers, add a free **GROQ_API_KEY** in `.env.local` (get one at console.groq.com).",
+    source: "fallback",
+  });
 }

@@ -1,46 +1,84 @@
 "use client";
 
-const LEGEND: { label: string; color: string; rule: string }[] = [
-  { label: "Ghunnah", color: "#ff7e1e", rule: "Nasalization (2 counts)" },
-  { label: "Qalqalah", color: "#dd0008", rule: "Echoing/bouncing sound" },
-  { label: "Ikhfa", color: "#9400a8", rule: "Hidden noon/meem" },
-  { label: "Idgham", color: "#169777", rule: "Merging letters" },
-  { label: "Iqlab", color: "#26bffd", rule: "Noon becomes meem" },
-  { label: "Madd", color: "#4050ff", rule: "Prolongation" },
-  { label: "Silent", color: "#9ca3af", rule: "Not pronounced" },
-];
+import { useMemo } from "react";
+import { annotateTajweed, hasTajweedMarkup, TAJWEED_LEGEND } from "@/lib/tajweed";
+
+export function TajweedLegend({ detailed = false }: { detailed?: boolean }) {
+  return (
+    <div
+      className={`grid gap-2 rounded-xl border p-3 ${
+        detailed ? "grid-cols-1 sm:grid-cols-2" : "grid-cols-2 sm:grid-cols-4 lg:grid-cols-7"
+      }`}
+      style={{ borderColor: "rgb(var(--border))", backgroundColor: "rgb(var(--surface) / 0.5)" }}
+    >
+      {TAJWEED_LEGEND.map((l) => (
+        <div
+          key={l.label}
+          className={`flex items-start gap-2 ${detailed ? "rounded-lg border p-2.5" : ""}`}
+          style={detailed ? { borderColor: "rgb(var(--border))" } : undefined}
+          title={l.rule}
+        >
+          <span
+            className="mt-0.5 inline-block h-2.5 w-2.5 shrink-0 rounded-full"
+            style={{ backgroundColor: `var(${l.cssVar})` }}
+          />
+          <div className="min-w-0">
+            <span className="text-xs font-semibold">{l.label}</span>
+            <span className={`muted block text-[11px] leading-snug ${detailed ? "" : "hidden xl:block"}`}>
+              {l.rule}
+            </span>
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
 
 /**
- * Renders the Quran.com tajweed markup (custom <tajweed class=...> spans).
- * The markup is trusted (from the Quran.com API) so we render it directly and
- * color it via the .tajweed-text CSS rules in globals.css.
+ * Renders tajweed-coloured Quran script. Uses API HTML markup only when
+ * real <tajweed> tags are present; otherwise runs the local annotator on
+ * clean Uthmani text.
  */
-export function TajweedText({ html }: { html: string | null }) {
-  if (!html) {
+export function TajweedText({
+  html,
+  plainText,
+  size = "3xl",
+  showLegend = true,
+}: {
+  html?: string | null;
+  plainText?: string;
+  size?: "2xl" | "3xl" | "4xl";
+  showLegend?: boolean;
+}) {
+  const annotated = useMemo(() => {
+    if (html && hasTajweedMarkup(html)) {
+      return html
+        .replace(/<tajweed class="([^"]+)">/gi, '<span class="$1">')
+        .replace(/<\/tajweed>/gi, "</span>");
+    }
+    if (plainText?.trim()) return annotateTajweed(plainText);
+    if (html?.trim()) return annotateTajweed(html);
+    return null;
+  }, [html, plainText]);
+
+  if (!annotated) {
     return (
       <p className="muted text-sm">
-        Tajweed-colored script isn&apos;t available for this ayah offline. Connect to the internet
-        to load it.
+        Tajweed script isn&apos;t available for this ayah.
       </p>
     );
   }
 
+  const sizeClass = size === "4xl" ? "text-4xl" : size === "2xl" ? "text-2xl" : "text-3xl";
+
   return (
-    <div className="space-y-4">
+    <div className="space-y-3">
       <p
-        className="tajweed-text text-right text-3xl"
+        className={`tajweed-text text-right leading-[2.4] ${sizeClass}`}
         dir="rtl"
-        dangerouslySetInnerHTML={{ __html: html }}
+        dangerouslySetInnerHTML={{ __html: annotated }}
       />
-      <div className="flex flex-wrap gap-x-4 gap-y-1.5 border-t pt-3" style={{ borderColor: "rgb(var(--border))" }}>
-        {LEGEND.map((l) => (
-          <span key={l.label} className="flex items-center gap-1.5 text-xs" title={l.rule}>
-            <span className="inline-block h-3 w-3 rounded-full" style={{ backgroundColor: l.color }} />
-            <span className="font-medium">{l.label}</span>
-            <span className="muted hidden sm:inline">— {l.rule}</span>
-          </span>
-        ))}
-      </div>
+      {showLegend && <TajweedLegend />}
     </div>
   );
 }

@@ -101,6 +101,52 @@ const FEATURES: Feature[] = [
       </svg>
     ),
   },
+  {
+    href: "/names",
+    title: "99 Names of Allah",
+    desc: "Browse the Asmāʾ al-Ḥusnā with Arabic, transliteration & meaning.",
+    icon: (
+      <svg className={ICON} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinejoin="round">
+        <path d="M12 3l1.8 4.6L18.5 9.5 13.8 11.3 12 16l-1.8-4.7L5.5 9.5l4.7-1.9L12 3z" />
+        <path d="M19 14l.7 1.9 1.9.7-1.9.7L19 19.9l-.7-1.9-1.9-.7 1.9-.7z" />
+      </svg>
+    ),
+  },
+  {
+    href: "/duas",
+    title: "Everyday Duʿāʾ",
+    desc: "Authentic supplications for morning, evening, meals, travel & more.",
+    icon: (
+      <svg className={ICON} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinejoin="round">
+        <path d="M20.8 6.6a5 5 0 0 0-7.1 0L12 8.3l-1.7-1.7a5 5 0 1 0-7.1 7.1L12 22l8.8-8.3a5 5 0 0 0 0-7.1z" />
+      </svg>
+    ),
+  },
+  {
+    href: "/tasbih",
+    title: "Digital Tasbih",
+    desc: "Count your dhikr with a beautiful tap counter — saved on device.",
+    icon: (
+      <svg className={ICON} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
+        <circle cx="12" cy="12" r="7" />
+        <circle cx="12" cy="5" r="1.5" fill="currentColor" stroke="none" />
+        <circle cx="19" cy="12" r="1.5" fill="currentColor" stroke="none" />
+        <circle cx="12" cy="19" r="1.5" fill="currentColor" stroke="none" />
+        <circle cx="5" cy="12" r="1.5" fill="currentColor" stroke="none" />
+      </svg>
+    ),
+  },
+  {
+    href: "/prayer",
+    title: "Prayer Times",
+    desc: "Accurate daily salah times for your location, with the next prayer.",
+    icon: (
+      <svg className={ICON} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round">
+        <circle cx="12" cy="12" r="9" />
+        <path d="M12 7v5l3 2" />
+      </svg>
+    ),
+  },
 ];
 
 export function FeatureShowcase() {
@@ -122,8 +168,7 @@ export function FeatureShowcase() {
           <Reveal key={f.title + i} delay={(i % 4) * 70}>
             <Link href={f.href} className="card card-hover shine group flex h-full flex-col p-5">
               <span
-                className="grid h-11 w-11 place-items-center rounded-xl text-white shadow-md transition-transform duration-300 group-hover:scale-110 group-hover:-rotate-6"
-                style={{ backgroundImage: "linear-gradient(135deg, #1fa16b, #0f6746)" }}
+                className="icon-grad grid h-11 w-11 place-items-center rounded-xl text-white shadow-md transition-transform duration-300 group-hover:scale-110 group-hover:-rotate-6"
               >
                 {f.icon}
               </span>
@@ -189,8 +234,7 @@ export function StatsBand() {
   }, []);
 
   return (
-    <div ref={ref} className="card gradient-anim relative overflow-hidden p-6 text-white"
-      style={{ backgroundImage: "linear-gradient(120deg, #0a3d2a, #128155, #0f6746, #1fa16b)" }}>
+    <div ref={ref} className="card banner-grad gradient-anim relative overflow-hidden p-6 text-white">
       <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
         {STATS.map((s) => (
           <StatItem key={s.label} value={s.value} label={s.label} run={run} />
@@ -205,7 +249,7 @@ function StatItem({ value, label, run }: { value: number; label: string; run: bo
   return (
     <div className="text-center">
       <div className="text-3xl font-bold tabular-nums sm:text-4xl">{n.toLocaleString()}</div>
-      <div className="mt-0.5 text-xs font-medium uppercase tracking-wide text-emerald-100/80">
+      <div className="mt-0.5 text-xs font-medium uppercase tracking-wide text-teal-100/80">
         {label}
       </div>
     </div>

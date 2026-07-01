@@ -13,8 +13,8 @@ export function Logo({ size = 36, animated = true }: { size?: number; animated?:
         width: size,
         height: size,
         backgroundImage:
-          "linear-gradient(145deg, #45bd88 0%, #128155 45%, #0a4d32 75%, #05261c 100%)",
-        boxShadow: "0 10px 26px -8px rgb(31 161 107 / 0.65)",
+          "linear-gradient(145deg, #2dd4bf 0%, #0d9488 45%, #115e59 75%, #042f2e 100%)",
+        boxShadow: "0 10px 26px -8px rgb(20 184 166 / 0.65)",
       }}
       aria-hidden="true"
     >
@@ -50,12 +50,12 @@ export function Logo({ size = 36, animated = true }: { size?: number; animated?:
           stroke="rgb(255 255 255 / 0.5)"
           strokeWidth="1"
         />
-        <circle cx="24" cy="24" r="10.5" fill="rgb(5 38 28 / 0.55)" />
+        <circle cx="24" cy="24" r="10.5" fill="rgb(19 78 74 / 0.55)" />
         <text
           x="24"
           y="30.5"
           textAnchor="middle"
-          fill="#eefbf4"
+          fill="#f0fdfa"
           fontSize="17"
           fontFamily="var(--font-arabic), serif"
           fontWeight="700"

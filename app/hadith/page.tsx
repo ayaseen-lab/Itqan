@@ -44,7 +44,7 @@ export default function HadithPage() {
       <article className="card relative overflow-hidden p-6 sm:p-8">
         <div
           className="pointer-events-none absolute -right-8 -top-8 h-40 w-40 rounded-full opacity-20 blur-2xl"
-          style={{ background: "radial-gradient(circle, #1fa16b, transparent)" }}
+          style={{ background: "radial-gradient(circle, #14b8a6, transparent)" }}
           aria-hidden="true"
         />
         <p className="quran-text text-right text-3xl leading-loose" dir="rtl">

@@ -10,18 +10,28 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
+        // Primary brand — refined royal indigo (kept under the `itqan` key so
+        // existing utility classes keep working across the app).
         itqan: {
-          50: "#eefbf4",
-          100: "#d6f5e3",
-          200: "#b0eacb",
-          300: "#7dd8ac",
-          400: "#45bd88",
-          500: "#1fa16b",
-          600: "#128155",
-          700: "#0f6746",
-          800: "#0f523a",
-          900: "#0d4331",
-          950: "#05261c",
+          50: "#f0fdfa",
+          100: "#ccfbf1",
+          200: "#99f6e4",
+          300: "#5eead4",
+          400: "#2dd4bf",
+          500: "#14b8a6",
+          600: "#0d9488",
+          700: "#0f766e",
+          800: "#115e59",
+          900: "#134e4a",
+          950: "#042f2e",
+        },
+        // Warm gold accent for highlights, badges and calligraphy.
+        gold: {
+          200: "#fef0c7",
+          300: "#fcd34d",
+          400: "#fbbf24",
+          500: "#f59e0b",
+          600: "#d97706",
         },
       },
       fontFamily: {

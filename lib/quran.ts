@@ -68,7 +68,7 @@ export interface Verse {
   chapterId: number;
   verseNumber: number;
   textUthmani: string;
-  textTajweed: string | null; // HTML with <tajweed class=...> spans
+  textTajweed: string | null; // Spaced Uthmani from API (not HTML); local annotator uses textUthmani
   audioUrl: string | null;
   translations: {
     urdu: string | null;
@@ -167,9 +167,14 @@ async function apiGet<T>(path: string): Promise<T> {
 }
 
 export async function getChapters(): Promise<Chapter[]> {
+  // Serve the complete, bundled 114-Surah list instantly — no network wait — so
+  // the reader always shows every Surah and loads fast. We still try the live
+  // API to enrich with localized (Urdu) names, but never block on it.
   try {
     const data = await apiGet<{ chapters: any[] }>("/chapters?language=ur");
-    return data.chapters.map(mapChapter);
+    const mapped = data.chapters.map(mapChapter);
+    if (mapped.length >= 114) return mapped;
+    return OFFLINE_CHAPTERS;
   } catch {
     return OFFLINE_CHAPTERS;
   }
