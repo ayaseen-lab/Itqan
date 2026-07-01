@@ -1,0 +1,191 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: 247 249 248;
+  --surface: 255 255 255;
+  --card: 255 255 255;
+  --foreground: 14 23 20;
+  --muted: 92 108 101;
+  --border: 226 232 229;
+  --accent: 18 129 85; /* itqan-600 */
+  --accent-soft: 214 245 227;
+  --ring: 31 161 107;
+  --glow: 16 129 85;
+}
+
+.dark {
+  --background: 6 12 10;
+  --surface: 13 21 18;
+  --card: 15 24 20;
+  --foreground: 232 240 236;
+  --muted: 148 166 158;
+  --border: 30 44 38;
+  --accent: 45 189 136; /* itqan-400/500 */
+  --accent-soft: 6 38 28;
+  --ring: 69 189 136;
+  --glow: 20 129 85;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: rgb(var(--background));
+  color: rgb(var(--foreground));
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  background-image:
+    radial-gradient(60rem 60rem at 110% -10%, rgb(var(--glow) / 0.10), transparent 60%),
+    radial-gradient(50rem 50rem at -10% 10%, rgb(var(--glow) / 0.08), transparent 55%);
+  background-attachment: fixed;
+}
+
+@layer components {
+  .card {
+    @apply rounded-2xl border;
+    background-color: rgb(var(--card) / 0.78);
+    backdrop-filter: blur(16px) saturate(1.3);
+    -webkit-backdrop-filter: blur(16px) saturate(1.3);
+    border-color: rgb(var(--border) / 0.8);
+    box-shadow:
+      0 1px 2px rgb(0 0 0 / 0.04),
+      0 12px 32px -16px rgb(0 0 0 / 0.18),
+      inset 0 1px 0 rgb(255 255 255 / 0.04);
+  }
+
+  .glass {
+    background-color: rgb(var(--surface) / 0.65);
+    backdrop-filter: saturate(1.5) blur(20px);
+    -webkit-backdrop-filter: saturate(1.5) blur(20px);
+    border-color: rgb(var(--border) / 0.6);
+  }
+
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 rounded-xl px-4 py-2 text-sm font-medium transition-all duration-150 focus:outline-none focus-visible:ring-2 disabled:cursor-not-allowed disabled:opacity-50;
+    --tw-ring-color: rgb(var(--ring));
+  }
+
+  .btn-primary {
+    @apply btn text-white;
+    background-image: linear-gradient(135deg, rgb(31 161 107), rgb(15 103 70));
+    box-shadow: 0 6px 20px -8px rgb(var(--glow) / 0.7);
+  }
+  .btn-primary:hover {
+    filter: brightness(1.06);
+    transform: translateY(-1px);
+  }
+
+  .btn-ghost {
+    @apply btn border;
+    border-color: rgb(var(--border));
+    background-color: transparent;
+  }
+  .btn-ghost:hover {
+    background-color: rgb(var(--accent-soft));
+    border-color: rgb(var(--accent) / 0.45);
+  }
+
+  .muted {
+    color: rgb(var(--muted));
+  }
+
+  .chip {
+    @apply inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-xs font-medium;
+    background-color: rgb(var(--accent-soft));
+    color: rgb(var(--accent));
+  }
+
+  .field {
+    @apply w-full rounded-xl border bg-transparent px-4 py-2.5 outline-none transition-colors focus:ring-2;
+    border-color: rgb(var(--border));
+    --tw-ring-color: rgb(var(--ring));
+  }
+}
+
+/* Arabic Quran text */
+.quran-text {
+  font-family: var(--font-arabic), "Traditional Arabic", "Amiri", serif;
+  direction: rtl;
+  line-height: 2.2;
+}
+
+.urdu-text {
+  font-family: var(--font-urdu), "Noto Nastaliq Urdu", serif;
+  direction: rtl;
+}
+
+/* Tajweed color-coded script (classes from the Quran.com API markup) */
+.tajweed-text {
+  font-family: var(--font-arabic), "Traditional Arabic", "Amiri", serif;
+  direction: rtl;
+  line-height: 2.4;
+}
+.tajweed-text .end,
+.tajweed-text span.end {
+  color: rgb(var(--muted));
+  font-size: 0.7em;
+  margin: 0 0.2em;
+}
+.tajweed-text .ham_wasl,
+.tajweed-text .laam_shamsiyah,
+.tajweed-text .slnt {
+  color: #9ca3af;
+}
+.tajweed-text .madda_normal {
+  color: #4050ff;
+}
+.tajweed-text .madda_permissible {
+  color: #6a70ff;
+}
+.tajweed-text .madda_necessary {
+  color: #1b2ce0;
+}
+.tajweed-text .madda_obligatory {
+  color: #2144c1;
+}
+.tajweed-text .qalqalah {
+  color: #e11d2a;
+}
+.tajweed-text .ikhafa,
+.tajweed-text .ikhafa_shafawi {
+  color: #a21caf;
+}
+.tajweed-text .idgham_ghunnah,
+.tajweed-text .idgham_shafawi,
+.tajweed-text .idgham_mutajanisayn,
+.tajweed-text .idgham_mutaqaribayn {
+  color: #169777;
+}
+.tajweed-text .idgham_wo_ghunnah {
+  color: #16a34a;
+}
+.tajweed-text .iqlab {
+  color: #0ea5e9;
+}
+.tajweed-text .ghunnah {
+  color: #f97316;
+}
+
+/* Rendered HTML tafsir content */
+.tafsir-content {
+  line-height: 1.9;
+}
+.tafsir-content p {
+  margin-bottom: 0.75rem;
+}
+.tafsir-content h2,
+.tafsir-content h3 {
+  font-weight: 700;
+  margin: 0.75rem 0 0.35rem;
+}
+
+/* Reduce motion for users who prefer it */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.001ms !important;
+    transition-duration: 0.001ms !important;
+  }
+}
