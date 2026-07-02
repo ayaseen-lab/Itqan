@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 520" fill="none" role="img" aria-label="Itqan  minimalist mosque silhouette with crescent moon">
+  <defs>
+    <linearGradient id="sky" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0f172a"/>
+      <stop offset="50%" stop-color="#134e4a"/>
+      <stop offset="100%" stop-color="#115e59"/>
+    </linearGradient>
+    <linearGradient id="glow" x1="50%" y1="0%" x2="50%" y2="100%">
+      <stop offset="0%" stop-color="#2dd4bf" stop-opacity="0.35"/>
+      <stop offset="100%" stop-color="#2dd4bf" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="gold" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fcd34d"/>
+      <stop offset="100%" stop-color="#f59e0b"/>
+    </linearGradient>
+  </defs>
+  <rect width="800" height="520" rx="24" fill="url(#sky)"/>
+  <ellipse cx="400" cy="180" rx="220" ry="120" fill="url(#glow)"/>
+  <circle cx="620" cy="110" r="48" fill="url(#gold)" opacity="0.9"/>
+  <circle cx="648" cy="110" r="40" fill="url(#sky)"/>
+  <path d="M120 380 Q200 300 280 340 T440 320 T600 350 T680 330 L680 420 L120 420 Z" fill="#0d9488" opacity="0.25"/>
+  <path d="M280 420 L280 260 Q400 180 520 260 L520 420 Z" fill="#14b8a6" opacity="0.35"/>
+  <rect x="360" y="200" width="80" height="220" rx="4" fill="#ccfbf1" opacity="0.12"/>
+  <circle cx="400" cy="175" r="18" fill="url(#gold)" opacity="0.85"/>
+  <text x="400" y="470" text-anchor="middle" fill="#ccfbf1" font-family="serif" font-size="42" opacity="0.9">%*B'F</text>
+</svg>

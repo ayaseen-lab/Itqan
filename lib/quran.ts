@@ -12,6 +12,7 @@ import {
   getOfflineChapter,
   getOfflineVerses,
 } from "./offlineData";
+import { hasTajweedMarkup } from "./tajweed";
 
 const WEEK = 60 * 60 * 24 * 7;
 
@@ -214,6 +215,40 @@ export async function getVerses(chapterId: number): Promise<Verse[]> {
   }
 }
 
+function pickTranslation(
+  translations: any[],
+  resourceId: number,
+  languageName?: string,
+): string | null {
+  const byId = translations.find((t) => Number(t.resource_id) === resourceId);
+  if (byId?.text) return stripHtml(byId.text) || null;
+  if (languageName) {
+    const byLang = translations.find(
+      (t) => t.language_name?.toLowerCase() === languageName.toLowerCase(),
+    );
+    if (byLang?.text) return stripHtml(byLang.text) || null;
+  }
+  return null;
+}
+
+/** Fetch colour-coded tajweed HTML (separate endpoint returns real markup). */
+async function fetchTajweedMap(chapterId: number): Promise<Map<string, string>> {
+  const map = new Map<string, string>();
+  try {
+    const data = await apiGet<{ verses: { verse_key: string; text_uthmani_tajweed?: string }[] }>(
+      `/quran/verses/uthmani_tajweed?chapter_number=${chapterId}`,
+    );
+    for (const v of data.verses ?? []) {
+      if (v.text_uthmani_tajweed && hasTajweedMarkup(v.text_uthmani_tajweed)) {
+        map.set(v.verse_key, v.text_uthmani_tajweed);
+      }
+    }
+  } catch {
+    /* fall back to plain Uthmani + local annotator */
+  }
+  return map;
+}
+
 async function fetchVersesFromApi(chapterId: number): Promise<Verse[]> {
   // Primary request: English words + verse translations + tajweed script + audio.
   const params = new URLSearchParams({
@@ -234,11 +269,12 @@ async function fetchVersesFromApi(chapterId: number): Promise<Verse[]> {
     per_page: "300",
   });
 
-  const [data, urduData] = await Promise.all([
+  const [data, urduData, tajweedMap] = await Promise.all([
     apiGet<{ verses: any[] }>(`/verses/by_chapter/${chapterId}?${params}`),
     apiGet<{ verses: any[] }>(`/verses/by_chapter/${chapterId}?${urduParams}`).catch(
       () => ({ verses: [] as any[] }),
     ),
+    fetchTajweedMap(chapterId),
   ]);
 
   // Build a lookup of Urdu word meanings keyed by "verseKey:position".
@@ -253,8 +289,9 @@ async function fetchVersesFromApi(chapterId: number): Promise<Verse[]> {
 
   return data.verses.map((v) => {
     const translations: any[] = v.translations ?? [];
-    const urdu = translations.find((t) => t.resource_id === URDU_TRANSLATION_ID);
-    const english = translations.find((t) => t.resource_id === ENGLISH_TRANSLATION_ID);
+    const urduText = pickTranslation(translations, URDU_TRANSLATION_ID, "urdu");
+    const englishText = pickTranslation(translations, ENGLISH_TRANSLATION_ID, "english");
+    const tajweedHtml = tajweedMap.get(v.verse_key) ?? v.text_uthmani_tajweed ?? null;
 
     const words: Word[] = (v.words ?? [])
       .filter((w: any) => w.char_type_name === "word")
@@ -273,11 +310,11 @@ async function fetchVersesFromApi(chapterId: number): Promise<Verse[]> {
       chapterId,
       verseNumber: v.verse_number,
       textUthmani: v.text_uthmani ?? "",
-      textTajweed: v.text_uthmani_tajweed ?? null,
+      textTajweed: tajweedHtml,
       audioUrl: buildAudioUrl(v.audio?.url, AUDIO_CDN),
       translations: {
-        urdu: stripHtml(urdu?.text) || null,
-        english: stripHtml(english?.text) || null,
+        urdu: urduText,
+        english: englishText,
       },
       words,
     };
@@ -290,19 +327,37 @@ async function fetchVersesFromApi(chapterId: number): Promise<Verse[]> {
  * always correct regardless of the configured Content API.
  */
 export async function getTafsir(verseKey: string): Promise<Tafsir | null> {
-  try {
-    const data = await publicGet<{ tafsir?: any; tafsirs?: any[] }>(
-      `/quran/tafsirs/${ENGLISH_TAFSIR_ID}?verse_key=${encodeURIComponent(verseKey)}`,
-    );
-    const t = data.tafsir ?? data.tafsirs?.[0];
-    if (!t?.text) return null;
-    return {
-      text: t.text,
-      resourceName: t.resource_name ?? "Tafsir Ibn Kathir",
-    };
-  } catch {
-    return null;
+  const paths = [
+    `/quran/tafsirs/${ENGLISH_TAFSIR_ID}?verse_key=${encodeURIComponent(verseKey)}`,
+    `/verses/${encodeURIComponent(verseKey)}/tafsirs/${ENGLISH_TAFSIR_ID}`,
+  ];
+
+  for (const path of paths) {
+    try {
+      const data = await publicGet<{
+        tafsir?: any;
+        tafsirs?: any[];
+        resource?: { resource_name?: string };
+      }>(path);
+
+      const t =
+        data.tafsir ??
+        data.tafsirs?.[0] ??
+        (Array.isArray(data.tafsirs) ? data.tafsirs.find((x) => x?.text) : null);
+
+      if (!t?.text) continue;
+
+      return {
+        text: t.text,
+        resourceName:
+          t.resource_name ?? data.resource?.resource_name ?? "Tafsir Ibn Kathir (English)",
+      };
+    } catch {
+      /* try next path */
+    }
   }
+
+  return null;
 }
 
 /** Convenience: fetch a single verse by "chapter:verse" key. */

@@ -88,7 +88,7 @@ export default function TasbihPage() {
 
   return (
     <div className="space-y-6">
-      <header className="card banner-grad gradient-anim relative overflow-hidden p-6 text-white sm:p-8">
+      <header className="card banner-grad relative overflow-hidden p-6 text-white sm:p-8">
         <span className="chip bg-white/15 text-white">Dhikr</span>
         <h1 className="mt-2 text-2xl font-bold sm:text-3xl">Digital Tasbih</h1>
         <p className="mt-1 max-w-2xl text-sm text-teal-50/90">
@@ -117,7 +117,7 @@ export default function TasbihPage() {
       </div>
 
       <div className="card flex flex-col items-center p-8">
-        <p className="quran-text text-3xl text-itqan-500" dir="rtl">
+        <p className="quran-text text-3xl text-emerald-100" dir="rtl" translate="no">
           {dhikr.arabic}
         </p>
 
@@ -138,7 +138,7 @@ export default function TasbihPage() {
           </svg>
           <div
             className="grid h-44 w-44 place-items-center rounded-full text-white shadow-inner transition-transform duration-100 group-active:scale-95"
-            style={{ backgroundImage: "linear-gradient(145deg, #14b8a6, #042f2e)" }}
+            style={{ backgroundColor: "rgb(var(--accent))" }}
           >
             <div className="text-center">
               <div className="text-6xl font-bold tabular-nums">{count}</div>

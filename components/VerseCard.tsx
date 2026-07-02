@@ -28,7 +28,7 @@ function TranslationBlock({ verse }: { verse: Verse }) {
   return (
     <div className="space-y-2 rounded-xl border p-3" style={{ borderColor: "rgb(var(--border))", backgroundColor: "rgb(var(--surface) / 0.4)" }}>
       {urdu && (
-        <p className="urdu-text text-lg leading-relaxed" dir="rtl">
+        <p className="urdu-text text-lg leading-relaxed" dir="rtl" translate="no" lang="ur">
           {urdu}
         </p>
       )}
@@ -44,6 +44,7 @@ function TranslationBlock({ verse }: { verse: Verse }) {
 
 export function VerseCard({ verse, surahName }: { verse: Verse; surahName: string }) {
   const [tab, setTab] = useState<Tab | null>(null);
+  const [mounted, setMounted] = useState(false);
 
   const addCard = useHifzStore((s) => s.addCard);
   const removeCard = useHifzStore((s) => s.removeCard);
@@ -52,6 +53,8 @@ export function VerseCard({ verse, surahName }: { verse: Verse; surahName: strin
   const toggleBookmark = useAppStore((s) => s.toggleBookmark);
   const bookmarked = useAppStore((s) => s.isBookmarked(verse.verseKey));
   const setLastRead = useAppStore((s) => s.setLastRead);
+
+  useEffect(() => setMounted(true), []);
 
   useEffect(() => {
     setLastRead({
@@ -100,24 +103,30 @@ export function VerseCard({ verse, surahName }: { verse: Verse; surahName: strin
         <TajweedText
           html={verse.textTajweed}
           plainText={verse.textUthmani}
-          showLegend
+          showLegend={tab === "tajweed"}
         />
         <TranslationBlock verse={verse} />
       </div>
 
       <div className="flex flex-wrap gap-2 border-t pt-3" style={{ borderColor: "rgb(var(--border))" }}>
-        <button type="button" onClick={toggleHifz} className={inHifz ? "btn bg-itqan-100 text-itqan-800 dark:bg-itqan-950 dark:text-itqan-200" : "btn-primary"}>
-          {inHifz ? "In Hifz \u2713" : "Add to Hifz"}
+        <button
+          type="button"
+          onClick={toggleHifz}
+          className={mounted && inHifz ? "btn bg-itqan-100 text-itqan-800 dark:bg-itqan-950 dark:text-itqan-200" : "btn-primary"}
+          suppressHydrationWarning
+        >
+          {mounted && inHifz ? "In Hifz ✓" : "Add to Hifz"}
         </button>
         <button
           type="button"
           onClick={() => toggleBookmark(verse.verseKey)}
-          className={`btn-ghost gap-1 ${bookmarked ? "text-itqan-600" : ""}`}
+          className={`btn-ghost gap-1 ${mounted && bookmarked ? "text-itqan-600" : ""}`}
+          suppressHydrationWarning
         >
-          <svg width="14" height="14" viewBox="0 0 24 24" fill={bookmarked ? "currentColor" : "none"} stroke="currentColor" strokeWidth="2" aria-hidden="true">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill={mounted && bookmarked ? "currentColor" : "none"} stroke="currentColor" strokeWidth="2" aria-hidden="true">
             <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z" />
           </svg>
-          {bookmarked ? "Saved" : "Save"}
+          {mounted && bookmarked ? "Saved" : "Save"}
         </button>
         <button type="button" onClick={askAi} className="btn-ghost">
           Ask AI

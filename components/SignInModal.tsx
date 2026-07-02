@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useAuthStore } from "@/lib/authStore";
+import { GoogleSignInButton } from "./GoogleSignInButton";
 
 export function SignInModal({
   open,
@@ -11,8 +12,10 @@ export function SignInModal({
   onClose: () => void;
 }) {
   const signIn = useAuthStore((s) => s.signIn);
+  const signInWithGoogle = useAuthStore((s) => s.signInWithGoogle);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
+  const [error, setError] = useState<string | null>(null);
 
   if (!open) return null;
 
@@ -23,6 +26,18 @@ export function SignInModal({
     onClose();
     setName("");
     setEmail("");
+    setError(null);
+  }
+
+  function handleGoogleSuccess(profile: {
+    name: string;
+    email: string;
+    picture?: string;
+    googleId: string;
+  }) {
+    signInWithGoogle(profile);
+    onClose();
+    setError(null);
   }
 
   return (
@@ -36,41 +51,58 @@ export function SignInModal({
       <div className="card relative w-full max-w-md p-6 shadow-2xl">
         <h2 className="text-xl font-bold">Sign in to Itqan</h2>
         <p className="muted mt-1 text-sm">
-          Create your local profile to save progress, streaks, and bookmarks on this device.
+          Save your Hifz progress, streaks, and bookmarks on this device.
         </p>
-        <form onSubmit={submit} className="mt-5 space-y-4">
-          <label className="block">
-            <span className="mb-1 block text-sm font-medium">Full name</span>
-            <input
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              className="field"
-              placeholder="Your name"
-              required
-            />
-          </label>
-          <label className="block">
-            <span className="mb-1 block text-sm font-medium">Email</span>
-            <input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="field"
-              placeholder="you@example.com"
-              required
-            />
-          </label>
-          <div className="flex gap-2 pt-2">
-            <button type="submit" className="btn-primary flex-1">
-              Sign in
-            </button>
-            <button type="button" onClick={onClose} className="btn-ghost">
-              Cancel
-            </button>
+
+        <div className="mt-5 space-y-4">
+          <GoogleSignInButton
+            onSuccess={handleGoogleSuccess}
+            onError={() => setError("Google sign-in failed. Please try again.")}
+          />
+
+          {error && <p className="text-sm text-red-500">{error}</p>}
+
+          <div className="flex items-center gap-3">
+            <div className="h-px flex-1" style={{ backgroundColor: "rgb(var(--border))" }} />
+            <span className="muted text-xs">or sign in with email</span>
+            <div className="h-px flex-1" style={{ backgroundColor: "rgb(var(--border))" }} />
           </div>
-        </form>
+
+          <form onSubmit={submit} className="space-y-4">
+            <label className="block">
+              <span className="mb-1 block text-sm font-medium">Full name</span>
+              <input
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                className="field"
+                placeholder="Your name"
+                required
+              />
+            </label>
+            <label className="block">
+              <span className="mb-1 block text-sm font-medium">Email</span>
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="field"
+                placeholder="you@example.com"
+                required
+              />
+            </label>
+            <div className="flex gap-2 pt-2">
+              <button type="submit" className="btn-primary flex-1">
+                Sign in
+              </button>
+              <button type="button" onClick={onClose} className="btn-ghost">
+                Cancel
+              </button>
+            </div>
+          </form>
+        </div>
+
         <p className="muted mt-4 text-xs">
-          Free local sign-in — data stays on your device. Cloud sync can be added later.
+          Your data is stored locally on this device. Google sign-in uses your Google account profile only.
         </p>
       </div>
     </div>

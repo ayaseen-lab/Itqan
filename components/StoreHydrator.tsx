@@ -4,6 +4,7 @@ import { useEffect } from "react";
 import { useHifzStore } from "@/lib/store";
 import { useAuthStore } from "@/lib/authStore";
 import { useAppStore } from "@/lib/appStore";
+import { useProgressStore } from "@/lib/progressStore";
 
 /** Rehydrates all persisted Zustand stores after mount. */
 export function StoreHydrator() {
@@ -11,6 +12,7 @@ export function StoreHydrator() {
     void useHifzStore.persist.rehydrate();
     void useAuthStore.persist.rehydrate();
     void useAppStore.persist.rehydrate();
+    void useProgressStore.persist.rehydrate();
   }, []);
   return null;
 }

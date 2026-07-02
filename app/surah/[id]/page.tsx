@@ -52,7 +52,7 @@ export default async function SurahPage({
   return (
     <div className="space-y-6">
       <div className="card p-6 text-center">
-        <p className="quran-text text-4xl">{chapter.nameArabic}</p>
+        <p className="quran-text text-4xl" dir="rtl" translate="no">{chapter.nameArabic}</p>
         <h1 className="mt-2 text-2xl font-bold">
           {chapter.nameSimple}{" "}
           <span className="muted font-normal">({chapter.translatedName})</span>

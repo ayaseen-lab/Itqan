@@ -9,11 +9,20 @@ export interface UserProfile {
   email: string;
   joinedAt: number;
   dailyGoal: number; // verses to review per day
+  provider?: "local" | "google";
+  picture?: string;
+  googleId?: string;
 }
 
 interface AuthState {
   user: UserProfile | null;
   signIn: (name: string, email: string) => void;
+  signInWithGoogle: (profile: {
+    name: string;
+    email: string;
+    picture?: string;
+    googleId: string;
+  }) => void;
   signOut: () => void;
   updateProfile: (patch: Partial<Pick<UserProfile, "name" | "email" | "dailyGoal">>) => void;
 }
@@ -30,6 +39,20 @@ export const useAuthStore = create<AuthState>()(
             email: email.trim().toLowerCase(),
             joinedAt: Date.now(),
             dailyGoal: 5,
+            provider: "local",
+          },
+        }),
+      signInWithGoogle: ({ name, email, picture, googleId }) =>
+        set({
+          user: {
+            id: googleId,
+            name: name.trim(),
+            email: email.trim().toLowerCase(),
+            joinedAt: Date.now(),
+            dailyGoal: 5,
+            provider: "google",
+            picture,
+            googleId,
           },
         }),
       signOut: () => set({ user: null }),

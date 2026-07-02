@@ -26,10 +26,18 @@ export function TafseerPanel(props: TafseerPanelProps) {
     let cancelled = false;
     setLoading(true);
     setError(null);
+    setTafsir(undefined);
+
     fetch(`/api/tafsir?verseKey=${encodeURIComponent(verseKey)}`)
-      .then((r) => r.json())
-      .then((data: { tafsir: Tafsir | null }) => {
-        if (!cancelled) setTafsir(data.tafsir);
+      .then(async (r) => {
+        if (!r.ok) throw new Error(`HTTP ${r.status}`);
+        return r.json();
+      })
+      .then((data: { tafsir: Tafsir | null; error?: string }) => {
+        if (!cancelled) {
+          if (data.error) setError(data.error);
+          else setTafsir(data.tafsir);
+        }
       })
       .catch(() => {
         if (!cancelled) setError("Could not load Tafseer. Please try again.");

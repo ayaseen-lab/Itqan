@@ -129,14 +129,19 @@ function annotateWord(word: string, nextWordFirst: string | null): string {
   return html;
 }
 
+/** Convert API `<tajweed class=ham_wasl>` tags to styled `<span>` elements. */
+export function normalizeTajweedHtml(html: string): string {
+  return html
+    .replace(/<tajweed\s+class=(?:"([^"]+)"|'([^']+)'|([^\s>]+))>/gi, '<span class="$1$2$3">')
+    .replace(/<\/tajweed>/gi, "</span>");
+}
+
 /** Returns HTML with tajweed colour classes for display. */
 export function annotateTajweed(uthmani: string): string {
   if (!uthmani?.trim()) return "";
 
   if (hasTajweedMarkup(uthmani)) {
-    return uthmani
-      .replace(/<tajweed class="([^"]+)">/gi, '<span class="$1">')
-      .replace(/<\/tajweed>/gi, "</span>");
+    return normalizeTajweedHtml(uthmani);
   }
 
   const words = uthmani.split(/\s+/).filter(Boolean);
@@ -150,8 +155,11 @@ export function annotateTajweed(uthmani: string): string {
 
 export function hasTajweedMarkup(html: string | null): boolean {
   if (!html) return false;
-  return /<tajweed|<span class="(ghunnah|qalqalah|ikhafa|idgham|iqlab|madda|ham_wasl|laam_shamsiyah|slnt)/i.test(
-    html,
+  return (
+    /<tajweed\b/i.test(html) ||
+    /<span\s+class=(?:"|')?(ghunnah|qalqalah|ikhafa|idgham|iqlab|madda|ham_wasl|laam_shamsiyah|slnt)/i.test(
+      html,
+    )
   );
 }
 

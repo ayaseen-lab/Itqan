@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo } from "react";
-import { annotateTajweed, hasTajweedMarkup, TAJWEED_LEGEND } from "@/lib/tajweed";
+import { annotateTajweed, hasTajweedMarkup, normalizeTajweedHtml, TAJWEED_LEGEND } from "@/lib/tajweed";
 
 export function TajweedLegend({ detailed = false }: { detailed?: boolean }) {
   return (
@@ -52,9 +52,7 @@ export function TajweedText({
 }) {
   const annotated = useMemo(() => {
     if (html && hasTajweedMarkup(html)) {
-      return html
-        .replace(/<tajweed class="([^"]+)">/gi, '<span class="$1">')
-        .replace(/<\/tajweed>/gi, "</span>");
+      return normalizeTajweedHtml(html);
     }
     if (plainText?.trim()) return annotateTajweed(plainText);
     if (html?.trim()) return annotateTajweed(html);
@@ -76,6 +74,8 @@ export function TajweedText({
       <p
         className={`tajweed-text text-right leading-[2.4] ${sizeClass}`}
         dir="rtl"
+        translate="no"
+        lang="ar"
         dangerouslySetInnerHTML={{ __html: annotated }}
       />
       {showLegend && <TajweedLegend />}

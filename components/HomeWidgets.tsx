@@ -6,12 +6,12 @@ import { getDailyHadith } from "@/lib/hadith";
 import { useAppStore } from "@/lib/appStore";
 
 const QUICK = [
-  { href: "/quran", label: "Read Quran", desc: "114 Surahs" },
-  { href: "/memorize", label: "Hifz Review", desc: "Spaced repetition" },
-  { href: "/hadith", label: "Daily Hadith", desc: "Urdu + English" },
-  { href: "/juz", label: "30 Juz", desc: "Para by para" },
-  { href: "/bookmarks", label: "Bookmarks", desc: "Saved ayahs" },
-  { href: "/profile", label: "Profile", desc: "Progress & streaks" },
+  { href: "/hadith", label: "Daily Hadith" },
+  { href: "/juz", label: "30 Juz" },
+  { href: "/names", label: "99 Names" },
+  { href: "/duas", label: "Duas" },
+  { href: "/prayer", label: "Prayer Times" },
+  { href: "/bookmarks", label: "Bookmarks" },
 ];
 
 export function HomeWidgets() {
@@ -22,41 +22,48 @@ export function HomeWidgets() {
   useEffect(() => setMounted(true), []);
 
   return (
-    <>
-      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-        {QUICK.map((q) => (
+    <div className="card flex flex-col overflow-hidden">
+      <div className="flex flex-col gap-4 p-5">
+        {mounted && lastRead && (
           <Link
-            key={q.href}
-            href={q.href}
-            className="card card-hover shine group p-4"
+            href={`/surah/${lastRead.surahId}`}
+            className="rounded-xl border p-3 transition-colors hover:border-itqan-400"
+            style={{ borderColor: "rgb(var(--border))" }}
           >
-            <span className="font-semibold group-hover:text-itqan-500">{q.label}</span>
-            <span className="muted block text-xs">{q.desc}</span>
-          </Link>
-        ))}
-      </div>
-
-      {mounted && lastRead && (
-        <Link href={`/surah/${lastRead.surahId}`} className="card card-hover flex items-center justify-between p-4">
-          <div>
-            <span className="chip">Continue</span>
+            <span className="chip text-[10px]">Continue reading</span>
             <p className="mt-1 font-semibold">{lastRead.surahName}</p>
             <p className="muted text-xs">Ayah {lastRead.verseKey}</p>
-          </div>
-          <span className="text-itqan-600">→</span>
-        </Link>
-      )}
+          </Link>
+        )}
 
-      <Link href="/hadith" className="card card-hover block p-5">
-        <span className="chip">Hadith of the day</span>
-        <p className="quran-text mt-3 text-right text-xl" dir="rtl">
-          {hadith.arabic}
-        </p>
-        <p className="urdu-text mt-2 text-sm leading-relaxed" dir="rtl">
-          {hadith.urdu}
-        </p>
-        <p className="muted mt-2 text-xs">{hadith.source}</p>
-      </Link>
-    </>
+        <div className="grid grid-cols-2 gap-2">
+          {QUICK.map((q) => (
+            <Link
+              key={q.href}
+              href={q.href}
+              className="rounded-xl border px-3 py-2.5 text-sm font-medium transition-colors hover:border-itqan-400 hover:text-itqan-600"
+              style={{ borderColor: "rgb(var(--border))" }}
+            >
+              {q.label}
+            </Link>
+          ))}
+        </div>
+
+        <Link
+          href="/hadith"
+          className="mt-auto rounded-xl border p-3 transition-colors hover:border-itqan-400"
+          style={{ borderColor: "rgb(var(--border))" }}
+        >
+          <span className="chip text-[10px]">Hadith of the day</span>
+          <p className="quran-text mt-2 text-right text-lg leading-relaxed" dir="rtl" translate="no">
+            {hadith.arabic}
+          </p>
+          <p className="urdu-text mt-2 text-sm leading-relaxed" dir="rtl" translate="no">
+            {hadith.urdu}
+          </p>
+          <p className="muted mt-2 text-xs">{hadith.source}</p>
+        </Link>
+      </div>
+    </div>
   );
 }

@@ -116,6 +116,7 @@ function isActive(pathname: string, href: string) {
 
 export function AppShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
+  const isHome = pathname === "/";
   const user = useAuthStore((s) => s.user);
   const [signInOpen, setSignInOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
@@ -127,15 +128,28 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   return (
     <div className="flex min-h-screen flex-col">
       <header
-        className="glass sticky top-0 z-40 border-b"
-        style={{ borderColor: "rgb(var(--border))" }}
+        className={`sticky top-0 z-40 border-b ${
+          isHome
+            ? "border-white/10 bg-[#0a3d2f]/90 backdrop-blur-md"
+            : "glass"
+        }`}
+        style={isHome ? undefined : { borderColor: "rgb(var(--border))" }}
       >
         <div className="mx-auto flex w-full max-w-7xl items-center justify-between gap-2 px-3 py-2.5 sm:px-4">
           <Link href="/" className="group flex shrink-0 items-center gap-2 font-bold">
             <span className="transition-transform duration-300 group-hover:scale-105">
               <Logo size={36} />
             </span>
-            <LogoWordmark subtitle="إتقان" />
+            <span className={isHome ? "flex flex-col leading-none" : undefined}>
+              {isHome ? (
+                <>
+                  <span className="text-lg font-bold tracking-tight text-[#f0d78c]">Itqan</span>
+                  <span className="text-[10px] font-normal tracking-wide text-white/60">إتقان</span>
+                </>
+              ) : (
+                <LogoWordmark subtitle="إتقان" />
+              )}
+            </span>
           </Link>
 
           {/* Desktop: scrollable flat nav — all features visible */}
@@ -147,13 +161,23 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                   key={item.href}
                   href={item.href}
                   className={`relative shrink-0 whitespace-nowrap rounded-lg px-2.5 py-1.5 text-xs font-medium transition-colors xl:px-3 xl:text-sm ${
-                    active ? "text-itqan-500" : "muted hover:text-itqan-500"
+                    active
+                      ? isHome
+                        ? "text-[#f0d78c]"
+                        : "text-itqan-500"
+                      : isHome
+                        ? "text-white/70 hover:text-[#f0d78c]"
+                        : "muted hover:text-itqan-500"
                   }`}
                 >
                   {item.label}
                   {item.badge && <DueBadge />}
                   {active && (
-                    <span className="absolute inset-x-1 -bottom-0.5 h-0.5 rounded-full bg-itqan-500" />
+                    <span
+                      className={`absolute inset-x-1 -bottom-0.5 h-0.5 rounded-full ${
+                        isHome ? "bg-[#f0d78c]" : "bg-itqan-500"
+                      }`}
+                    />
                   )}
                 </Link>
               );
@@ -168,8 +192,13 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                 className="hidden items-center gap-2 rounded-full border px-1.5 py-1 pr-2.5 sm:flex"
                 style={{ borderColor: "rgb(var(--border))" }}
               >
-                <span className="grid h-7 w-7 place-items-center rounded-full bg-itqan-600 text-xs font-bold text-white">
-                  {user.name.charAt(0).toUpperCase()}
+                <span className="grid h-7 w-7 place-items-center overflow-hidden rounded-full bg-itqan-600 text-xs font-bold text-white">
+                  {user.picture ? (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img src={user.picture} alt="" className="h-full w-full object-cover" />
+                  ) : (
+                    user.name.charAt(0).toUpperCase()
+                  )}
                 </span>
                 <span className="max-w-[6rem] truncate text-sm font-medium">{user.name}</span>
               </Link>
@@ -236,7 +265,11 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         </div>
       )}
 
-      <main className="mx-auto w-full max-w-7xl flex-1 px-4 pb-28 pt-5 lg:pb-10">
+      <main
+        className={`mx-auto w-full max-w-6xl flex-1 px-4 pb-24 lg:pb-10 ${
+          isHome ? "pt-0" : "pt-4 sm:pt-6"
+        }`}
+      >
         {children}
       </main>
 
