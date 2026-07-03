@@ -20,11 +20,14 @@ export function AudioPlayer({ src, showSpeed = false }: AudioPlayerProps) {
     const audio = audioRef.current;
     if (!audio) return;
 
+    audio.setAttribute("playsinline", "true");
+    audio.setAttribute("webkit-playsinline", "true");
+
     const handleEnded = () => {
       playsLeftRef.current -= 1;
       if (playsLeftRef.current > 0) {
         audio.currentTime = 0;
-        void audio.play();
+        void audio.play().catch(() => setPlaying(false));
       } else {
         setPlaying(false);
       }
@@ -114,12 +117,12 @@ export function AudioPlayer({ src, showSpeed = false }: AudioPlayerProps) {
 
   return (
     <div className="flex flex-wrap items-center gap-2">
-      <audio ref={audioRef} preload="auto" />
+      <audio ref={audioRef} preload="auto" playsInline={true} />
       <button
         type="button"
         onClick={() => void toggle()}
         disabled={loading && !playing}
-        className="btn-ghost h-9 gap-1.5 disabled:opacity-60"
+        className="btn-ghost min-h-11 min-w-11 gap-1.5 touch-manipulation disabled:opacity-60 sm:h-9 sm:min-h-0"
         aria-label={playing ? "Pause recitation" : "Play recitation"}
       >
         {loading && !playing ? (

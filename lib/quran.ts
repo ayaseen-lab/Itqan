@@ -314,14 +314,26 @@ async function fetchVersesFromApi(chapterId: number): Promise<Verse[]> {
   });
 }
 
+/** Strip footnote markers and unsafe tags from Quran.com tafsir HTML. */
+function sanitizeTafsirHtml(html: string): string {
+  return html
+    .replace(/<sup\b[^>]*>[\s\S]*?<\/sup>/gi, "")
+    .replace(/\sfoot_note\s*=\s*["']?\d+["']?/gi, "")
+    .replace(/<\/?(script|style|iframe)\b[^>]*>/gi, "");
+}
+
 /**
  * Fetch Ibn Kathir Tafsir for a single ayah (English or Urdu).
+ * Prefers spa5k CDN (clean plain text) for both languages.
  */
 export async function getTafsir(verseKey: string, lang: TafsirLang = "en"): Promise<Tafsir | null> {
-  if (lang === "ur") {
-    const ur = await getTafsirByLang(verseKey, "ur");
-    return ur ? { text: ur.text, resourceName: ur.resourceName } : null;
+  const primary = await getTafsirByLang(verseKey, lang);
+  if (primary) {
+    return { text: primary.text, resourceName: primary.resourceName };
   }
+
+  // English-only fallback: Quran.com (sanitize messy HTML footnotes).
+  if (lang !== "en") return null;
 
   const paths = [
     `/quran/tafsirs/${ENGLISH_TAFSIR_ID}?verse_key=${encodeURIComponent(verseKey)}`,
@@ -336,15 +348,17 @@ export async function getTafsir(verseKey: string, lang: TafsirLang = "en"): Prom
         resource?: { resource_name?: string };
       }>(path);
 
+      const list = Array.isArray(data.tafsirs) ? data.tafsirs : [];
       const t =
         data.tafsir ??
-        data.tafsirs?.[0] ??
-        (Array.isArray(data.tafsirs) ? data.tafsirs.find((x) => x?.text) : null);
+        list.find((x) => x?.verse_key === verseKey && x?.text) ??
+        list.find((x) => x?.text) ??
+        null;
 
       if (!t?.text) continue;
 
       return {
-        text: t.text,
+        text: sanitizeTafsirHtml(t.text),
         resourceName:
           t.resource_name ?? data.resource?.resource_name ?? "Tafsir Ibn Kathir (English)",
       };
@@ -353,8 +367,7 @@ export async function getTafsir(verseKey: string, lang: TafsirLang = "en"): Prom
     }
   }
 
-  const en = await getTafsirByLang(verseKey, "en");
-  return en ? { text: en.text, resourceName: en.resourceName } : null;
+  return null;
 }
 
 /** Convenience: fetch a single verse by "chapter:verse" key. */

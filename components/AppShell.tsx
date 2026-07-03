@@ -20,13 +20,14 @@ const NAV: NavItem[] = [
   { href: "/quran", label: "Recitation", icon: "book" },
   { href: "/memorize", label: "AI Hifz", icon: "brain", badge: true },
   { href: "/hadith", label: "Hadith", icon: "scroll" },
+  { href: "/family", label: "Family", icon: "family" },
+  { href: "/competition", label: "Healthy", icon: "trophy" },
   { href: "/juz", label: "Juz", icon: "layers" },
   { href: "/names", label: "99 Names", icon: "sparkles" },
   { href: "/duas", label: "Duas", icon: "heart" },
   { href: "/tasbih", label: "Tasbih", icon: "beads" },
   { href: "/prayer", label: "Prayer", icon: "clock" },
-  { href: "/bookmarks", label: "Saved", icon: "bookmark" },
-  { href: "/profile", label: "Profile", icon: "user" },
+  { href: "/profile", label: "Account", icon: "user" },
 ];
 
 const MOBILE_BOTTOM = ["/", "/quran", "/memorize", "/hadith"];
@@ -85,6 +86,22 @@ function NavIcon({ name, className = "h-5 w-5" }: { name: string; className?: st
           <path d="M20.8 6.6a5 5 0 0 0-7.1 0L12 8.3l-1.7-1.7a5 5 0 1 0-7.1 7.1L12 22l8.8-8.3a5 5 0 0 0 0-7.1z" />
         </svg>
       );
+    case "family":
+      return (
+        <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+          <circle cx="9" cy="7" r="3" />
+          <circle cx="17" cy="8" r="2.5" />
+          <path d="M3 20v-1a5 5 0 0 1 10 0v1" />
+          <path d="M14 20v-1a4 4 0 0 1 7 0v1" />
+        </svg>
+      );
+    case "trophy":
+      return (
+        <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+          <path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0V4z" />
+          <path d="M7 6H5a2 2 0 0 0 2 4M17 6h2a2 2 0 0 1-2 4" />
+        </svg>
+      );
     case "beads":
       return (
         <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
@@ -130,44 +147,45 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   return (
     <div className="flex min-h-screen flex-col">
       <header
-        className={`sticky top-0 z-40 border-b ${
+        className={`sticky top-0 z-50 border-b ${
           isHome
-            ? "border-white/10 bg-[#0a3d2f]/90 backdrop-blur-md"
+            ? "border-white/10 bg-[#0a3d2f]/92 backdrop-blur-xl shadow-[0_8px_30px_-12px_rgba(0,0,0,0.45)]"
             : "glass"
         }`}
         style={isHome ? undefined : { borderColor: "rgb(var(--border))" }}
       >
         <div className="mx-auto flex w-full max-w-7xl items-center justify-between gap-2 px-3 py-2.5 sm:px-4">
           <Link href="/" className="group flex shrink-0 items-center gap-2.5 font-bold">
-            <span className="transition-transform duration-300 group-hover:scale-[1.04]">
+            <span className="transition-transform duration-300 group-hover:scale-[1.04] group-hover:rotate-[-3deg]">
               <Logo size={40} />
             </span>
             <LogoWordmark subtitle="إتقان" light={isHome} />
           </Link>
 
           {/* Desktop: scrollable flat nav — all features visible */}
-          <nav className="hidden flex-1 items-center gap-0.5 overflow-x-auto px-2 lg:flex [scrollbar-width:none]">
+          <nav className="hidden flex-1 items-center gap-0.5 overflow-x-auto px-2 lg:flex [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
             {NAV.map((item) => {
               const active = isActive(pathname, item.href);
               return (
                 <Link
                   key={item.href}
                   href={item.href}
-                  className={`relative shrink-0 whitespace-nowrap rounded-lg px-2.5 py-1.5 text-xs font-medium transition-colors xl:px-3 xl:text-sm ${
+                  className={`nav-link relative shrink-0 whitespace-nowrap rounded-lg px-2.5 py-1.5 text-xs font-medium xl:px-3 xl:text-sm ${
                     active
                       ? isHome
-                        ? "text-[#f0d78c]"
-                        : "text-itqan-500"
+                        ? "nav-link--active-home text-[#f0d78c]"
+                        : "nav-link--active text-itqan-500"
                       : isHome
-                        ? "text-white/70 hover:text-[#f0d78c]"
-                        : "muted hover:text-itqan-500"
+                        ? "nav-link--home text-white/70"
+                        : "nav-link--default muted"
                   }`}
                 >
-                  {item.label}
+                  <span className="relative z-10">{item.label}</span>
                   {item.badge && <DueBadge />}
+                  <span className="nav-link-bg" aria-hidden="true" />
                   {active && (
                     <span
-                      className={`absolute inset-x-1 -bottom-0.5 h-0.5 rounded-full ${
+                      className={`nav-link-underline absolute inset-x-1.5 -bottom-0.5 h-0.5 rounded-full ${
                         isHome ? "bg-[#f0d78c]" : "bg-itqan-500"
                       }`}
                     />
@@ -233,8 +251,10 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                 key={item.href}
                 href={item.href}
                 onClick={() => setMenuOpen(false)}
-                className={`flex items-center gap-2.5 rounded-2xl px-3.5 py-3 text-sm font-medium transition-all duration-200 animate-fade-up ${
-                  active ? "bg-itqan-600 text-white shadow" : "border hover:border-itqan-400 hover:scale-[1.02]"
+                className={`flex items-center gap-2.5 rounded-2xl px-3.5 py-3 text-sm font-medium transition-all duration-200 animate-fade-up active:scale-[0.97] ${
+                  active
+                    ? "bg-itqan-600 text-white shadow-lg shadow-itqan-600/30"
+                    : "border hover:border-itqan-400 hover:scale-[1.03] hover:bg-itqan-500/5 hover:shadow-md"
                 }`}
                 style={{
                   ...(active ? {} : { borderColor: "rgb(var(--border))" }),
@@ -253,7 +273,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
       <main
         key={pathname}
-        className={`page-enter mx-auto w-full max-w-6xl flex-1 px-4 pb-24 lg:pb-10 ${
+        className={`page-enter mx-auto w-full max-w-6xl flex-1 px-3 pb-[calc(5.5rem+env(safe-area-inset-bottom))] sm:px-4 lg:pb-10 ${
           isHome ? "pt-0" : "pt-4 sm:pt-6"
         }`}
       >
@@ -263,7 +283,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       <SiteFooter />
 
       <nav
-        className="glass fixed bottom-0 left-0 right-0 z-30 flex border-t pb-[env(safe-area-inset-bottom)] lg:hidden"
+        className="glass fixed bottom-0 left-0 right-0 z-40 flex border-t pb-[max(0.35rem,env(safe-area-inset-bottom))] lg:hidden"
         style={{ borderColor: "rgb(var(--border))" }}
       >
         {NAV.filter((n) => MOBILE_BOTTOM.includes(n.href)).map((item) => {
@@ -272,12 +292,16 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             <Link
               key={item.href}
               href={item.href}
-              className={`relative flex flex-1 flex-col items-center gap-0.5 py-2 text-[10px] font-medium ${
-                active ? "text-itqan-500" : "muted"
+              className={`relative flex min-h-12 flex-1 flex-col items-center justify-center gap-0.5 py-2 text-[10px] font-medium transition-all duration-200 touch-manipulation active:scale-95 ${
+                active ? "text-itqan-500" : "muted hover:text-itqan-500"
               }`}
             >
-              {active && <span className="absolute top-0 h-0.5 w-8 rounded-full bg-itqan-500" />}
-              <NavIcon name={item.icon} />
+              {active && (
+                <span className="nav-link-underline absolute top-0 h-0.5 w-8 rounded-full bg-itqan-500" />
+              )}
+              <span className={`transition-transform duration-200 ${active ? "scale-110" : ""}`}>
+                <NavIcon name={item.icon} />
+              </span>
               {item.label}
             </Link>
           );
@@ -285,8 +309,8 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         <button
           type="button"
           onClick={() => setMenuOpen(true)}
-          className={`flex flex-1 flex-col items-center gap-0.5 py-2 text-[10px] font-medium ${
-            menuOpen ? "text-itqan-500" : "muted"
+          className={`flex min-h-12 flex-1 flex-col items-center justify-center gap-0.5 py-2 text-[10px] font-medium transition-all duration-200 touch-manipulation active:scale-95 ${
+            menuOpen ? "text-itqan-500" : "muted hover:text-itqan-500"
           }`}
           aria-label="All features"
         >

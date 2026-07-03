@@ -1,9 +1,8 @@
 "use client";
 
 /**
- * Thin wrapper around the browser Web Speech API for Arabic recitation capture.
- * No API key, no server; runs entirely client-side. Best support is in
- * Chromium-based browsers (Chrome, Edge). Safari/Firefox support varies.
+ * Web Speech API wrapper for Arabic recitation capture.
+ * Requests microphone permission first (required on mobile browsers).
  */
 
 interface RecognitionAlternative {
@@ -46,6 +45,39 @@ export function isSpeechSupported(): boolean {
   return getRecognitionCtor() !== null;
 }
 
+export function isMicApiAvailable(): boolean {
+  return typeof navigator !== "undefined" && Boolean(navigator.mediaDevices?.getUserMedia);
+}
+
+/** Ask for mic access — unlocks recognition on mobile Chrome/Safari. */
+export async function requestMicrophoneAccess(): Promise<{ ok: true } | { ok: false; error: string }> {
+  if (!isMicApiAvailable()) {
+    return { ok: false, error: "no-media-devices" };
+  }
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({
+      audio: {
+        echoCancellation: true,
+        noiseSuppression: true,
+        autoGainControl: true,
+      },
+      video: false,
+    });
+    // Release tracks immediately — SpeechRecognition uses its own capture.
+    for (const track of stream.getTracks()) track.stop();
+    return { ok: true };
+  } catch (err) {
+    const name = err instanceof DOMException ? err.name : "";
+    if (name === "NotAllowedError" || name === "PermissionDeniedError") {
+      return { ok: false, error: "not-allowed" };
+    }
+    if (name === "NotFoundError" || name === "DevicesNotFoundError") {
+      return { ok: false, error: "no-microphone" };
+    }
+    return { ok: false, error: "mic-failed" };
+  }
+}
+
 export interface RecitationCapture {
   stop: () => void;
 }
@@ -59,9 +91,8 @@ export interface CaptureHandlers {
 }
 
 /**
- * Start listening. Returns a handle you can use to stop early, or null if the
- * browser has no Web Speech support. Distinguishes final vs interim results so
- * the final transcript is stable and not double-counted.
+ * Start listening after mic permission is granted.
+ * On mobile, call requestMicrophoneAccess() first from a user gesture.
  */
 export function startRecitation(handlers: CaptureHandlers): RecitationCapture | null {
   const Ctor = getRecognitionCtor();
@@ -69,11 +100,14 @@ export function startRecitation(handlers: CaptureHandlers): RecitationCapture | 
 
   const recognition = new Ctor();
   recognition.lang = handlers.lang ?? "ar-SA";
-  recognition.continuous = true;
+  // continuous works better for full ayahs on desktop; mobile often prefers shorter sessions
+  const mobile = typeof navigator !== "undefined" && /Mobi|Android|iPhone|iPad/i.test(navigator.userAgent);
+  recognition.continuous = !mobile;
   recognition.interimResults = true;
   recognition.maxAlternatives = 1;
 
   let finalText = "";
+  let stopped = false;
 
   recognition.onresult = (event) => {
     let interim = "";
@@ -90,6 +124,7 @@ export function startRecitation(handlers: CaptureHandlers): RecitationCapture | 
   };
 
   recognition.onerror = (event) => {
+    if (stopped && event.error === "aborted") return;
     handlers.onError(event.error || "speech-recognition-error");
   };
 
@@ -107,10 +142,15 @@ export function startRecitation(handlers: CaptureHandlers): RecitationCapture | 
 
   return {
     stop: () => {
+      stopped = true;
       try {
         recognition.stop();
       } catch {
-        /* ignore */
+        try {
+          recognition.abort();
+        } catch {
+          /* ignore */
+        }
       }
     },
   };

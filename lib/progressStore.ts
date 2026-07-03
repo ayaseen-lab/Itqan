@@ -100,6 +100,8 @@ export const useProgressStore = create<ProgressState>()(
           },
           lifetime: bumpLifetime(s.lifetime, type, count),
         }));
+        // Fire-and-forget cloud sync for family / competitions
+        void import("@/lib/supabase/progressSync").then((m) => m.syncMyProgressToday());
       },
       removeLog: (entryId, day = dayKey()) =>
         set((s) => {

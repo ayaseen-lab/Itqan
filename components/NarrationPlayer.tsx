@@ -60,6 +60,9 @@ export function NarrationPlayer({ text, lang, label }: NarrationPlayerProps) {
 
   useEffect(() => {
     const audio = new Audio();
+    audio.setAttribute("playsinline", "true");
+    audio.setAttribute("webkit-playsinline", "true");
+    audio.preload = "auto";
     audioRef.current = audio;
     return () => {
       stopRef.current = true;
@@ -155,7 +158,7 @@ export function NarrationPlayer({ text, lang, label }: NarrationPlayerProps) {
       type="button"
       onClick={toggle}
       disabled={loading}
-      className="inline-flex items-center gap-2 rounded-full bg-itqan-600 px-4 py-2 text-sm font-medium text-white shadow-md transition-all hover:bg-itqan-700 hover:shadow-lg disabled:opacity-60"
+      className="inline-flex min-h-11 items-center gap-2 rounded-full bg-itqan-600 px-4 py-2.5 text-sm font-medium text-white shadow-md transition-all touch-manipulation hover:bg-itqan-700 hover:shadow-lg active:scale-[0.98] disabled:opacity-60"
     >
       {loading ? (
         <svg className="h-4 w-4 animate-spin" viewBox="0 0 24 24" fill="none" aria-hidden="true">

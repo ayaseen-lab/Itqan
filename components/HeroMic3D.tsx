@@ -6,71 +6,77 @@ import { RecitationModal } from "./RecitationModal";
 function MicIcon({ className = "h-9 w-9", id = "mic" }: { className?: string; id?: string }) {
   const gradId = `heroMicGold-${id}`;
   const glowId = `heroMicGlow-${id}`;
+  const shineId = `heroMicShine-${id}`;
   return (
     <svg viewBox="0 0 64 64" className={className} aria-hidden="true">
       <defs>
         <linearGradient id={gradId} x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stopColor="#fff7d6" />
-          <stop offset="35%" stopColor="#f0d78c" />
-          <stop offset="100%" stopColor="#c9941a" />
+          <stop offset="0%" stopColor="#fffbe8" />
+          <stop offset="30%" stopColor="#f0d78c" />
+          <stop offset="70%" stopColor="#d4a853" />
+          <stop offset="100%" stopColor="#a67c12" />
         </linearGradient>
-        <filter id={glowId}>
-          <feDropShadow dx="0" dy="1" stdDeviation="1.5" floodColor="#fbbf24" floodOpacity="0.6" />
+        <linearGradient id={shineId} x1="0%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%" stopColor="#ffffff" stopOpacity="0.55" />
+          <stop offset="100%" stopColor="#ffffff" stopOpacity="0" />
+        </linearGradient>
+        <filter id={glowId} x="-40%" y="-40%" width="180%" height="180%">
+          <feDropShadow dx="0" dy="2" stdDeviation="2.5" floodColor="#fbbf24" floodOpacity="0.75" />
+          <feDropShadow dx="0" dy="0" stdDeviation="4" floodColor="#f0d78c" floodOpacity="0.45" />
         </filter>
       </defs>
       <g filter={`url(#${glowId})`}>
-        <rect x="26" y="8" width="12" height="22" rx="6" fill={`url(#${gradId})`} />
+        <rect x="24" y="6" width="16" height="26" rx="8" fill={`url(#${gradId})`} />
+        <rect x="26" y="8" width="6" height="18" rx="3" fill={`url(#${shineId})`} />
         <path
-          d="M20 28c0 6.6 5.4 12 12 12s12-5.4 12-12"
+          d="M18 30c0 7.7 6.3 14 14 14s14-6.3 14-14"
           fill="none"
           stroke={`url(#${gradId})`}
-          strokeWidth="3.5"
+          strokeWidth="4"
           strokeLinecap="round"
         />
-        <line x1="32" y1="40" x2="32" y2="52" stroke={`url(#${gradId})`} strokeWidth="3.5" strokeLinecap="round" />
-        <line x1="22" y1="52" x2="42" y2="52" stroke={`url(#${gradId})`} strokeWidth="3.5" strokeLinecap="round" />
+        <line x1="32" y1="44" x2="32" y2="54" stroke={`url(#${gradId})`} strokeWidth="4" strokeLinecap="round" />
+        <line x1="20" y1="54" x2="44" y2="54" stroke={`url(#${gradId})`} strokeWidth="4" strokeLinecap="round" />
+        <circle cx="32" cy="18" r="2" fill="#fff8e0" opacity="0.7" />
       </g>
     </svg>
   );
 }
 
-/** Prominent 3D mic button — inline next to hero CTAs. */
-export function HeroMic3D({ inline = false }: { inline?: boolean }) {
+type MicSize = "md" | "lg" | "xl";
+
+const SIZE: Record<MicSize, { btn: string; icon: string; ring: string }> = {
+  md: {
+    btn: "h-[3.75rem] w-[3.75rem] sm:h-16 sm:w-16",
+    icon: "h-9 w-9 sm:h-10 sm:w-10",
+    ring: "rounded-2xl",
+  },
+  lg: {
+    btn: "h-14 w-14 sm:h-[4.875rem] sm:w-[4.875rem] md:h-[5.25rem] md:w-[5.25rem]",
+    icon: "h-8 w-8 sm:h-12 sm:w-12 md:h-[3.375rem] md:w-[3.375rem]",
+    ring: "rounded-[1.15rem]",
+  },
+  xl: {
+    btn: "h-28 w-28 sm:h-32 sm:w-32 md:h-36 md:w-36",
+    icon: "h-16 w-16 sm:h-[4.5rem] sm:w-[4.5rem] md:h-20 md:w-20",
+    ring: "rounded-[1.75rem]",
+  },
+};
+
+/** Prominent 3D mic — use size="xl" beside AI Hifz near the hero image. */
+export function HeroMic3D({
+  inline = false,
+  size = "md",
+  label = true,
+}: {
+  inline?: boolean;
+  size?: MicSize;
+  label?: boolean;
+}) {
   const [open, setOpen] = useState(false);
   const [hovered, setHovered] = useState(false);
-
-  if (inline) {
-    return (
-      <>
-        <button
-          type="button"
-          onClick={() => setOpen(true)}
-          onMouseEnter={() => setHovered(true)}
-          onMouseLeave={() => setHovered(false)}
-          className={`hero-mic-inline group relative flex h-[3.75rem] w-[3.75rem] shrink-0 items-center justify-center sm:h-16 sm:w-16 ${hovered ? "hero-mic-inline--hover" : ""}`}
-          aria-label="Check your recitation with microphone"
-          title="Check your recitation"
-        >
-          <span className="hero-mic-inline-ring absolute -inset-1 rounded-2xl" aria-hidden="true" />
-          <span className="hero-mic-inline-ring hero-mic-inline-ring--delay absolute -inset-2 rounded-2xl" aria-hidden="true" />
-          <span className="hero-mic-inline-face relative flex h-full w-full items-center justify-center rounded-2xl">
-            <span
-              className={`hero-mic-cube hero-mic-cube--inline ${hovered ? "hero-mic-cube--active" : ""}`}
-              aria-hidden="true"
-            >
-              <span className="hero-mic-body hero-mic-body--inline">
-                <MicIcon className="h-9 w-9 sm:h-10 sm:w-10" id="inline" />
-              </span>
-            </span>
-          </span>
-          <span className="hero-mic-tooltip pointer-events-none absolute -bottom-9 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-lg border border-[#f0d78c]/50 bg-[#0a3d2f]/95 px-2.5 py-1 text-[10px] font-semibold text-[#f0d78c] opacity-0 shadow-lg transition-all duration-300 group-hover:bottom-[-2.35rem] group-hover:opacity-100">
-            Check recitation
-          </span>
-        </button>
-        <RecitationModal open={open} onClose={() => setOpen(false)} />
-      </>
-    );
-  }
+  const s = SIZE[inline && size === "md" ? "md" : size];
+  const isPower = size === "lg" || size === "xl";
 
   return (
     <>
@@ -79,22 +85,43 @@ export function HeroMic3D({ inline = false }: { inline?: boolean }) {
         onClick={() => setOpen(true)}
         onMouseEnter={() => setHovered(true)}
         onMouseLeave={() => setHovered(false)}
-        className="hero-mic-3d group relative mx-auto flex h-28 w-28 items-center justify-center"
+        className={`hero-mic-inline group relative flex shrink-0 items-center justify-center ${s.btn} ${
+          isPower ? "hero-mic-power" : ""
+        } ${hovered ? "hero-mic-inline--hover" : ""}`}
         aria-label="Check your recitation with microphone"
-        title="Tap to check your recitation"
+        title="Check your recitation"
       >
-        <span className="hero-mic-ring absolute inset-0 rounded-full" aria-hidden="true" />
-        <span className="hero-mic-ring hero-mic-ring-delay absolute inset-2 rounded-full" aria-hidden="true" />
-        <span className="hero-mic-stage relative flex h-24 w-24 items-center justify-center" style={{ perspective: "600px" }}>
-          <span className={`hero-mic-cube ${hovered ? "hero-mic-cube--active" : ""}`} aria-hidden="true">
-            <span className="hero-mic-body">
-              <MicIcon className="h-14 w-14" id="standalone" />
+        <span className={`hero-mic-inline-ring absolute -inset-1 ${s.ring}`} aria-hidden="true" />
+        <span
+          className={`hero-mic-inline-ring hero-mic-inline-ring--delay absolute -inset-3 ${s.ring}`}
+          aria-hidden="true"
+        />
+        {isPower && (
+          <span className="hero-mic-power-aura absolute -inset-5 rounded-full" aria-hidden="true" />
+        )}
+        <span
+          className={`hero-mic-inline-face relative flex h-full w-full items-center justify-center ${s.ring}`}
+        >
+          <span
+            className={`hero-mic-cube hero-mic-cube--inline ${hovered ? "hero-mic-cube--active" : ""}`}
+            aria-hidden="true"
+          >
+            <span className="hero-mic-body hero-mic-body--inline">
+              <MicIcon className={s.icon} id={`${size}-${inline ? "i" : "s"}`} />
             </span>
           </span>
         </span>
-        <span className="absolute -bottom-1 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-full border border-[#f0d78c]/40 bg-[#0a3d2f]/80 px-3 py-1 text-[11px] font-semibold text-[#f0d78c] backdrop-blur-sm">
-          Check recitation
-        </span>
+        {label && (
+          <span
+            className={`hero-mic-tooltip pointer-events-none absolute left-1/2 -translate-x-1/2 whitespace-nowrap rounded-lg border border-[#f0d78c]/50 bg-[#0a3d2f]/95 px-2.5 py-1 font-semibold text-[#f0d78c] opacity-0 shadow-lg transition-all duration-300 group-hover:opacity-100 ${
+              isPower
+                ? "bottom-[-2.6rem] text-[11px] group-hover:bottom-[-2.85rem]"
+                : "-bottom-9 text-[10px] group-hover:bottom-[-2.35rem]"
+            }`}
+          >
+            Check recitation
+          </span>
+        )}
       </button>
       <RecitationModal open={open} onClose={() => setOpen(false)} />
     </>

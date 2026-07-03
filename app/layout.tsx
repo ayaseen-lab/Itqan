@@ -6,6 +6,8 @@ import { StoreHydrator } from "@/components/StoreHydrator";
 import { QuranBackground } from "@/components/QuranBackground";
 import { AppProviders } from "@/components/AppProviders";
 import { ClientChat } from "@/components/ClientChat";
+import { CursorFX } from "@/components/CursorFX";
+import { TimeTracker } from "@/components/TimeTracker";
 
 const amiri = Amiri({
   weight: ["400", "700"],
@@ -48,7 +50,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="en" data-scroll-behavior="smooth" suppressHydrationWarning>
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
         <meta name="google" content="notranslate" />
@@ -58,6 +60,8 @@ export default function RootLayout({
         <div className="relative z-10">
           <StoreHydrator />
           <AppProviders>
+            <CursorFX />
+            <TimeTracker />
             <AppShell>{children}</AppShell>
             <ClientChat />
           </AppProviders>
