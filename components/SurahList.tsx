@@ -72,11 +72,11 @@ export function SurahList({ chapters }: { chapters: Chapter[] }) {
       </div>
 
       <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-        {filtered.map((c) => (
-          <li key={c.id}>
+        {filtered.map((c, i) => (
+          <li key={c.id} className="animate-fade-up" style={{ animationDelay: `${Math.min(i, 12) * 40}ms` }}>
             <Link
               href={`/surah/${c.id}`}
-              className="card card-hover group flex items-center gap-3.5 p-4"
+              className="card card-hover group flex items-center gap-3.5 p-4 transition-all duration-200 hover:scale-[1.02] hover:shadow-md"
             >
               <span className="relative grid h-11 w-11 shrink-0 place-items-center">
                 <svg viewBox="0 0 44 44" className="absolute inset-0 h-full w-full text-itqan-300 dark:text-itqan-700" aria-hidden="true">

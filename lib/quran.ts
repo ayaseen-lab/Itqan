@@ -12,6 +12,9 @@ import {
   getOfflineChapter,
   getOfflineVerses,
 } from "./offlineData";
+import { loadBundledSurah } from "./surahBundle";
+import { getTafsirByLang, type TafsirLang } from "./tafsir";
+import { ayahAudioUrl } from "./audio";
 import { hasTajweedMarkup } from "./tajweed";
 
 const WEEK = 60 * 60 * 24 * 7;
@@ -36,14 +39,13 @@ const QF_API_BASE =
 const hasQfCredentials = Boolean(QF_CLIENT_ID && QF_CLIENT_SECRET);
 
 // Translation resource ids on Quran.com.
-const URDU_TRANSLATION_ID = 97; // Fateh Muhammad Jalandhry (Urdu)
+const URDU_TRANSLATION_ID = 97; // Fateh Muhammad Jalandhry — fallback if Maududi CDN fails
 const ENGLISH_TRANSLATION_ID = 131; // Saheeh International (English)
 
 // English Tafsir: Ibn Kathir (Abridged) on Quran.com.
 const ENGLISH_TAFSIR_ID = 169;
 
-const AUDIO_CDN = "https://verses.quran.com/";
-const WORD_AUDIO_CDN = "https://audio.qurancdn.com/";
+// Ayah audio is bundled locally — see public/audio/alafasy/ and npm run audio:download
 
 export interface Chapter {
   id: number;
@@ -182,12 +184,7 @@ export async function getChapters(): Promise<Chapter[]> {
 }
 
 export async function getChapter(id: number): Promise<Chapter | null> {
-  try {
-    const data = await apiGet<{ chapter: any }>(`/chapters/${id}?language=ur`);
-    return mapChapter(data.chapter);
-  } catch {
-    return getOfflineChapter(id);
-  }
+  return getOfflineChapter(id);
 }
 
 function mapChapter(c: any): Chapter {
@@ -201,13 +198,10 @@ function mapChapter(c: any): Chapter {
   };
 }
 
-function buildAudioUrl(raw: string | null | undefined, cdn: string): string | null {
-  if (!raw) return null;
-  if (raw.startsWith("http")) return raw;
-  return `${cdn}${raw}`;
-}
-
 export async function getVerses(chapterId: number): Promise<Verse[]> {
+  const bundled = await loadBundledSurah(chapterId);
+  if (bundled.length > 0) return bundled;
+
   try {
     return await fetchVersesFromApi(chapterId);
   } catch {
@@ -253,11 +247,10 @@ async function fetchVersesFromApi(chapterId: number): Promise<Verse[]> {
   // Primary request: English words + verse translations + tajweed script + audio.
   const params = new URLSearchParams({
     words: "true",
-    word_fields: "text_uthmani,transliteration,audio_url",
+    word_fields: "text_uthmani,transliteration",
     language: "en",
     translations: `${URDU_TRANSLATION_ID},${ENGLISH_TRANSLATION_ID}`,
     fields: "text_uthmani,text_uthmani_tajweed",
-    audio: "7", // Mishary Rashid Alafasy
     per_page: "300",
   });
 
@@ -301,7 +294,7 @@ async function fetchVersesFromApi(chapterId: number): Promise<Verse[]> {
         transliteration: w.transliteration?.text ?? null,
         translation: w.translation?.text ?? null,
         translationUrdu: urduWordMap.get(`${v.verse_key}:${w.position}`) ?? null,
-        audioUrl: buildAudioUrl(w.audio_url, WORD_AUDIO_CDN),
+        audioUrl: null,
       }));
 
     return {
@@ -311,7 +304,7 @@ async function fetchVersesFromApi(chapterId: number): Promise<Verse[]> {
       verseNumber: v.verse_number,
       textUthmani: v.text_uthmani ?? "",
       textTajweed: tajweedHtml,
-      audioUrl: buildAudioUrl(v.audio?.url, AUDIO_CDN),
+      audioUrl: ayahAudioUrl(chapterId, v.verse_number),
       translations: {
         urdu: urduText,
         english: englishText,
@@ -322,11 +315,14 @@ async function fetchVersesFromApi(chapterId: number): Promise<Verse[]> {
 }
 
 /**
- * Fetch authentic English Tafsir (Ibn Kathir) for a single ayah.
- * Uses the public Quran.com API directly so the tafsir language/resource id is
- * always correct regardless of the configured Content API.
+ * Fetch Ibn Kathir Tafsir for a single ayah (English or Urdu).
  */
-export async function getTafsir(verseKey: string): Promise<Tafsir | null> {
+export async function getTafsir(verseKey: string, lang: TafsirLang = "en"): Promise<Tafsir | null> {
+  if (lang === "ur") {
+    const ur = await getTafsirByLang(verseKey, "ur");
+    return ur ? { text: ur.text, resourceName: ur.resourceName } : null;
+  }
+
   const paths = [
     `/quran/tafsirs/${ENGLISH_TAFSIR_ID}?verse_key=${encodeURIComponent(verseKey)}`,
     `/verses/${encodeURIComponent(verseKey)}/tafsirs/${ENGLISH_TAFSIR_ID}`,
@@ -357,7 +353,8 @@ export async function getTafsir(verseKey: string): Promise<Tafsir | null> {
     }
   }
 
-  return null;
+  const en = await getTafsirByLang(verseKey, "en");
+  return en ? { text: en.text, resourceName: en.resourceName } : null;
 }
 
 /** Convenience: fetch a single verse by "chapter:verse" key. */

@@ -153,6 +153,14 @@ export function annotateTajweed(uthmani: string): string {
     .join(" ");
 }
 
+/** Annotate each word in an ayah with tajweed colours (for word-by-word view). */
+export function annotateWordsTajweed(words: string[]): string[] {
+  return words.map((w, i) => {
+    const nextFirst = i < words.length - 1 ? clusters(words[i + 1])[0] ?? null : null;
+    return annotateWord(w, nextFirst);
+  });
+}
+
 export function hasTajweedMarkup(html: string | null): boolean {
   if (!html) return false;
   return (

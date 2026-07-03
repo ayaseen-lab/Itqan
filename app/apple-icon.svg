@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 180" fill="none">
+  <defs>
+    <linearGradient id="bg" x1="22" y1="14" x2="158" y2="166" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#34d399"/>
+      <stop offset="0.45" stop-color="#0d9488"/>
+      <stop offset="1" stop-color="#042f2e"/>
+    </linearGradient>
+    <linearGradient id="gold" x1="44" y1="44" x2="136" y2="136" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#f0d78c"/>
+      <stop offset="1" stop-color="#b8862e"/>
+    </linearGradient>
+    <linearGradient id="pl" x1="34" y1="58" x2="90" y2="132" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#fffef9"/>
+      <stop offset="1" stop-color="#ebe4d4"/>
+    </linearGradient>
+    <linearGradient id="pr" x1="90" y1="58" x2="146" y2="132" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#f8f4ea"/>
+      <stop offset="1" stop-color="#e0d8c8"/>
+    </linearGradient>
+  </defs>
+  <rect width="180" height="180" rx="40" fill="url(#bg)"/>
+  <rect width="180" height="180" rx="40" fill="url(#gold)" fill-opacity="0.07"/>
+  <ellipse cx="68" cy="48" rx="52" ry="34" fill="#fff" fill-opacity="0.14"/>
+  <path d="M42 140 C58 134 72 131 90 131 C108 131 122 134 138 140" stroke="url(#gold)" stroke-width="5" stroke-linecap="round" opacity="0.75"/>
+  <path d="M90 133 V58 C66 53 44 64 36 88 V133 H90 Z" fill="url(#pl)" stroke="url(#gold)" stroke-width="3.2" stroke-linejoin="round"/>
+  <path d="M90 133 V58 C114 53 136 64 144 88 V133 H90 Z" fill="url(#pr)" stroke="url(#gold)" stroke-width="3.2" stroke-linejoin="round"/>
+  <path d="M50 78 H76 M49 90 H74 M47 102 H71" stroke="#0d9488" stroke-width="2.4" stroke-linecap="round" opacity="0.4"/>
+  <path d="M104 78 H130 M105 90 H131 M107 102 H133" stroke="#0d9488" stroke-width="2.4" stroke-linecap="round" opacity="0.4"/>
+  <path d="M90 58 V133" stroke="url(#gold)" stroke-width="4.8" stroke-linecap="round"/>
+  <circle cx="90" cy="42" r="8" fill="url(#gold)"/>
+  <path d="M90 28 L94 38 L104 39 L96 47 L98 57 L90 51 L82 57 L84 47 L76 39 L86 38 Z" fill="url(#gold)" fill-opacity="0.35" stroke="url(#gold)" stroke-width="1.8" stroke-linejoin="round"/>
+</svg>

@@ -3,8 +3,13 @@ import { notFound } from "next/navigation";
 import { getChapter, getVerses } from "@/lib/quran";
 import { VerseCard } from "@/components/VerseCard";
 import { AddSurahButton } from "@/components/AddSurahButton";
+import { SurahAudioPrefetch } from "@/components/SurahAudioPrefetch";
 
 export const revalidate = 604800; // 7 days
+
+export function generateStaticParams() {
+  return Array.from({ length: 114 }, (_, i) => ({ id: String(i + 1) }));
+}
 
 export default async function SurahPage({
   params,
@@ -51,6 +56,7 @@ export default async function SurahPage({
 
   return (
     <div className="space-y-6">
+      <SurahAudioPrefetch chapterId={chapterId} verseCount={chapter.versesCount} />
       <div className="card p-6 text-center">
         <p className="quran-text text-4xl" dir="rtl" translate="no">{chapter.nameArabic}</p>
         <h1 className="mt-2 text-2xl font-bold">

@@ -6,6 +6,7 @@
  */
 
 import type { Chapter, Verse, Word } from "./quran";
+import { ayahAudioUrl } from "./audio";
 
 export const OFFLINE_CHAPTERS: Chapter[] = [
   { id: 1, revelationPlace: "makkah", nameArabic: "الفاتحة", nameSimple: "Al-Fatihah", translatedName: "The Opener", versesCount: 7 },
@@ -187,7 +188,7 @@ export function getOfflineVerses(chapterId: number): Verse[] {
     verseNumber: i + 1,
     textUthmani: v.arabic,
     textTajweed: null,
-    audioUrl: null,
+    audioUrl: ayahAudioUrl(chapterId, i + 1),
     translations: { urdu: v.urdu, english: v.english },
     words: toWords(v.arabic),
   }));

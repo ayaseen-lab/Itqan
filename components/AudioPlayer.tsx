@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 interface AudioPlayerProps {
   src: string | null;
@@ -10,6 +10,8 @@ interface AudioPlayerProps {
 export function AudioPlayer({ src, showSpeed = false }: AudioPlayerProps) {
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const [playing, setPlaying] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(false);
   const [repeat, setRepeat] = useState(1);
   const [speed, setSpeed] = useState(1);
   const playsLeftRef = useRef(0);
@@ -32,21 +34,79 @@ export function AudioPlayer({ src, showSpeed = false }: AudioPlayerProps) {
   }, []);
 
   useEffect(() => {
+    const audio = audioRef.current;
+    if (!audio || !src) return;
+
+    setPlaying(false);
+    setLoading(true);
+    setError(false);
+    audio.preload = "auto";
+    audio.volume = 1;
+    audio.src = src;
+    audio.load();
+
+    const onReady = () => setLoading(false);
+    const onError = () => {
+      setLoading(false);
+      setError(true);
+    };
+
+    audio.addEventListener("canplaythrough", onReady);
+    audio.addEventListener("error", onError);
+    return () => {
+      audio.removeEventListener("canplaythrough", onReady);
+      audio.removeEventListener("error", onError);
+    };
+  }, [src]);
+
+  useEffect(() => {
     if (audioRef.current) audioRef.current.playbackRate = speed;
   }, [speed]);
 
-  function toggle() {
+  const waitUntilPlayable = useCallback(async (audio: HTMLAudioElement) => {
+    if (audio.readyState >= HTMLMediaElement.HAVE_FUTURE_DATA) return;
+    await new Promise<void>((resolve, reject) => {
+      const done = () => {
+        cleanup();
+        resolve();
+      };
+      const fail = () => {
+        cleanup();
+        reject(new Error("audio load failed"));
+      };
+      const cleanup = () => {
+        audio.removeEventListener("canplay", done);
+        audio.removeEventListener("error", fail);
+      };
+      audio.addEventListener("canplay", done, { once: true });
+      audio.addEventListener("error", fail, { once: true });
+      audio.load();
+    });
+  }, []);
+
+  async function toggle() {
     const audio = audioRef.current;
-    if (!audio) return;
+    if (!audio || !src) return;
+
     if (playing) {
       audio.pause();
       setPlaying(false);
       playsLeftRef.current = 0;
-    } else {
+      return;
+    }
+
+    setLoading(true);
+    try {
+      await waitUntilPlayable(audio);
       audio.playbackRate = speed;
       playsLeftRef.current = repeat;
-      void audio.play();
+      await audio.play();
       setPlaying(true);
+      setError(false);
+    } catch {
+      setError(true);
+    } finally {
+      setLoading(false);
     }
   }
 
@@ -54,14 +114,20 @@ export function AudioPlayer({ src, showSpeed = false }: AudioPlayerProps) {
 
   return (
     <div className="flex flex-wrap items-center gap-2">
-      <audio ref={audioRef} src={src} preload="none" />
+      <audio ref={audioRef} preload="auto" />
       <button
         type="button"
-        onClick={toggle}
-        className="btn-ghost h-9 gap-1.5"
+        onClick={() => void toggle()}
+        disabled={loading && !playing}
+        className="btn-ghost h-9 gap-1.5 disabled:opacity-60"
         aria-label={playing ? "Pause recitation" : "Play recitation"}
       >
-        {playing ? (
+        {loading && !playing ? (
+          <svg className="h-4 w-4 animate-spin" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <circle cx="12" cy="12" r="9" stroke="currentColor" strokeWidth="2" opacity="0.25" />
+            <path d="M12 3a9 9 0 0 1 9 9" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+          </svg>
+        ) : playing ? (
           <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
             <rect x="6" y="5" width="4" height="14" rx="1" />
             <rect x="14" y="5" width="4" height="14" rx="1" />
@@ -71,8 +137,14 @@ export function AudioPlayer({ src, showSpeed = false }: AudioPlayerProps) {
             <path d="M8 5v14l11-7z" />
           </svg>
         )}
-        <span className="text-xs">{playing ? "Pause" : "Listen"}</span>
+        <span className="text-xs">
+          {playing ? "Pause" : loading ? "Loading" : error ? "Retry" : "Listen"}
+        </span>
       </button>
+
+      {error && (
+        <span className="text-[10px] text-red-500">Audio unavailable</span>
+      )}
 
       <label className="flex items-center gap-1 text-xs muted">
         <span className="sr-only sm:not-sr-only">Repeat</span>

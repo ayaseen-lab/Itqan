@@ -1,9 +1,10 @@
 "use client";
 
 import { useState } from "react";
+import { annotateWordsTajweed } from "@/lib/tajweed";
 import type { Word } from "@/lib/quran";
 
-function WordChip({ word }: { word: Word }) {
+function WordChip({ word, tajweedHtml }: { word: Word; tajweedHtml: string }) {
   const [open, setOpen] = useState(false);
 
   function playWord() {
@@ -23,7 +24,12 @@ function WordChip({ word }: { word: Word }) {
         onMouseLeave={() => setOpen(false)}
         className="group flex flex-col items-center rounded-lg px-2 py-1.5 text-center transition-colors hover:bg-itqan-100 dark:hover:bg-itqan-950"
       >
-        <span className="quran-text block text-2xl leading-loose">{word.text}</span>
+        <span
+          className="tajweed-text quran-text block text-2xl leading-loose"
+          dir="rtl"
+          lang="ar"
+          dangerouslySetInnerHTML={{ __html: tajweedHtml }}
+        />
         {word.translationUrdu && (
           <span className="urdu-text block text-sm leading-tight text-itqan-700 dark:text-itqan-300" dir="rtl">
             {word.translationUrdu}
@@ -66,10 +72,13 @@ function WordChip({ word }: { word: Word }) {
 
 export function WordByWord({ words }: { words: Word[] }) {
   if (!words || words.length === 0) return null;
+  const wordTexts = words.map((w) => w.text);
+  const annotated = annotateWordsTajweed(wordTexts);
+
   return (
     <div className="flex flex-row-reverse flex-wrap justify-start gap-1.5" dir="rtl">
       {words.map((w, i) => (
-        <WordChip key={`${w.position}-${i}`} word={w} />
+        <WordChip key={`${w.position}-${i}`} word={w} tajweedHtml={annotated[i] ?? w.text} />
       ))}
     </div>
   );

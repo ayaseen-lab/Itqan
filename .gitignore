@@ -29,3 +29,6 @@ next-env.d.ts
 
 # vercel
 .vercel
+
+# generated TTS cache
+/public/audio/tts-cache/

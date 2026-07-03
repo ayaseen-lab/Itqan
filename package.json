@@ -7,10 +7,14 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "audio:download": "node scripts/download-quran-audio.mjs",
+    "data:download": "node scripts/download-surah-data.mjs",
+    "tafheem:download": "node scripts/download-tafheem.mjs"
   },
   "dependencies": {
     "@react-oauth/google": "^0.13.5",
+    "edge-tts-universal": "^1.4.0",
     "next": "^15.1.6",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",

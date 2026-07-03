@@ -7,16 +7,18 @@ import { ThemeToggle } from "./ThemeToggle";
 import { DueBadge } from "./DueBadge";
 import { SignInModal } from "./SignInModal";
 import { RecitationMicButton } from "./RecitationMicButton";
+import { AnimatedModal } from "./AnimatedModal";
 import { useAuthStore } from "@/lib/authStore";
 import { Logo, LogoWordmark } from "./Logo";
+import { SiteFooter } from "./SiteFooter";
 
 type NavItem = { href: string; label: string; icon: string; badge?: boolean };
 
 /** All features shown flat — no "More" submenu. */
 const NAV: NavItem[] = [
   { href: "/", label: "Home", icon: "home" },
-  { href: "/quran", label: "Quran", icon: "book" },
-  { href: "/memorize", label: "Hifz", icon: "brain", badge: true },
+  { href: "/quran", label: "Recitation", icon: "book" },
+  { href: "/memorize", label: "AI Hifz", icon: "brain", badge: true },
   { href: "/hadith", label: "Hadith", icon: "scroll" },
   { href: "/juz", label: "Juz", icon: "layers" },
   { href: "/names", label: "99 Names", icon: "sparkles" },
@@ -136,20 +138,11 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         style={isHome ? undefined : { borderColor: "rgb(var(--border))" }}
       >
         <div className="mx-auto flex w-full max-w-7xl items-center justify-between gap-2 px-3 py-2.5 sm:px-4">
-          <Link href="/" className="group flex shrink-0 items-center gap-2 font-bold">
-            <span className="transition-transform duration-300 group-hover:scale-105">
-              <Logo size={36} />
+          <Link href="/" className="group flex shrink-0 items-center gap-2.5 font-bold">
+            <span className="transition-transform duration-300 group-hover:scale-[1.04]">
+              <Logo size={40} />
             </span>
-            <span className={isHome ? "flex flex-col leading-none" : undefined}>
-              {isHome ? (
-                <>
-                  <span className="text-lg font-bold tracking-tight text-[#f0d78c]">Itqan</span>
-                  <span className="text-[10px] font-normal tracking-wide text-white/60">إتقان</span>
-                </>
-              ) : (
-                <LogoWordmark subtitle="إتقان" />
-              )}
-            </span>
+            <LogoWordmark subtitle="إتقان" light={isHome} />
           </Link>
 
           {/* Desktop: scrollable flat nav — all features visible */}
@@ -228,50 +221,46 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       </header>
 
       {/* Mobile: all features sheet */}
-      {menuOpen && (
-        <div className="fixed inset-0 z-50 lg:hidden" role="dialog" aria-modal="true">
-          <button
-            type="button"
-            aria-label="Close menu"
-            onClick={() => setMenuOpen(false)}
-            className="absolute inset-0 bg-black/50 backdrop-blur-sm"
-          />
-          <div
-            className="glass animate-fade-up absolute inset-x-0 bottom-0 max-h-[85vh] overflow-y-auto rounded-t-3xl border-t p-5 pb-8"
-            style={{ borderColor: "rgb(var(--border))" }}
-          >
-            <div className="mx-auto mb-4 h-1.5 w-12 rounded-full bg-current opacity-20" />
-            <h2 className="mb-3 text-base font-semibold">All features</h2>
-            <div className="grid grid-cols-2 gap-2.5">
-              {NAV.map((item) => {
-                const active = isActive(pathname, item.href);
-                return (
-                  <Link
-                    key={item.href}
-                    href={item.href}
-                    className={`flex items-center gap-2.5 rounded-2xl px-3.5 py-3 text-sm font-medium transition-colors ${
-                      active ? "bg-itqan-600 text-white shadow" : "border hover:border-itqan-400"
-                    }`}
-                    style={active ? undefined : { borderColor: "rgb(var(--border))" }}
-                  >
-                    <NavIcon name={item.icon} />
-                    {item.label}
-                    {item.badge && <DueBadge />}
-                  </Link>
-                );
-              })}
-            </div>
-          </div>
+      <div className="lg:hidden">
+        <AnimatedModal open={menuOpen} onClose={() => setMenuOpen(false)} variant="bottom" className="!max-h-[85vh] overflow-y-auto !rounded-t-3xl !p-5 !pb-8">
+        <div className="mx-auto mb-4 h-1.5 w-12 rounded-full bg-current opacity-20" />
+        <h2 className="mb-3 text-base font-semibold">All features</h2>
+        <div className="grid grid-cols-2 gap-2.5">
+          {NAV.map((item, i) => {
+            const active = isActive(pathname, item.href);
+            return (
+              <Link
+                key={item.href}
+                href={item.href}
+                onClick={() => setMenuOpen(false)}
+                className={`flex items-center gap-2.5 rounded-2xl px-3.5 py-3 text-sm font-medium transition-all duration-200 animate-fade-up ${
+                  active ? "bg-itqan-600 text-white shadow" : "border hover:border-itqan-400 hover:scale-[1.02]"
+                }`}
+                style={{
+                  ...(active ? {} : { borderColor: "rgb(var(--border))" }),
+                  animationDelay: `${i * 30}ms`,
+                }}
+              >
+                <NavIcon name={item.icon} />
+                {item.label}
+                {item.badge && <DueBadge />}
+              </Link>
+            );
+          })}
         </div>
-      )}
+      </AnimatedModal>
+      </div>
 
       <main
-        className={`mx-auto w-full max-w-6xl flex-1 px-4 pb-24 lg:pb-10 ${
+        key={pathname}
+        className={`page-enter mx-auto w-full max-w-6xl flex-1 px-4 pb-24 lg:pb-10 ${
           isHome ? "pt-0" : "pt-4 sm:pt-6"
         }`}
       >
         {children}
       </main>
+
+      <SiteFooter />
 
       <nav
         className="glass fixed bottom-0 left-0 right-0 z-30 flex border-t pb-[env(safe-area-inset-bottom)] lg:hidden"

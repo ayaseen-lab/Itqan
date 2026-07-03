@@ -7,17 +7,18 @@ import { useChatStore } from "@/lib/chatStore";
 import { useAppStore } from "@/lib/appStore";
 import { AudioPlayer } from "./AudioPlayer";
 import { WordByWord } from "./WordByWord";
-import { TajweedText, TajweedLegend } from "./TajweedText";
+import { TajweedText } from "./TajweedText";
 import { TafseerPanel } from "./TafseerPanel";
-import { TarteelPractice } from "./TarteelPractice";
+import { TafheemPanel } from "./TafheemPanel";
+import { TajweedTarteelPanel } from "./TajweedTarteelPanel";
 
-type Tab = "words" | "tajweed" | "tafseer" | "practice";
+type Tab = "words" | "tajweed" | "tafheem" | "tafseer";
 
 const TABS: { id: Tab; label: string }[] = [
   { id: "words", label: "Word by word" },
-  { id: "tajweed", label: "Tajweed" },
+  { id: "tajweed", label: "Tajweed & Tarteel" },
+  { id: "tafheem", label: "Tafheem" },
   { id: "tafseer", label: "Tafseer" },
-  { id: "practice", label: "Practice" },
 ];
 
 function TranslationBlock({ verse }: { verse: Verse }) {
@@ -30,6 +31,11 @@ function TranslationBlock({ verse }: { verse: Verse }) {
       {urdu && (
         <p className="urdu-text text-lg leading-relaxed" dir="rtl" translate="no" lang="ur">
           {urdu}
+        </p>
+      )}
+      {urdu && (
+        <p className="muted text-xs" dir="rtl" lang="ur">
+          اردو ترجمہ
         </p>
       )}
       {english && (
@@ -91,7 +97,7 @@ export function VerseCard({ verse, surahName }: { verse: Verse; surahName: strin
   }
 
   return (
-    <article className="card p-5">
+    <article className="card animate-fade-up p-5">
       <div className="mb-3 flex items-center justify-between">
         <span className="grid h-7 min-w-7 place-items-center rounded-full bg-itqan-100 px-2 text-xs font-semibold text-itqan-800 dark:bg-itqan-950 dark:text-itqan-200">
           {verse.verseKey}
@@ -142,10 +148,10 @@ export function VerseCard({ verse, surahName }: { verse: Verse; surahName: strin
               role="tab"
               aria-selected={tab === t.id}
               onClick={() => setTab((cur) => (cur === t.id ? null : t.id))}
-              className={`rounded-lg px-3 py-1.5 text-sm font-medium transition-colors ${
+              className={`rounded-lg px-3 py-1.5 text-sm font-medium transition-all duration-200 ${
                 tab === t.id
-                  ? "bg-itqan-600 text-white"
-                  : "border hover:bg-itqan-50 dark:hover:bg-itqan-950"
+                  ? "bg-itqan-600 text-white shadow-md"
+                  : "border hover:border-itqan-400 hover:bg-itqan-50 dark:hover:bg-itqan-950"
               }`}
               style={tab === t.id ? undefined : { borderColor: "rgb(var(--border))" }}
             >
@@ -155,18 +161,16 @@ export function VerseCard({ verse, surahName }: { verse: Verse; surahName: strin
         </div>
 
         {tab && (
-          <div className="mt-4 border-t pt-4" style={{ borderColor: "rgb(var(--border))" }}>
+          <div
+            key={tab}
+            className="mt-4 animate-fade-up border-t pt-4"
+            style={{ borderColor: "rgb(var(--border))" }}
+          >
             {tab === "words" && <WordByWord words={verse.words} />}
-
-            {tab === "tajweed" && (
-              <div className="space-y-3">
-                <p className="muted text-sm">
-                  Tajweed colours are applied to the Arabic text above. Tap each rule to learn what it means.
-                </p>
-                <TajweedLegend detailed />
-              </div>
+            {tab === "tajweed" && <TajweedTarteelPanel verse={verse} />}
+            {tab === "tafheem" && (
+              <TafheemPanel verseKey={verse.verseKey} chapterId={verse.chapterId} />
             )}
-
             {tab === "tafseer" && (
               <TafseerPanel
                 verseKey={verse.verseKey}
@@ -176,8 +180,6 @@ export function VerseCard({ verse, surahName }: { verse: Verse; surahName: strin
                 urdu={verse.translations.urdu}
               />
             )}
-
-            {tab === "practice" && <TarteelPractice verse={verse} />}
           </div>
         )}
       </div>
