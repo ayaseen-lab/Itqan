@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Amiri, Noto_Nastaliq_Urdu } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import "./globals.css";
 import { AppShell } from "@/components/AppShell";
 import { StoreHydrator } from "@/components/StoreHydrator";
@@ -79,6 +80,7 @@ export default function RootLayout({
           </AppProviders>
         </div>
         <Analytics />
+        <SpeedInsights />
       </body>
     </html>
   );
