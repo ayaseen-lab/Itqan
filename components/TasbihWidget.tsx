@@ -55,17 +55,17 @@ export function TasbihWidget() {
 
   return (
     <section className="card overflow-hidden">
-      <div className="flex items-center justify-between border-b px-5 py-3" style={{ borderColor: "rgb(var(--border))" }}>
-        <div>
+      <div className="flex items-center justify-between gap-2 border-b px-4 py-3 sm:px-5" style={{ borderColor: "rgb(var(--border))" }}>
+        <div className="min-w-0">
           <h2 className="text-sm font-semibold">Digital Tasbih</h2>
-          <p className="muted text-xs">Multiple dhikr · custom · editable targets</p>
+          <p className="muted text-xs">Multiple dhikr · custom targets</p>
         </div>
-        <Link href="/tasbih" className="text-xs font-medium text-itqan-600 hover:underline">
+        <Link href="/tasbih" className="shrink-0 text-xs font-medium text-wabil-400 hover:underline">
           Full view →
         </Link>
       </div>
 
-      <div className="p-5">
+      <div className="p-4 sm:p-5">
         <div className="mb-4 flex max-h-24 flex-wrap justify-center gap-1.5 overflow-y-auto">
           {items.map((d) => (
             <button
@@ -73,7 +73,7 @@ export function TasbihWidget() {
               type="button"
               onClick={() => setActive(d.id)}
               className={`rounded-full px-3 py-1 text-xs font-medium transition-colors ${
-                d.id === activeId ? "bg-itqan-600 text-white shadow-sm" : "border"
+                d.id === activeId ? "bg-wabil-600 text-white shadow-sm" : "border"
               }`}
               style={d.id === activeId ? undefined : { borderColor: "rgb(var(--border))" }}
             >
@@ -83,12 +83,12 @@ export function TasbihWidget() {
           ))}
         </div>
 
-        <p className="quran-text mb-1 text-center text-2xl text-itqan-600 dark:text-itqan-400" dir="rtl" translate="no">
+        <p className="quran-text mb-1 text-center text-2xl text-wabil-600 dark:text-wabil-400" dir="rtl" translate="no">
           {dhikr.arabic}
         </p>
         {dhikr.note && <p className="muted mb-4 text-center text-xs">{dhikr.note}</p>}
 
-        <div className="relative mx-auto grid h-56 w-56 place-items-center">
+        <div className="relative mx-auto grid h-48 w-48 place-items-center sm:h-56 sm:w-56">
           <svg className="absolute inset-0 h-full w-full" viewBox="0 0 240 240" aria-hidden="true">
             {Array.from({ length: BEADS }).map((_, i) => {
               const angle = (i / BEADS) * 2 * Math.PI - Math.PI / 2;
@@ -127,7 +127,7 @@ export function TasbihWidget() {
           <button
             type="button"
             onClick={increment}
-            className="relative z-10 grid h-36 w-36 place-items-center rounded-full text-white shadow-lg transition-transform active:scale-95"
+            className="relative z-10 grid h-28 w-28 place-items-center rounded-full text-white shadow-lg transition-transform active:scale-95 sm:h-36 sm:w-36"
             style={{
               background: "linear-gradient(145deg, rgb(var(--accent)), #065f46)",
               boxShadow: "0 12px 40px -12px rgb(var(--accent) / 0.6)",
@@ -135,7 +135,7 @@ export function TasbihWidget() {
             aria-label={`Count ${dhikr.label}. ${dhikr.count} of ${dhikr.target}`}
           >
             <div className="text-center">
-              <div className="text-5xl font-bold tabular-nums leading-none">{dhikr.count}</div>
+              <div className="text-4xl font-bold tabular-nums leading-none sm:text-5xl">{dhikr.count}</div>
               <div className="mt-1 text-xs opacity-80">of {dhikr.target}</div>
             </div>
           </button>
@@ -174,7 +174,7 @@ export function TasbihWidget() {
 
         <div className="mt-4 grid grid-cols-3 gap-2 text-center">
           <div className="rounded-xl border py-2" style={{ borderColor: "rgb(var(--border))" }}>
-            <div className="text-lg font-bold tabular-nums text-itqan-600">{dhikr.rounds}</div>
+            <div className="text-lg font-bold tabular-nums text-wabil-600">{dhikr.rounds}</div>
             <div className="muted text-[10px]">Rounds</div>
           </div>
           <div className="rounded-xl border py-2" style={{ borderColor: "rgb(var(--border))" }}>

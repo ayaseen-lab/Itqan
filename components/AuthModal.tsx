@@ -167,7 +167,7 @@ export function AuthModal({
         )}
 
         {error && <p className="text-sm text-red-500">{error}</p>}
-        {info && <p className="text-sm text-itqan-600 dark:text-itqan-300">{info}</p>}
+        {info && <p className="text-sm text-wabil-600 dark:text-wabil-300">{info}</p>}
 
         <form onSubmit={submit} className="space-y-3">
           {(mode === "signup" || !configured) && (
@@ -255,21 +255,21 @@ export function AuthModal({
         <div className="flex flex-wrap items-center justify-between gap-2 text-sm">
           {mode === "signin" && (
             <>
-              <button type="button" className="text-itqan-600 hover:underline" onClick={() => switchMode("forgot")}>
+              <button type="button" className="text-wabil-600 hover:underline" onClick={() => switchMode("forgot")}>
                 Forgot password?
               </button>
-              <button type="button" className="text-itqan-600 hover:underline" onClick={() => switchMode("signup")}>
+              <button type="button" className="text-wabil-600 hover:underline" onClick={() => switchMode("signup")}>
                 Create account
               </button>
             </>
           )}
           {mode === "signup" && (
-            <button type="button" className="text-itqan-600 hover:underline" onClick={() => switchMode("signin")}>
+            <button type="button" className="text-wabil-600 hover:underline" onClick={() => switchMode("signin")}>
               Already have an account? Sign in
             </button>
           )}
           {mode === "forgot" && (
-            <button type="button" className="text-itqan-600 hover:underline" onClick={() => switchMode("signin")}>
+            <button type="button" className="text-wabil-600 hover:underline" onClick={() => switchMode("signin")}>
               Back to sign in
             </button>
           )}

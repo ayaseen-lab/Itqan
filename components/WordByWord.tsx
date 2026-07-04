@@ -23,7 +23,7 @@ function WordChip({ word, tajweedHtml }: { word: Word; tajweedHtml: string }) {
         onClick={() => setOpen((v) => !v)}
         onMouseEnter={() => setOpen(true)}
         onMouseLeave={() => setOpen(false)}
-        className="group flex min-w-[4.5rem] flex-col items-center rounded-xl border px-2 py-2 text-center transition-colors hover:border-itqan-400 hover:bg-itqan-100/80 dark:hover:bg-itqan-950"
+        className="group flex min-w-[4.5rem] flex-col items-center rounded-xl border px-2 py-2 text-center transition-colors hover:border-wabil-400 hover:bg-wabil-100/80 dark:hover:bg-wabil-950"
         style={{ borderColor: "rgb(var(--border))" }}
       >
         <span
@@ -32,10 +32,10 @@ function WordChip({ word, tajweedHtml }: { word: Word; tajweedHtml: string }) {
           lang="ar"
           dangerouslySetInnerHTML={{ __html: tajweedHtml }}
         />
-        <span className="mt-1 block text-[9px] font-medium uppercase tracking-wide text-itqan-600/80">
+        <span className="mt-1 block text-[9px] font-medium uppercase tracking-wide text-wabil-600/80">
           اردو
         </span>
-        <span className="urdu-text block min-h-[1.1rem] text-sm leading-tight text-itqan-800 dark:text-itqan-200" dir="rtl">
+        <span className="urdu-text block min-h-[1.1rem] text-sm leading-tight text-wabil-800 dark:text-wabil-200" dir="rtl">
           {word.translationUrdu?.trim() || "—"}
         </span>
         <span className="muted mt-1 block text-[9px] font-medium uppercase tracking-wide">
@@ -65,7 +65,7 @@ function WordChip({ word, tajweedHtml }: { word: Word; tajweedHtml: string }) {
             <button
               type="button"
               onClick={playWord}
-              className="mt-1 text-itqan-600 hover:underline"
+              className="mt-1 text-wabil-600 hover:underline"
             >
               Play word
             </button>

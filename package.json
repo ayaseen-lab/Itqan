@@ -1,8 +1,8 @@
 {
-  "name": "itqan",
+  "name": "wabilhuda",
   "version": "0.1.0",
   "private": true,
-  "description": "Itqan (إتقان) — AI-powered Quran learning and Hifz platform",
+  "description": "WabilHuda (وبالهدى) — AI-powered Quran learning and Hifz platform",
   "scripts": {
     "dev": "next dev",
     "build": "next build",

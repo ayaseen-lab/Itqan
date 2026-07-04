@@ -135,7 +135,7 @@ export const useHifzStore = create<HifzState>()(
       reset: () => set({ cards: {}, gami: initialGami }),
     }),
     {
-      name: "itqan-hifz",
+      name: "wabilhuda-hifz",
       storage: createJSONStorage(() => localStorage),
       // We rehydrate manually on the client (see StoreHydrator) so the first
       // render matches the server and avoids hydration mismatches.

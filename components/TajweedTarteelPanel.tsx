@@ -26,7 +26,7 @@ function WordTajweedChip({
 }) {
   return (
     <div
-      className="flex min-w-[4.5rem] flex-col items-center rounded-xl border px-2 py-2 transition-colors hover:border-itqan-400 hover:bg-itqan-50/50 dark:hover:bg-itqan-950/30"
+      className="flex min-w-[4.5rem] flex-col items-center rounded-xl border px-2 py-2 transition-colors hover:border-wabil-400 hover:bg-wabil-50/50 dark:hover:bg-wabil-950/30"
       style={{ borderColor: "rgb(var(--border))" }}
     >
       <span
@@ -38,7 +38,7 @@ function WordTajweedChip({
       {transliteration && (
         <span className="muted mt-0.5 text-[10px]">{transliteration}</span>
       )}
-      <span className="mt-1 block text-[9px] font-medium uppercase tracking-wide text-itqan-600/80">
+      <span className="mt-1 block text-[9px] font-medium uppercase tracking-wide text-wabil-600/80">
         اردو
       </span>
       <span className="urdu-text block min-h-[1.1rem] text-xs leading-tight" dir="rtl">
@@ -61,7 +61,7 @@ export function TajweedTarteelPanel({ verse }: { verse: Verse }) {
   return (
     <div className="space-y-6 animate-fade-up">
       <div className="rounded-xl border p-3" style={{ borderColor: "rgb(var(--border))", backgroundColor: "rgb(var(--accent-soft) / 0.25)" }}>
-        <p className="text-sm font-semibold text-itqan-800 dark:text-itqan-200">
+        <p className="text-sm font-semibold text-wabil-800 dark:text-wabil-200">
           Tajweed &amp; Tarteel · Ayah {verse.verseKey}
         </p>
         <p className="muted mt-0.5 text-xs">
@@ -116,8 +116,8 @@ export function TajweedTarteelPanel({ verse }: { verse: Verse }) {
         <RecitationChecker expectedText={verse.textUthmani} words={verse.words} />
       </section>
 
-      <div className="rounded-xl bg-itqan-100 p-3 dark:bg-itqan-950">
-        <p className="mb-1 text-sm font-semibold text-itqan-800 dark:text-itqan-200">Tarteel tips</p>
+      <div className="rounded-xl bg-wabil-100 p-3 dark:bg-wabil-950">
+        <p className="mb-1 text-sm font-semibold text-wabil-800 dark:text-wabil-200">Tarteel tips</p>
         <ul className="list-disc space-y-0.5 pl-5 text-xs">
           {TARTEEL_TIPS.map((t) => (
             <li key={t}>{t}</li>

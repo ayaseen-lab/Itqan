@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import dynamic from "next/dynamic";
 import { Amiri, Noto_Nastaliq_Urdu } from "next/font/google";
 import "./globals.css";
 import { AppShell } from "@/components/AppShell";
@@ -7,16 +6,7 @@ import { StoreHydrator } from "@/components/StoreHydrator";
 import { QuranBackground } from "@/components/QuranBackground";
 import { AppProviders } from "@/components/AppProviders";
 import { ClientChat } from "@/components/ClientChat";
-
-const CursorFX = dynamic(
-  () => import("@/components/CursorFX").then((m) => m.CursorFX),
-  { ssr: false },
-);
-
-const TimeTracker = dynamic(
-  () => import("@/components/TimeTracker").then((m) => m.TimeTracker),
-  { ssr: false },
-);
+import { ClientExtras } from "@/components/ClientExtras";
 
 const amiri = Amiri({
   weight: ["400", "700"],
@@ -35,21 +25,28 @@ const notoUrdu = Noto_Nastaliq_Urdu({
 });
 
 export const metadata: Metadata = {
-  title: "Itqan — إتقان | AI Quran Learning Platform",
+  title: "WabilHuda — وبالهدى | AI Quran Learning Platform",
   description:
-    "Itqan (إتقان): AI-powered Quran memorization, tajweed, Hadith, Tafseer, and Hifz — built for Urdu-speaking learners worldwide.",
+    "WabilHuda (وبالهدى): AI-powered Quran memorization, tajweed, Hadith, Tafseer, and Hifz — built for Urdu-speaking learners worldwide.",
+  metadataBase: new URL("https://wabilhuda.com"),
+  applicationName: "WabilHuda",
+  openGraph: {
+    title: "WabilHuda — وبالهدى",
+    description:
+      "AI-powered Quran memorization, tajweed, Hadith, Tafseer, and Hifz.",
+    url: "https://wabilhuda.com",
+    siteName: "WabilHuda",
+    type: "website",
+  },
 };
 
 const themeScript = `
 (function () {
+  document.documentElement.classList.add('dark');
   try {
-    var stored = localStorage.getItem('itqan-theme');
-    if (stored !== 'light') {
-      document.documentElement.classList.add('dark');
-    }
-  } catch (e) {
-    document.documentElement.classList.add('dark');
-  }
+    localStorage.removeItem('wabilhuda-theme');
+    localStorage.removeItem('itqan-theme');
+  } catch (e) {}
 })();
 `;
 
@@ -59,10 +56,13 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" data-scroll-behavior="smooth" suppressHydrationWarning>
+    <html lang="en" className="dark" data-scroll-behavior="smooth" suppressHydrationWarning>
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
         <meta name="google" content="notranslate" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+        <meta name="color-scheme" content="dark" />
+        <meta name="theme-color" content="#0c0c0e" />
         <link rel="preconnect" href="https://api.quran.com" />
         <link rel="preconnect" href="https://cdn.jsdelivr.net" />
         <link rel="dns-prefetch" href="https://audio.qurancdn.com" />
@@ -72,8 +72,7 @@ export default function RootLayout({
         <div className="relative z-10">
           <StoreHydrator />
           <AppProviders>
-            <CursorFX />
-            <TimeTracker />
+            <ClientExtras />
             <AppShell>{children}</AppShell>
             <ClientChat />
           </AppProviders>

@@ -172,16 +172,16 @@ export default function TasbihPage() {
               type="button"
               onClick={() => setActive(d.id)}
               className={`card-interactive flex flex-col items-start gap-1 p-3 text-left ${
-                d.id === activeId ? "ring-2 ring-itqan-500" : ""
+                d.id === activeId ? "ring-2 ring-wabil-500" : ""
               }`}
             >
               <div className="flex w-full items-start justify-between gap-2">
                 <span className="text-sm font-semibold">{d.label}</span>
-                <span className="tabular-nums text-xs font-bold text-itqan-600">
+                <span className="tabular-nums text-xs font-bold text-wabil-600">
                   {d.count}/{d.target}
                 </span>
               </div>
-              <span className="quran-text text-base text-itqan-700 dark:text-itqan-300" dir="rtl">
+              <span className="quran-text text-base text-wabil-700 dark:text-wabil-300" dir="rtl">
                 {d.arabic}
               </span>
               <span className="muted text-[11px]">
@@ -197,13 +197,13 @@ export default function TasbihPage() {
         <p className="quran-text text-center text-2xl sm:text-3xl" dir="rtl" translate="no">
           {dhikr.arabic}
         </p>
-        <p className="mt-1 text-sm font-medium text-itqan-600">{dhikr.label}</p>
+        <p className="mt-1 text-sm font-medium text-wabil-600">{dhikr.label}</p>
         {dhikr.note && <p className="muted mt-0.5 text-xs">{dhikr.note}</p>}
 
         <button
           type="button"
           onClick={increment}
-          className="group relative mt-6 grid h-64 w-64 place-items-center rounded-full outline-none focus-visible:ring-4 focus-visible:ring-itqan-500/50"
+          className="group relative mt-6 grid h-64 w-64 place-items-center rounded-full outline-none focus-visible:ring-4 focus-visible:ring-wabil-500/50"
           aria-label={`Count ${dhikr.label}. Current ${dhikr.count} of ${dhikr.target}.`}
         >
           <svg className="absolute inset-0 h-full w-full -rotate-90" viewBox="0 0 200 200">
@@ -281,7 +281,7 @@ export default function TasbihPage() {
 
       <div className="grid grid-cols-2 gap-4 sm:grid-cols-3">
         <div className="card p-5 text-center">
-          <div className="text-3xl font-bold tabular-nums text-itqan-500">{dhikr.rounds}</div>
+          <div className="text-3xl font-bold tabular-nums text-wabil-500">{dhikr.rounds}</div>
           <div className="muted text-sm">Rounds (this dhikr)</div>
         </div>
         <div className="card p-5 text-center">

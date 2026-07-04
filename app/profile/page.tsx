@@ -88,7 +88,7 @@ export default function ProfilePage() {
   return (
     <div className="space-y-6">
       <div className="card flex flex-wrap items-center gap-4 p-6">
-        <span className="grid h-16 w-16 place-items-center overflow-hidden rounded-2xl bg-itqan-600 text-2xl font-bold text-white">
+        <span className="grid h-16 w-16 place-items-center overflow-hidden rounded-2xl bg-wabil-600 text-2xl font-bold text-white">
           {user.picture ? (
             // eslint-disable-next-line @next/next/no-img-element
             <img src={user.picture} alt="" className="h-full w-full object-cover" />
@@ -121,18 +121,18 @@ export default function ProfilePage() {
           { label: "Bookmarks", value: bookmarks.length },
         ].map((s) => (
           <div key={s.label} className="card p-4 text-center">
-            <div className="text-2xl font-bold text-itqan-600">{s.value}</div>
+            <div className="text-2xl font-bold text-wabil-600">{s.value}</div>
             <div className="muted text-xs">{s.label}</div>
           </div>
         ))}
       </div>
 
       <div className="grid gap-3 sm:grid-cols-2">
-        <Link href="/family" className="card block p-5 transition hover:border-itqan-400">
+        <Link href="/family" className="card block p-5 transition hover:border-wabil-400">
           <h2 className="font-semibold">Family</h2>
           <p className="muted mt-1 text-sm">Add children, share invite codes, track progress together.</p>
         </Link>
-        <Link href="/competition" className="card block p-5 transition hover:border-itqan-400">
+        <Link href="/competition" className="card block p-5 transition hover:border-wabil-400">
           <h2 className="font-semibold">Healthy competition</h2>
           <p className="muted mt-1 text-sm">Invite another family and compete on progress & tests.</p>
         </Link>
@@ -141,7 +141,7 @@ export default function ProfilePage() {
       {lastRead && (
         <div className="card p-4">
           <p className="text-sm font-medium">Continue reading</p>
-          <Link href={`/surah/${lastRead.surahId}`} className="text-itqan-600 hover:underline">
+          <Link href={`/surah/${lastRead.surahId}`} className="text-wabil-600 hover:underline">
             {lastRead.surahName} — Ayah {lastRead.verseKey}
           </Link>
         </div>
@@ -149,7 +149,7 @@ export default function ProfilePage() {
 
       <div className="card space-y-4 p-5">
         <h2 className="font-semibold">Manage account</h2>
-        {savedMsg && <p className="text-sm text-itqan-600">{savedMsg}</p>}
+        {savedMsg && <p className="text-sm text-wabil-600">{savedMsg}</p>}
         <label className="block">
           <span className="mb-1 block text-sm font-medium">Display name</span>
           <input className="field" value={name} onChange={(e) => setName(e.target.value)} />

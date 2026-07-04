@@ -34,7 +34,7 @@ export default function DuasPage() {
             onClick={() => setActive(t)}
             className={`rounded-full px-4 py-1.5 text-sm font-medium transition-all ${
               active === t
-                ? "bg-itqan-600 text-white shadow-md"
+                ? "bg-wabil-600 text-white shadow-md"
                 : "btn-ghost"
             }`}
           >
@@ -55,7 +55,7 @@ export default function DuasPage() {
               <p className="quran-text mt-3 text-right text-2xl leading-loose" dir="rtl">
                 {d.arabic}
               </p>
-              <p className="mt-3 text-sm italic text-itqan-500">{d.transliteration}</p>
+              <p className="mt-3 text-sm italic text-wabil-500">{d.transliteration}</p>
               <p className="muted mt-1 text-sm leading-relaxed">{d.translation}</p>
             </article>
           </Reveal>

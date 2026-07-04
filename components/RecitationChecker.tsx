@@ -117,7 +117,7 @@ export function RecitationChecker({
       <div className="flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-center">
         {listening ? (
           <div className="flex w-full flex-col gap-2 sm:w-auto sm:flex-row sm:items-center">
-            <span className="inline-flex min-h-11 items-center gap-2 rounded-xl bg-itqan-600 px-4 py-2 text-sm font-medium text-white">
+            <span className="inline-flex min-h-11 items-center gap-2 rounded-xl bg-wabil-600 px-4 py-2 text-sm font-medium text-white">
               <span className="relative flex h-2.5 w-2.5">
                 <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-white opacity-75" />
                 <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-white" />
@@ -154,7 +154,7 @@ export function RecitationChecker({
       </div>
 
       {listening && (
-        <p className="quran-text min-h-[2.5rem] rounded-lg bg-itqan-100 p-3 text-lg dark:bg-itqan-950" dir="rtl">
+        <p className="quran-text min-h-[2.5rem] rounded-lg bg-wabil-100 p-3 text-lg dark:bg-wabil-950" dir="rtl">
           {interim || "Listening…"}
         </p>
       )}

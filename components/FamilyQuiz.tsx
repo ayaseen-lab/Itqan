@@ -105,7 +105,7 @@ export function FamilyQuiz() {
 
       {done ? (
         <div className="space-y-3 text-center">
-          <p className="text-2xl font-bold text-itqan-600">
+          <p className="text-2xl font-bold text-wabil-600">
             {score}/{quiz.questions.length}
           </p>
           <p className="text-sm">
@@ -124,11 +124,11 @@ export function FamilyQuiz() {
             <span className="muted">
               Question {index + 1} / {quiz.questions.length}
             </span>
-            <span className="font-medium text-itqan-600">Score {score}</span>
+            <span className="font-medium text-wabil-600">Score {score}</span>
           </div>
           <div className="h-1.5 overflow-hidden rounded-full bg-black/5 dark:bg-white/10">
             <div
-              className="h-full rounded-full bg-itqan-500 transition-all duration-300"
+              className="h-full rounded-full bg-wabil-500 transition-all duration-300"
               style={{ width: `${((index + (picked !== null ? 1 : 0)) / quiz.questions.length) * 100}%` }}
             />
           </div>
@@ -144,7 +144,7 @@ export function FamilyQuiz() {
                   onClick={() => choose(i)}
                   className={`rounded-xl border px-4 py-3 text-left text-sm transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md ${
                     isAnswer
-                      ? "border-itqan-500 bg-itqan-500/15"
+                      ? "border-wabil-500 bg-wabil-500/15"
                       : isPick
                         ? "border-red-400 bg-red-500/10"
                         : ""

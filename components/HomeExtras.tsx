@@ -172,9 +172,9 @@ export function FeatureShowcase() {
               >
                 {f.icon}
               </span>
-              <h3 className="mt-3 font-semibold group-hover:text-itqan-500">{f.title}</h3>
+              <h3 className="mt-3 font-semibold group-hover:text-wabil-500">{f.title}</h3>
               <p className="muted mt-1 text-sm leading-relaxed">{f.desc}</p>
-              <span className="mt-3 text-sm font-medium text-itqan-500 opacity-0 transition-opacity group-hover:opacity-100">
+              <span className="mt-3 text-sm font-medium text-wabil-500 opacity-0 transition-opacity group-hover:opacity-100">
                 Open →
               </span>
             </Link>

@@ -1,6 +1,6 @@
-# Itqan — إتقان
+# WabilHuda — وبالهدى
 
-**Itqan** (Arabic: إتقان — mastery, excellence) is a complete AI-powered Quran learning platform built with Next.js.
+**WabilHuda** (Arabic: وبالهدى — and by the guidance) is a complete AI-powered Quran learning platform at [wabilhuda.com](https://wabilhuda.com), built with Next.js.
 
 Memorize the Quran (Hifz), study tajweed, check your recitation, read English Tafseer, learn daily Hadith in Urdu & English, browse by Juz, save bookmarks, track streaks & XP, and chat with a free AI teacher.
 

@@ -125,13 +125,13 @@ export default function CompetitionPage() {
           )}
         </p>
       )}
-      {info && <p className="rounded-lg bg-itqan-500/10 px-3 py-2 text-sm text-itqan-700 dark:text-itqan-300">{info}</p>}
+      {info && <p className="rounded-lg bg-wabil-500/10 px-3 py-2 text-sm text-wabil-700 dark:text-wabil-300">{info}</p>}
 
       {!hasFamily && !loading && (
         <div className="card p-5">
           <p className="text-sm">
             You need a family first.{" "}
-            <Link href="/family" className="font-semibold text-itqan-600 hover:underline">
+            <Link href="/family" className="font-semibold text-wabil-600 hover:underline">
               Create or join a family
             </Link>{" "}
             then come back to start a competition.
@@ -203,7 +203,7 @@ export default function CompetitionPage() {
                     </p>
                     <p className="mt-1 text-sm">
                       Invite code:{" "}
-                      <span className="font-mono font-semibold tracking-widest text-itqan-600">
+                      <span className="font-mono font-semibold tracking-widest text-wabil-600">
                         {competition.invite_code}
                       </span>
                     </p>
@@ -242,7 +242,7 @@ export default function CompetitionPage() {
                           className="border-b last:border-0"
                           style={{ borderColor: "rgb(var(--border))" }}
                         >
-                          <td className="py-2 pr-3 font-bold text-itqan-600">{i + 1}</td>
+                          <td className="py-2 pr-3 font-bold text-wabil-600">{i + 1}</td>
                           <td className="py-2 pr-3 font-medium">{s.familyName}</td>
                           <td className="py-2 pr-3 tabular-nums">{s.progressPoints}</td>
                           <td className="py-2 pr-3 tabular-nums">{s.testsCompleted}</td>

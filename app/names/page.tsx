@@ -55,8 +55,8 @@ export default function NamesPage() {
                 </span>
                 <div className="min-w-0 flex-1">
                   <div className="flex items-baseline justify-between gap-2">
-                    <span className="font-semibold group-hover:text-itqan-500">{n.transliteration}</span>
-                    <span className="quran-text text-2xl leading-none text-itqan-500" dir="rtl">
+                    <span className="font-semibold group-hover:text-wabil-500">{n.transliteration}</span>
+                    <span className="quran-text text-2xl leading-none text-wabil-500" dir="rtl">
                       {n.arabic}
                     </span>
                   </div>

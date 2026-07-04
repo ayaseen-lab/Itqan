@@ -8,7 +8,7 @@ import { computeStats } from "@/lib/srs";
 function Stat({ label, value, accent }: { label: string; value: number; accent?: boolean }) {
   return (
     <div className="card card-hover p-4">
-      <div className={`text-2xl font-bold ${accent ? "text-itqan-500" : ""}`}>{value}</div>
+      <div className={`text-2xl font-bold ${accent ? "text-wabil-500" : ""}`}>{value}</div>
       <div className="muted text-sm">{label}</div>
     </div>
   );
@@ -28,10 +28,10 @@ export function Dashboard() {
 
   return (
     <section className="space-y-3">
-      <div className="flex items-baseline justify-between">
-        <h2 className="text-lg font-semibold">Today&apos;s memorization</h2>
-        <Link href="/memorize" className="text-sm font-medium text-itqan-600 hover:underline">
-          Open review session &rarr;
+      <div className="flex flex-wrap items-baseline justify-between gap-2">
+        <h2 className="text-base font-semibold sm:text-lg">Today&apos;s memorization</h2>
+        <Link href="/memorize" className="shrink-0 text-sm font-medium text-wabil-400 hover:underline">
+          Review &rarr;
         </Link>
       </div>
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">

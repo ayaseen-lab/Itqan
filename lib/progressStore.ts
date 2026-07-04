@@ -120,7 +120,7 @@ export const useProgressStore = create<ProgressState>()(
         set((s) => ({ goals: { ...s.goals, ...patch } })),
     }),
     {
-      name: "itqan-progress",
+      name: "wabilhuda-progress",
       storage: createJSONStorage(() => localStorage),
       skipHydration: true,
     },

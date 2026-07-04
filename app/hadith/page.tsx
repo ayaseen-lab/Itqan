@@ -64,7 +64,7 @@ export default function HadithPage() {
         </div>
         <div className="muted mt-6 flex flex-wrap items-center gap-3 border-t pt-4 text-sm" style={{ borderColor: "rgb(var(--border))" }}>
           <span>
-            <span className="font-medium text-itqan-600">Ref:</span> {formatHadithRef(hadith)}
+            <span className="font-medium text-wabil-600">Ref:</span> {formatHadithRef(hadith)}
           </span>
           <span>Source: {hadith.source}</span>
           {hadith.narrator && <span>Narrator: {hadith.narrator}</span>}
@@ -74,14 +74,14 @@ export default function HadithPage() {
             <button
               type="button"
               onClick={() => setLang("urdu")}
-              className={`rounded-lg px-3 py-1 text-sm ${lang === "urdu" ? "bg-itqan-600 text-white" : ""}`}
+              className={`rounded-lg px-3 py-1 text-sm ${lang === "urdu" ? "bg-wabil-600 text-white" : ""}`}
             >
               Urdu
             </button>
             <button
               type="button"
               onClick={() => setLang("english")}
-              className={`rounded-lg px-3 py-1 text-sm ${lang === "english" ? "bg-itqan-600 text-white" : ""}`}
+              className={`rounded-lg px-3 py-1 text-sm ${lang === "english" ? "bg-wabil-600 text-white" : ""}`}
             >
               English
             </button>

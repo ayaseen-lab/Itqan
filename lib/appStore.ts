@@ -37,7 +37,7 @@ export const useAppStore = create<AppState>()(
         set({ lastRead: { ...entry, at: Date.now() } }),
     }),
     {
-      name: "itqan-app",
+      name: "wabilhuda-app",
       storage: createJSONStorage(() => localStorage),
       skipHydration: true,
     },

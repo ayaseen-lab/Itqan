@@ -23,7 +23,7 @@ export default function SettingsPage() {
     <div className="space-y-6">
       <div>
         <h1 className="text-2xl font-bold">Settings</h1>
-        <p className="muted mt-1 text-sm">Manage your Itqan experience</p>
+        <p className="muted mt-1 text-sm">Manage your WabilHuda experience</p>
       </div>
 
       <section className="card divide-y" style={{ borderColor: "rgb(var(--border))" }}>
@@ -34,7 +34,7 @@ export default function SettingsPage() {
         <div className="p-4">
           <h2 className="font-semibold">AI Assistant</h2>
           <p className="muted text-sm">
-            Built-in Itqan knowledge engine works free with no API key. For advanced answers,
+            Built-in WabilHuda knowledge engine works free with no API key. For advanced answers,
             add a free <code className="text-xs">GROQ_API_KEY</code> in .env.local (console.groq.com).
           </p>
         </div>
@@ -55,7 +55,7 @@ export default function SettingsPage() {
       </section>
 
       <p className="muted text-center text-xs">
-        <Link href="/profile" className="text-itqan-600 hover:underline">
+        <Link href="/profile" className="text-wabil-600 hover:underline">
           ← Back to profile
         </Link>
       </p>

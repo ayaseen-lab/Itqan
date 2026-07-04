@@ -1,18 +1,22 @@
 "use client";
 
 import { useState } from "react";
+import { usePathname } from "next/navigation";
 import { RecitationModal } from "./RecitationModal";
 
 /** Header mic — opens recitation check modal. */
 export function RecitationMicButton() {
   const [open, setOpen] = useState(false);
+  const isHome = usePathname() === "/";
 
   return (
     <>
       <button
         type="button"
         onClick={() => setOpen(true)}
-        className="btn-ghost relative h-9 w-9 !px-0 text-itqan-500"
+        className={`btn-ghost relative h-9 w-9 !px-0 ${
+          isHome ? "!border-white/20 text-[#f0d78c]" : "text-wabil-400"
+        }`}
         aria-label="Check recitation with microphone"
         title="Check your recitation"
       >

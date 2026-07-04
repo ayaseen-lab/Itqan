@@ -50,13 +50,13 @@ export default function JuzPage() {
               href={`/surah/${surah}`}
               className="card flex items-center gap-4 p-4 transition-transform hover:-translate-y-0.5"
             >
-              <span className="grid h-12 w-12 shrink-0 place-items-center rounded-xl bg-itqan-600 text-lg font-bold text-white">
+              <span className="grid h-12 w-12 shrink-0 place-items-center rounded-xl bg-wabil-600 text-lg font-bold text-white">
                 {j.id}
               </span>
               <span className="min-w-0">
                 <span className="block font-semibold">Juz (Para) {j.id}</span>
                 <span className="muted block truncate text-xs">{j.label}</span>
-                <span className="text-xs text-itqan-600">Start: {j.start}</span>
+                <span className="text-xs text-wabil-600">Start: {j.start}</span>
               </span>
             </Link>
           );

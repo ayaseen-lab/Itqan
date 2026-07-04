@@ -123,7 +123,7 @@ export function HifzParahPlayer() {
           </button>
         )}
         {playing && current && (
-          <span className="text-sm font-medium text-itqan-600">
+          <span className="text-sm font-medium text-wabil-600">
             Playing {current.verseKey} ({index + 1}/{ayahs.length})
           </span>
         )}
@@ -132,7 +132,7 @@ export function HifzParahPlayer() {
       {playing && (
         <div className="h-2 overflow-hidden rounded-full bg-black/5 dark:bg-white/10">
           <div
-            className="h-full rounded-full bg-itqan-500 transition-all duration-300"
+            className="h-full rounded-full bg-wabil-500 transition-all duration-300"
             style={{ width: `${((index + 1) / Math.max(ayahs.length, 1)) * 100}%` }}
           />
         </div>

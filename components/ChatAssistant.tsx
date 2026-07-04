@@ -59,19 +59,22 @@ export function ChatAssistant() {
       <button
         type="button"
         onClick={() => setOpen(!open)}
-        className="fixed bottom-5 right-5 z-40 grid h-14 w-14 place-items-center rounded-full bg-itqan-600 text-white shadow-lg transition-transform hover:scale-105"
+        className="fixed bottom-[calc(4.75rem+env(safe-area-inset-bottom))] right-3 z-40 grid h-12 w-12 place-items-center rounded-full bg-wabil-600 text-white shadow-lg transition-transform hover:scale-105 active:scale-95 sm:h-14 sm:w-14 lg:bottom-5 lg:right-5"
         aria-label="Open AI assistant"
       >
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
           <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z" />
         </svg>
       </button>
 
       {open && (
-        <div className="fixed bottom-24 right-5 z-40 flex h-[70vh] max-h-[560px] w-[calc(100vw-2.5rem)] max-w-sm flex-col overflow-hidden rounded-2xl border shadow-2xl" style={{ borderColor: "rgb(var(--border))", backgroundColor: "rgb(var(--card))" }}>
+        <div
+          className="fixed inset-x-3 bottom-[calc(8.5rem+env(safe-area-inset-bottom))] z-40 flex h-[min(70vh,520px)] max-h-[560px] flex-col overflow-hidden rounded-2xl border shadow-2xl sm:inset-x-auto sm:right-5 sm:bottom-24 sm:w-[calc(100vw-2.5rem)] sm:max-w-sm lg:bottom-24 lg:right-5"
+          style={{ borderColor: "rgb(var(--border))", backgroundColor: "rgb(var(--card))" }}
+        >
           <div className="flex items-center justify-between border-b px-4 py-3" style={{ borderColor: "rgb(var(--border))" }}>
             <div>
-              <p className="font-semibold">Itqan Assistant</p>
+              <p className="font-semibold">WabilHuda Assistant</p>
               {context && <p className="muted text-xs">Discussing ayah {context.verseKey}</p>}
             </div>
             <button type="button" onClick={() => setOpen(false)} className="btn-ghost h-8 w-8 !px-0" aria-label="Close assistant">
@@ -85,7 +88,7 @@ export function ChatAssistant() {
             {messages.length === 0 && (
               <div className="space-y-3">
                 <p className="muted text-sm">
-                  Ask about Tajweed, Hifz tips, Surah virtues, or ayah meanings. Powered by Itqan&apos;s
+                  Ask about Tajweed, Hifz tips, Surah virtues, or ayah meanings. Powered by WabilHuda&apos;s
                   built-in knowledge — no API key needed.
                 </p>
                 <div className="flex flex-col gap-2">
@@ -100,7 +103,7 @@ export function ChatAssistant() {
 
             {messages.map((m, i) => (
               <div key={i} className={m.role === "user" ? "flex justify-end" : "flex justify-start"}>
-                <div className={`max-w-[85%] whitespace-pre-wrap rounded-2xl px-3 py-2 text-sm ${m.role === "user" ? "bg-itqan-600 text-white" : "border"}`} style={m.role === "assistant" ? { borderColor: "rgb(var(--border))" } : undefined}>
+                <div className={`max-w-[85%] whitespace-pre-wrap rounded-2xl px-3 py-2 text-sm ${m.role === "user" ? "bg-wabil-600 text-white" : "border"}`} style={m.role === "assistant" ? { borderColor: "rgb(var(--border))" } : undefined}>
                   {m.content || (loading && i === messages.length - 1 ? "Thinking..." : "")}
                 </div>
               </div>
@@ -119,7 +122,7 @@ export function ChatAssistant() {
               value={input}
               onChange={(e) => setInput(e.target.value)}
               placeholder="Ask anything about the Quran..."
-              className="flex-1 rounded-xl border bg-transparent px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-itqan-500"
+              className="flex-1 rounded-xl border bg-transparent px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-wabil-500"
               style={{ borderColor: "rgb(var(--border))" }}
               aria-label="Message"
             />

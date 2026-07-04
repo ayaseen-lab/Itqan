@@ -101,7 +101,7 @@ export function HifzAddRange() {
       <button type="submit" className="btn-primary w-full sm:w-auto" disabled={busy}>
         {busy ? "Adding…" : "Add range to Hifz"}
       </button>
-      {msg && <p className="text-sm text-itqan-600">{msg}</p>}
+      {msg && <p className="text-sm text-wabil-600">{msg}</p>}
     </form>
   );
 }

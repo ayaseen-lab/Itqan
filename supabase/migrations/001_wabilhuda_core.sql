@@ -1,4 +1,4 @@
--- Itqan core schema: profiles, families, progress, healthy competitions
+-- WabilHuda core schema: profiles, families, progress, healthy competitions
 -- Apply in Supabase SQL Editor, or: supabase db push
 
 -- Profiles (1:1 with auth.users)

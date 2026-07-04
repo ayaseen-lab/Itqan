@@ -60,8 +60,8 @@ export function SurahList({ chapters }: { chapters: Chapter[] }) {
               onClick={() => setFilter(c.id)}
               className={`rounded-xl px-3.5 py-2.5 text-sm font-medium transition-colors ${
                 filter === c.id
-                  ? "bg-itqan-600 text-white shadow"
-                  : "border hover:border-itqan-400"
+                  ? "bg-wabil-600 text-white shadow"
+                  : "border hover:border-wabil-400"
               }`}
               style={filter === c.id ? undefined : { borderColor: "rgb(var(--border))" }}
             >
@@ -79,7 +79,7 @@ export function SurahList({ chapters }: { chapters: Chapter[] }) {
               className="card card-hover group flex items-center gap-3.5 p-4 transition-all duration-200 hover:scale-[1.02] hover:shadow-md"
             >
               <span className="relative grid h-11 w-11 shrink-0 place-items-center">
-                <svg viewBox="0 0 44 44" className="absolute inset-0 h-full w-full text-itqan-300 dark:text-itqan-700" aria-hidden="true">
+                <svg viewBox="0 0 44 44" className="absolute inset-0 h-full w-full text-wabil-300 dark:text-wabil-700" aria-hidden="true">
                   <path
                     d="M22 1.5 32 6 40.5 14.5 45 24.5 40.5 34.5 32 43 22 47.5 12 43 3.5 34.5 -1 24.5 3.5 14.5 12 6 Z"
                     transform="translate(0 -2.5) scale(0.955)"
@@ -87,18 +87,18 @@ export function SurahList({ chapters }: { chapters: Chapter[] }) {
                     opacity="0.18"
                   />
                 </svg>
-                <span className="relative text-sm font-bold text-itqan-600 dark:text-itqan-300">
+                <span className="relative text-sm font-bold text-wabil-600 dark:text-wabil-300">
                   {c.id}
                 </span>
               </span>
               <span className="min-w-0 flex-1">
-                <span className="block font-semibold group-hover:text-itqan-500">{c.nameSimple}</span>
+                <span className="block font-semibold group-hover:text-wabil-500">{c.nameSimple}</span>
                 <span className="muted block truncate text-xs">
                   {c.translatedName} · {c.versesCount} ayahs
                 </span>
               </span>
               <span className="flex flex-col items-end">
-                <span className="quran-text text-xl leading-none text-itqan-700 dark:text-itqan-200">{c.nameArabic}</span>
+                <span className="quran-text text-xl leading-none text-wabil-700 dark:text-wabil-200">{c.nameArabic}</span>
                 <span className="mt-1 text-[10px] font-medium capitalize text-gold-500">
                   {c.revelationPlace === "makkah" ? "Makki" : "Madani"}
                 </span>

@@ -246,7 +246,7 @@ export const useTasbihStore = create<TasbihState>()(
       },
     }),
     {
-      name: "itqan-tasbih-v2",
+      name: "wabilhuda-tasbih-v2",
       storage: createJSONStorage(() => localStorage),
       skipHydration: true,
       merge: (persisted, current) => {

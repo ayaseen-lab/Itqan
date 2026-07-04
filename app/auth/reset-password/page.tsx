@@ -45,7 +45,7 @@ export default function ResetPasswordPage() {
         </p>
 
         {done ? (
-          <p className="mt-6 text-sm text-itqan-600">Password updated. Redirecting to your profile…</p>
+          <p className="mt-6 text-sm text-wabil-600">Password updated. Redirecting to your profile…</p>
         ) : (
           <form onSubmit={submit} className="mt-6 space-y-4">
             {error && <p className="text-sm text-red-500">{error}</p>}

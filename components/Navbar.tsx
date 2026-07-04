@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { ThemeToggle } from "./ThemeToggle";
 import { DueBadge } from "./DueBadge";
 
 export function Navbar() {
@@ -19,7 +18,7 @@ export function Navbar() {
             </svg>
           </span>
           <span className="flex flex-col leading-none">
-            <span className="text-lg">Itqan</span>
+            <span className="text-lg">WabilHuda</span>
             <span className="muted text-[10px] font-normal">Quran Memorizer</span>
           </span>
         </Link>
@@ -32,7 +31,6 @@ export function Navbar() {
             Memorize
             <DueBadge />
           </Link>
-          <ThemeToggle />
         </div>
       </nav>
     </header>

@@ -2,7 +2,7 @@ import { MemorizeSession } from "@/components/MemorizeSession";
 import { GamificationPanel } from "@/components/GamificationPanel";
 
 export const metadata = {
-  title: "Hifz Review — Itqan",
+  title: "Hifz Review — WabilHuda",
 };
 
 export default function MemorizePage() {

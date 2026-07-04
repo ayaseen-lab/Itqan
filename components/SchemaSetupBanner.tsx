@@ -30,7 +30,7 @@ export function SchemaSetupBanner() {
       <p className="mt-1 opacity-90">{message}</p>
       <Link
         href="/setup"
-        className="mt-2 inline-flex font-semibold text-itqan-700 underline dark:text-itqan-300"
+        className="mt-2 inline-flex font-semibold text-wabil-700 underline dark:text-wabil-300"
       >
         Open Setup →
       </Link>

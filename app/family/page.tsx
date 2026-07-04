@@ -157,7 +157,7 @@ export default function FamilyPage() {
           )}
         </p>
       )}
-      {info && <p className="rounded-lg bg-itqan-500/10 px-3 py-2 text-sm text-itqan-700 dark:text-itqan-300">{info}</p>}
+      {info && <p className="rounded-lg bg-wabil-500/10 px-3 py-2 text-sm text-wabil-700 dark:text-wabil-300">{info}</p>}
 
       {loading ? (
         <p className="muted text-sm">Loading family…</p>
@@ -211,7 +211,7 @@ export default function FamilyPage() {
               <h2 className="text-xl font-bold">{bundle.family.name}</h2>
               <p className="muted text-sm">
                 Invite code:{" "}
-                <span className="font-mono text-base font-semibold tracking-widest text-itqan-600">
+                <span className="font-mono text-base font-semibold tracking-widest text-wabil-600">
                   {bundle.family.invite_code}
                 </span>
               </p>
@@ -273,16 +273,16 @@ export default function FamilyPage() {
                     </div>
 
                     <div className="grid grid-cols-2 gap-2 text-center text-xs sm:grid-cols-4">
-                      <div className="rounded-lg bg-itqan-500/10 p-2">
-                        <div className="text-lg font-bold text-itqan-600">{totals.verses}</div>
+                      <div className="rounded-lg bg-wabil-500/10 p-2">
+                        <div className="text-lg font-bold text-wabil-600">{totals.verses}</div>
                         Verses
                       </div>
-                      <div className="rounded-lg bg-itqan-500/10 p-2">
-                        <div className="text-lg font-bold text-itqan-600">{totals.hifz}</div>
+                      <div className="rounded-lg bg-wabil-500/10 p-2">
+                        <div className="text-lg font-bold text-wabil-600">{totals.hifz}</div>
                         Hifz
                       </div>
-                      <div className="rounded-lg bg-itqan-500/10 p-2">
-                        <div className="text-lg font-bold text-itqan-600">{totals.tests}</div>
+                      <div className="rounded-lg bg-wabil-500/10 p-2">
+                        <div className="text-lg font-bold text-wabil-600">{totals.tests}</div>
                         Tests
                       </div>
                       <div className="rounded-lg bg-amber-500/10 p-2">

@@ -33,8 +33,8 @@ export function TarteelPractice({ verse }: { verse: Verse }) {
         <RecitationChecker expectedText={verse.textUthmani} words={verse.words} />
       </div>
 
-      <div className="rounded-xl bg-itqan-100 p-3 dark:bg-itqan-950">
-        <p className="mb-1 text-sm font-semibold text-itqan-800 dark:text-itqan-200">Tarteel tips</p>
+      <div className="rounded-xl bg-wabil-100 p-3 dark:bg-wabil-950">
+        <p className="mb-1 text-sm font-semibold text-wabil-800 dark:text-wabil-200">Tarteel tips</p>
         <ul className="list-disc space-y-0.5 pl-5 text-xs">
           {TIPS.map((t) => (
             <li key={t}>{t}</li>

@@ -103,46 +103,46 @@ function QuickIcon({ name }: { name: string }) {
 
 export function HeroSection() {
   return (
-    <section className="hero-section relative left-1/2 right-1/2 -ml-[50vw] -mr-[50vw] w-screen overflow-hidden">
+    <section className="hero-section relative w-full overflow-x-clip">
       <div className="hero-bg absolute inset-0" aria-hidden="true" />
       <div className="hero-pattern absolute inset-0 opacity-[0.07]" aria-hidden="true" />
       <div className="hero-ambient-glow absolute inset-0" aria-hidden="true" />
       <div className="hero-particles absolute inset-0" aria-hidden="true" />
 
-      <div className="relative z-10 mx-auto max-w-7xl px-4 py-10 sm:px-6 sm:py-14 lg:py-16 xl:py-20">
-        <div className="grid items-center gap-8 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)] lg:gap-10 xl:gap-12">
-          <div className="relative z-20 w-full text-center lg:text-left">
-            <p className="mb-3 inline-flex items-center gap-2 rounded-full border border-[#f0d78c]/25 bg-[#f0d78c]/10 px-3 py-1 text-xs font-medium text-[#f0d78c]">
-              <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-[#f0d78c]" />
-              Recitation improvement · AI-powered Hifz
+      <div className="relative z-10 mx-auto w-full max-w-[1400px] px-5 py-10 sm:px-8 sm:py-14 md:px-10 lg:px-12 lg:py-16 xl:px-14 xl:py-20">
+        <div className="grid items-center gap-8 md:gap-10 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)] lg:gap-12 xl:gap-16">
+          <div className="relative z-20 flex w-full min-w-0 flex-col items-center text-center lg:items-start lg:text-left">
+            <p className="mb-4 inline-flex max-w-full items-center gap-2 rounded-full border border-[#f0d78c]/25 bg-[#f0d78c]/10 px-3 py-1.5 text-[11px] font-medium leading-snug text-[#f0d78c] sm:text-xs">
+              <span className="h-1.5 w-1.5 shrink-0 animate-pulse rounded-full bg-[#f0d78c]" />
+              <span>Recitation · AI-powered Hifz</span>
             </p>
 
             <div className="flex flex-col items-center gap-1.5 lg:flex-row lg:items-end lg:gap-4">
               <p
-                className="quran-text hero-calligraphy text-[clamp(2.75rem,9vw,4.5rem)] font-bold leading-none"
+                className="quran-text hero-calligraphy text-[clamp(2.25rem,6vw,3.75rem)] font-bold leading-none"
                 dir="rtl"
                 translate="no"
               >
-                إتقان
+                وبالهدى
               </p>
               <p className="hero-brand-en text-sm font-medium tracking-[0.25em] uppercase lg:pb-2">
-                Itqan
+                WabilHuda
               </p>
             </div>
 
-            <h1 className="mt-4 text-2xl font-bold leading-tight text-cream sm:text-3xl xl:text-[2.75rem] xl:leading-tight">
+            <h1 className="mt-4 max-w-xl text-[1.4rem] font-bold leading-snug text-cream sm:text-3xl lg:max-w-none lg:text-[2.15rem] xl:text-[2.6rem] xl:leading-tight">
               Master recitation.{" "}
               <span className="bg-gradient-to-r from-[#f0d78c] to-[#d4a853] bg-clip-text text-transparent">
                 Memorize with AI.
               </span>
             </h1>
 
-            <p className="mx-auto mt-4 max-w-lg text-base leading-relaxed text-cream/80 sm:text-lg lg:mx-0">
+            <p className="mt-4 max-w-xl text-sm leading-relaxed text-cream/80 sm:text-base lg:text-lg">
               Perfect your tajweed with mic feedback, then build Hifz with an AI coach — Tafheem,
               Tafseer, and natural voice included.
             </p>
 
-            <div className="hero-cta-row mt-7">
+            <div className="hero-cta-row mt-6 sm:mt-8">
               <Link href="/quran" className="hero-btn-primary shadow-lg shadow-black/20">
                 Perfect Recitation
               </Link>
@@ -157,9 +157,9 @@ export function HeroSection() {
               </span>
             </div>
 
-            <blockquote className="hero-dedication mx-auto mt-8 max-w-2xl lg:mx-0 lg:max-w-none">
-              <div className="hero-dedication-text space-y-2 text-sm leading-relaxed text-cream/90 sm:text-[0.95rem]">
-                <p className="hero-dedication-line hero-dedication-line--1 hero-dedication-line--nowrap">
+            <blockquote className="hero-dedication mt-7 w-full max-w-xl sm:mt-9 lg:max-w-2xl">
+              <div className="hero-dedication-text space-y-2 text-[13px] leading-relaxed text-cream/90 sm:text-sm lg:text-[0.95rem]">
+                <p className="hero-dedication-line hero-dedication-line--1">
                   Remember parents in your prayers, especially my{" "}
                   <span className="hero-dedication-name font-semibold text-[#f0d78c]">
                     Taya Abu (Atta ur Rehman)
@@ -176,7 +176,7 @@ export function HeroSection() {
                 </p>
               </div>
               <p
-                className="quran-text hero-ayah mt-4 text-center text-[#f0d78c]"
+                className="quran-text hero-ayah mt-3 text-center text-[#f0d78c] sm:mt-4"
                 dir="rtl"
                 lang="ar"
                 translate="no"
@@ -189,18 +189,18 @@ export function HeroSection() {
             </blockquote>
           </div>
 
-          <div className="relative z-10 mx-auto w-full max-w-[360px] sm:max-w-[420px] lg:mx-0 lg:max-w-none">
-            <div className="hero-mushaf-glow absolute -inset-6 rounded-full blur-3xl" aria-hidden="true" />
+          <div className="relative z-10 mx-auto w-full max-w-[340px] sm:max-w-[440px] lg:mx-0 lg:max-w-none lg:justify-self-end">
+            <div className="hero-mushaf-glow absolute -inset-4 rounded-full blur-3xl sm:-inset-8" aria-hidden="true" />
             <div className="hero-mihrab-frame relative">
               <div className="hero-mihrab-arch pointer-events-none absolute inset-0" aria-hidden="true" />
-              <div className="hero-image-frame relative overflow-hidden rounded-2xl">
+              <div className="hero-image-frame relative overflow-hidden rounded-2xl lg:rounded-3xl">
                 <Image
-                  src="/itqan-hero-mushaf.png"
+                  src="/wabilhuda-hero-mushaf.png"
                   alt="Open Quran glowing with golden light inside an emerald mihrab arch"
                   width={1536}
                   height={1024}
                   priority
-                  sizes="(max-width: 640px) 360px, (max-width: 1024px) 420px, 45vw"
+                  sizes="(max-width: 640px) 340px, (max-width: 1024px) 440px, 42vw"
                   className="hero-mushaf-image aspect-[3/2] h-auto w-full object-cover"
                 />
                 <div className="hero-image-shine pointer-events-none absolute inset-0" aria-hidden="true" />
@@ -209,7 +209,7 @@ export function HeroSection() {
           </div>
         </div>
 
-        <nav className="hero-menu-bar relative z-30 mt-14 sm:mt-16" aria-label="Quick links">
+        <nav className="hero-menu-bar relative z-30 mt-12 sm:mt-14 lg:mt-16" aria-label="Quick links">
           <p className="mb-3 text-center text-[11px] font-semibold uppercase tracking-[0.2em] text-[#f0d78c]/70 lg:text-left">
             Explore
           </p>
@@ -220,7 +220,7 @@ export function HeroSection() {
                   <span className="hero-quick-link-icon" aria-hidden="true">
                     <QuickIcon name={link.icon} />
                   </span>
-                  <span>{link.label}</span>
+                  <span className="hero-quick-link-label">{link.label}</span>
                   <span className="hero-quick-link-glow" aria-hidden="true" />
                 </Link>
               </li>
@@ -230,7 +230,7 @@ export function HeroSection() {
       </div>
 
       <div
-        className="pointer-events-none absolute inset-x-0 bottom-0 z-0 h-20"
+        className="pointer-events-none absolute inset-x-0 bottom-0 z-0 h-16 sm:h-24"
         style={{ background: "linear-gradient(to top, rgb(var(--background)), transparent)" }}
         aria-hidden="true"
       />

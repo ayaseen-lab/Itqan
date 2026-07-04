@@ -31,7 +31,7 @@ const VERSE_COUNTS = [
 
 async function apiGet(url) {
   const res = await fetch(url, {
-    headers: { Accept: "application/json", "User-Agent": "Itqan-Data-Download/1.0" },
+    headers: { Accept: "application/json", "User-Agent": "WabilHuda-Data-Download/1.0" },
   });
   if (!res.ok) throw new Error(`HTTP ${res.status} ${url}`);
   return res.json();

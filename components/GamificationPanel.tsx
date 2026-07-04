@@ -29,7 +29,7 @@ export function GamificationPanel({ compact = false }: { compact?: boolean }) {
     <section className="card p-5">
       <div className="flex flex-wrap items-center justify-between gap-4">
         <div className="flex items-center gap-4">
-          <div className="grid h-14 w-14 place-items-center rounded-2xl bg-itqan-600 text-white">
+          <div className="grid h-14 w-14 place-items-center rounded-2xl bg-wabil-600 text-white">
             <div className="text-center leading-none">
               <div className="text-[10px] uppercase tracking-wide opacity-80">Lvl</div>
               <div className="text-xl font-bold">{level}</div>
@@ -54,8 +54,8 @@ export function GamificationPanel({ compact = false }: { compact?: boolean }) {
         </div>
       </div>
 
-      <div className="mt-3 h-2 w-full overflow-hidden rounded-full bg-itqan-100 dark:bg-itqan-950">
-        <div className="h-full rounded-full bg-itqan-500 transition-all" style={{ width: `${Math.round(progress * 100)}%` }} />
+      <div className="mt-3 h-2 w-full overflow-hidden rounded-full bg-wabil-100 dark:bg-wabil-950">
+        <div className="h-full rounded-full bg-wabil-500 transition-all" style={{ width: `${Math.round(progress * 100)}%` }} />
       </div>
 
       {!compact && (

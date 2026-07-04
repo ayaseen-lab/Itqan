@@ -27,7 +27,7 @@ export function HomeWidgets() {
         {mounted && lastRead && (
           <Link
             href={`/surah/${lastRead.surahId}`}
-            className="rounded-xl border p-3 transition-colors hover:border-itqan-400"
+            className="rounded-xl border p-3 transition-colors hover:border-wabil-400"
             style={{ borderColor: "rgb(var(--border))" }}
           >
             <span className="chip text-[10px]">Continue reading</span>
@@ -41,7 +41,7 @@ export function HomeWidgets() {
             <Link
               key={q.href}
               href={q.href}
-              className="rounded-xl border px-3 py-2.5 text-sm font-medium transition-colors hover:border-itqan-400 hover:text-itqan-600"
+              className="rounded-xl border px-3 py-2.5 text-sm font-medium transition-colors hover:border-wabil-400 hover:text-wabil-600"
               style={{ borderColor: "rgb(var(--border))" }}
             >
               {q.label}
@@ -51,7 +51,7 @@ export function HomeWidgets() {
 
         <Link
           href="/hadith"
-          className="mt-auto rounded-xl border p-3 transition-colors hover:border-itqan-400"
+          className="mt-auto rounded-xl border p-3 transition-colors hover:border-wabil-400"
           style={{ borderColor: "rgb(var(--border))" }}
         >
           <span className="chip text-[10px]">Hadith of the day</span>

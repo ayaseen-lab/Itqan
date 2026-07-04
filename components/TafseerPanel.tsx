@@ -85,8 +85,8 @@ export function TafseerPanel(props: TafseerPanelProps) {
             onClick={() => setLang("ur")}
             className={`rounded-full px-3 py-1 transition ${
               lang === "ur"
-                ? "bg-itqan-600 text-white"
-                : "text-itqan-800 dark:text-itqan-200"
+                ? "bg-wabil-600 text-white"
+                : "text-wabil-800 dark:text-wabil-200"
             }`}
           >
             اردو تفسیر
@@ -96,8 +96,8 @@ export function TafseerPanel(props: TafseerPanelProps) {
             onClick={() => setLang("en")}
             className={`rounded-full px-3 py-1 transition ${
               lang === "en"
-                ? "bg-itqan-600 text-white"
-                : "text-itqan-800 dark:text-itqan-200"
+                ? "bg-wabil-600 text-white"
+                : "text-wabil-800 dark:text-wabil-200"
             }`}
           >
             English Tafseer

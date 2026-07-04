@@ -30,7 +30,7 @@ async function fetchFromQuranApi(surah: number, ayah: number): Promise<Response 
     const raw = data.verse?.audio?.url;
     if (!raw) return null;
     const url = raw.startsWith("http") ? raw : `https://verses.quran.com/${raw}`;
-    const audio = await fetch(url, { headers: { "User-Agent": "Itqan-Quran-App/1.0" } });
+    const audio = await fetch(url, { headers: { "User-Agent": "WabilHuda-Quran-App/1.0" } });
     if (!audio.ok || !audio.body) return null;
     return new NextResponse(audio.body, {
       headers: {
@@ -67,7 +67,7 @@ export async function GET(req: Request) {
   for (const url of remoteUrls(filename)) {
     try {
       const res = await fetch(url, {
-        headers: { "User-Agent": "Itqan-Quran-App/1.0" },
+        headers: { "User-Agent": "WabilHuda-Quran-App/1.0" },
         next: { revalidate: 60 * 60 * 24 * 7 },
       });
       if (!res.ok || !res.body) continue;

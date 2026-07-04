@@ -66,7 +66,7 @@ export function TafheemPanel({ verseKey, chapterId }: TafheemPanelProps) {
   return (
     <div className="space-y-4">
       <div className="flex flex-wrap items-center gap-2">
-        <span className="rounded-full bg-itqan-100 px-3 py-1 text-xs font-semibold text-itqan-800 dark:bg-itqan-950 dark:text-itqan-200">
+        <span className="rounded-full bg-wabil-100 px-3 py-1 text-xs font-semibold text-wabil-800 dark:bg-wabil-950 dark:text-wabil-200">
           تفہیم القرآن · مولانا مودودی
         </span>
         {tafheem && translationNarration && (
@@ -97,7 +97,7 @@ export function TafheemPanel({ verseKey, chapterId }: TafheemPanelProps) {
                 ) : (
                   <sup
                     key={i}
-                    className="mx-0.5 inline-flex h-4 min-w-4 items-center justify-center rounded bg-itqan-600 px-1 text-[10px] font-bold text-white"
+                    className="mx-0.5 inline-flex h-4 min-w-4 items-center justify-center rounded bg-wabil-600 px-1 text-[10px] font-bold text-white"
                   >
                     {seg.number}
                   </sup>
@@ -118,7 +118,7 @@ export function TafheemPanel({ verseKey, chapterId }: TafheemPanelProps) {
                   style={{ borderColor: "rgb(var(--border))" }}
                 >
                   <div className="mb-2 flex flex-wrap items-center gap-2">
-                    <span className="inline-flex h-5 min-w-5 items-center justify-center rounded bg-itqan-100 px-1.5 text-xs font-bold text-itqan-800 dark:bg-itqan-950 dark:text-itqan-200">
+                    <span className="inline-flex h-5 min-w-5 items-center justify-center rounded bg-wabil-100 px-1.5 text-xs font-bold text-wabil-800 dark:bg-wabil-950 dark:text-wabil-200">
                       {fn.number}
                     </span>
                     {fn.text && (

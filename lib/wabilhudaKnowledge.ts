@@ -1,5 +1,5 @@
 /**
- * Built-in Itqan knowledge engine — free, no API key, works offline.
+ * Built-in WabilHuda knowledge engine — free, no API key, works offline.
  * Answers common Quran, Tajweed, and Hifz questions from curated content.
  */
 
@@ -10,10 +10,10 @@ type Entry = { keys: string[]; answer: string };
 const ENTRIES: Entry[] = [
   {
     keys: ["memorize", "memorisation", "memorization", "hifz", "hifdh", "yad", "یاد", "حفظ", "tip", "faster", "remember"],
-    answer: `**Hifz tips from Itqan:**
+    answer: `**Hifz tips from WabilHuda:**
 
 1. **New lesson (sabaq):** Learn 3–5 ayahs at a time, not a whole page. Repeat each ayah 20× with the reciter, then 10× alone.
-2. **Muraja'ah (review):** Use spaced repetition — review yesterday's portion before adding new ayahs. Itqan's SM-2 scheduler handles this automatically.
+2. **Muraja'ah (review):** Use spaced repetition — review yesterday's portion before adding new ayahs. WabilHuda's SM-2 scheduler handles this automatically.
 3. **Chunking:** Break long ayahs into phrases (e.g. at waqaf marks). Master each chunk before joining.
 4. **First-letter method:** Cover the ayah and recall the first letter of each word — this strengthens retrieval paths.
 5. **Sleep & consistency:** 20 minutes daily beats 3 hours once a week. Review right before sleeping.
@@ -23,7 +23,7 @@ Add ayahs to Hifz from any Surah page, then open **Hifz → Review session**.`,
   },
   {
     keys: ["tajweed", "tajwid", "تجوید", "madd", "ghunnah", "qalqalah", "idgham", "ikhfa", "iqlab", "pronunciation", "recite", "recitation"],
-    answer: `**Tajweed colour guide in Itqan:**
+    answer: `**Tajweed colour guide in WabilHuda:**
 
 • **Blue (Madd)** — prolongation: 2, 4, or 6 counts depending on type
 • **Orange (Ghunnah)** — nasal sound for 2 counts (نّ or مّ with shadda, or idgham with ghunnah)
@@ -67,7 +67,7 @@ Arabic begins: *Allāhu lā ilāha illā Huwa, al-Ḥayyu al-Qayyūm…*
 
 **Tajweed note:** "Qul huwa Allāhu Aḥad" — the ح in Aḥad has a heavy letter (ḥurūf al-isti'lā'). The د at the end is pronounced clearly.
 
-Itqan has full word-by-word breakdown and recitation practice for this surah.`,
+WabilHuda has full word-by-word breakdown and recitation practice for this surah.`,
   },
   {
     keys: ["fatihah", "fatiha", "fatiha", "الفاتحة", "1:1", "opening", "surah 1"],
@@ -82,7 +82,7 @@ Recited in every rak'ah of salah — it is the greatest surah in the Quran (Bukh
 • "Māliki Yawmid-Dīn" — some reciters read "Maliki" (King) vs "Māliki" (Owner) — both are valid qirā'āt.
 • "Ḍāllīn" — the ḍād is emphatic; prolong the alif in "lā" (madd).
 
-Use Itqan's audio player with Mishary Alafasy to perfect your recitation.`,
+Use WabilHuda's audio player with Mishary Alafasy to perfect your recitation.`,
   },
   {
     keys: ["wudu", "wudhu", "ablution", "وضو", "prayer", "salah", "namaz", "نماز"],
@@ -90,7 +90,7 @@ Use Itqan's audio player with Mishary Alafasy to perfect your recitation.`,
 
 Valid wudu requires washing: face, arms to elbows, wiping head, washing feet to ankles — in order, with niyyah (intention).
 
-**Prayer times in Itqan:** Open **Prayer Times** from the menu — it uses your location for accurate Fajr, Dhuhr, Asr, Maghrib, and Isha.
+**Prayer times in WabilHuda:** Open **Prayer Times** from the menu — it uses your location for accurate Fajr, Dhuhr, Asr, Maghrib, and Isha.
 
 **After salah:** Recite Ayat al-Kursi, then Al-Ikhlas, Al-Falaq, An-Nas (3× each for the last two).
 
@@ -106,11 +106,11 @@ For detailed fiqh rulings, consult a qualified scholar in your madhab.`,
 • Sunnah before eating, entering home, starting any good deed.
 • **Tajweed:** The bā in Bismi is connected (idgham) with the sīn in continuous recitation. Prolong the alif in "Allāh" (madd).
 
-Itqan colours each tajweed rule automatically on every ayah.`,
+WabilHuda colours each tajweed rule automatically on every ayah.`,
   },
   {
-    keys: ["what is itqan", "itqan", "إتقان", "about", "help", "how to use"],
-    answer: `**Welcome to Itqan (إتقان — excellence/mastery)!**
+    keys: ["what is wabilhuda", "wabilhuda", "وبالهدى", "about", "help", "how to use"],
+    answer: `**Welcome to WabilHuda (وبالهدى — and by the guidance)!**
 
 Your complete Quran learning platform:
 

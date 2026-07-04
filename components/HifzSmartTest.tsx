@@ -17,8 +17,8 @@ import { AudioPlayer } from "./AudioPlayer";
 const RATINGS: { key: Rating; label: string; hint: string; className: string }[] = [
   { key: "again", label: "Again", hint: "Forgot", className: "bg-red-500 text-white hover:bg-red-600" },
   { key: "hard", label: "Hard", hint: "Struggled", className: "bg-amber-500 text-white hover:bg-amber-600" },
-  { key: "good", label: "Good", hint: "Recalled", className: "bg-itqan-600 text-white hover:bg-itqan-700" },
-  { key: "easy", label: "Easy", hint: "Perfect", className: "bg-itqan-500 text-white hover:bg-itqan-600" },
+  { key: "good", label: "Good", hint: "Recalled", className: "bg-wabil-600 text-white hover:bg-wabil-700" },
+  { key: "easy", label: "Easy", hint: "Perfect", className: "bg-wabil-500 text-white hover:bg-wabil-600" },
 ];
 
 type Phase = "pick" | "test" | "done";
@@ -76,7 +76,7 @@ export function HifzSmartTest() {
   if (phase === "done") {
     return (
       <div className="card space-y-3 p-6 text-center">
-        <p className="text-lg font-semibold text-itqan-600">Passage complete</p>
+        <p className="text-lg font-semibold text-wabil-600">Passage complete</p>
         <p className="muted text-sm">You tested {queue.length} ayahs with smart chunk hints.</p>
         <button
           type="button"
@@ -99,7 +99,7 @@ export function HifzSmartTest() {
       <div className="card space-y-4 p-5 sm:p-6">
         <div className="flex flex-wrap items-center justify-between gap-2">
           <div>
-            <p className="text-xs font-semibold uppercase tracking-wide text-itqan-600">Smart test</p>
+            <p className="text-xs font-semibold uppercase tracking-wide text-wabil-600">Smart test</p>
             <h2 className="font-semibold">
               Ayah {current.verseKey}{" "}
               <span className="muted font-normal">
@@ -114,20 +114,20 @@ export function HifzSmartTest() {
 
         <div className="h-1.5 overflow-hidden rounded-full bg-black/5 dark:bg-white/10">
           <div
-            className="h-full rounded-full bg-itqan-500 transition-all"
+            className="h-full rounded-full bg-wabil-500 transition-all"
             style={{ width: `${((index + 1) / queue.length) * 100}%` }}
           />
         </div>
 
         {/* Always show only a chunk of the FIRST ayah */}
-        <div className="rounded-2xl border border-itqan-500/25 bg-itqan-500/5 p-4">
+        <div className="rounded-2xl border border-wabil-500/25 bg-wabil-500/5 p-4">
           <p className="muted mb-2 text-xs font-medium">
             {isFirst
               ? "Hint — only the start of this ayah is shown. Recite the full ayah."
               : `Passage start (chunk of ${first.verseKey} only). Recite the next ayah from memory.`}
           </p>
           <p className="quran-text text-right text-2xl sm:text-3xl" dir="rtl">
-            <span className="text-itqan-700 dark:text-itqan-200">{firstHint.visible}</span>
+            <span className="text-wabil-700 dark:text-wabil-200">{firstHint.visible}</span>
             {firstHint.hiddenCount > 0 && (
               <span className="muted ms-2 text-lg tracking-widest">
                 {hiddenDots(firstHint.hiddenCount)}
@@ -136,7 +136,7 @@ export function HifzSmartTest() {
           </p>
           {!isFirst && (
             <p className="muted mt-3 text-sm">
-              Now recite <strong className="text-itqan-600">{current.verseKey}</strong> completely
+              Now recite <strong className="text-wabil-600">{current.verseKey}</strong> completely
               (no text shown for this ayah).
             </p>
           )}
@@ -236,7 +236,7 @@ export function HifzSmartTest() {
         <p className="muted text-sm">
           Tip: add consecutive ayahs with <strong>Add range</strong> (e.g. 2:1–2:5) to unlock passage
           tests.{" "}
-          <Link href="/quran" className="text-itqan-600 hover:underline">
+          <Link href="/quran" className="text-wabil-600 hover:underline">
             Browse Quran
           </Link>
         </p>
@@ -265,7 +265,7 @@ function PassagePicker({
         {cards.map((c) => (
           <label
             key={c.verseKey}
-            className="flex cursor-pointer items-center gap-2 rounded-lg px-2 py-1.5 text-sm hover:bg-itqan-500/10"
+            className="flex cursor-pointer items-center gap-2 rounded-lg px-2 py-1.5 text-sm hover:bg-wabil-500/10"
           >
             <input
               type="checkbox"

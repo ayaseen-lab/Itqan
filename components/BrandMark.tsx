@@ -2,7 +2,7 @@
 
 import { useId } from "react";
 
-/** Shared Itqan brand mark — open mushaf on emerald tile. Pure SVG paths, no font dependency. */
+/** Shared WabilHuda brand mark — open mushaf on emerald tile. Pure SVG paths, no font dependency. */
 export function BrandMark({ className = "h-10 w-10" }: { className?: string }) {
   const id = useId().replace(/:/g, "");
   const bg = `bm-bg-${id}`;
@@ -17,7 +17,7 @@ export function BrandMark({ className = "h-10 w-10" }: { className?: string }) {
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
       role="img"
-      aria-label="Itqan"
+      aria-label="WabilHuda logo"
     >
       <defs>
         <linearGradient id={bg} x1="6" y1="4" x2="42" y2="44" gradientUnits="userSpaceOnUse">

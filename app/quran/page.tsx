@@ -47,7 +47,7 @@ export default async function QuranPage() {
       )}
 
       <p className="muted text-center text-xs">
-        <Link href="/juz" className="text-itqan-500 hover:underline">
+        <Link href="/juz" className="text-wabil-500 hover:underline">
           Prefer to browse by Juz (Para)? →
         </Link>
       </p>

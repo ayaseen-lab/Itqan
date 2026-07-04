@@ -24,8 +24,8 @@ const TABS: { id: Tab; label: string }[] = [
 const RATINGS: { key: Rating; label: string; hint: string; className: string }[] = [
   { key: "again", label: "Again", hint: "Forgot", className: "bg-red-500 text-white hover:bg-red-600" },
   { key: "hard", label: "Hard", hint: "Struggled", className: "bg-amber-500 text-white hover:bg-amber-600" },
-  { key: "good", label: "Good", hint: "Recalled", className: "bg-itqan-600 text-white hover:bg-itqan-700" },
-  { key: "easy", label: "Easy", hint: "Perfect", className: "bg-itqan-500 text-white hover:bg-itqan-600" },
+  { key: "good", label: "Good", hint: "Recalled", className: "bg-wabil-600 text-white hover:bg-wabil-700" },
+  { key: "easy", label: "Easy", hint: "Perfect", className: "bg-wabil-500 text-white hover:bg-wabil-600" },
 ];
 
 /** Classic due review — always shows only a chunk, not the full ayah. */
@@ -46,18 +46,18 @@ function ReviewCard({ card }: { card: HifzCard }) {
         <span className="font-semibold">Ayah {card.verseKey}</span>
         <div className="flex items-center gap-2">
           <AudioPlayer src={ayahAudioUrl(card.chapterId, card.verseNumber)} />
-          <Link href={`/surah/${card.chapterId}`} className="text-sm text-itqan-600 hover:underline">
+          <Link href={`/surah/${card.chapterId}`} className="text-sm text-wabil-600 hover:underline">
             Open Surah
           </Link>
         </div>
       </div>
 
-      <div className="rounded-2xl border border-itqan-500/25 bg-itqan-500/5 p-4">
+      <div className="rounded-2xl border border-wabil-500/25 bg-wabil-500/5 p-4">
         <p className="muted mb-2 text-xs font-medium">
           Smart hint — only a chunk is shown. Recite the full ayah from memory.
         </p>
         <p className="quran-text text-right text-2xl sm:text-3xl" dir="rtl">
-          <span className="text-itqan-700 dark:text-itqan-200">{hint.visible}</span>
+          <span className="text-wabil-700 dark:text-wabil-200">{hint.visible}</span>
           {hint.hiddenCount > 0 && (
             <span className="muted ms-2 text-lg tracking-widest">{hiddenDots(hint.hiddenCount)}</span>
           )}
@@ -135,7 +135,7 @@ export function MemorizeSession() {
             type="button"
             onClick={() => setTab(t.id)}
             className={`min-h-10 shrink-0 flex-1 rounded-xl px-3 py-2 text-xs font-semibold transition-all sm:text-sm ${
-              tab === t.id ? "bg-itqan-600 text-white shadow" : "muted hover:text-itqan-600"
+              tab === t.id ? "bg-wabil-600 text-white shadow" : "muted hover:text-wabil-600"
             }`}
           >
             {t.label}
@@ -166,7 +166,7 @@ export function MemorizeSession() {
             </div>
           ) : due.length === 0 ? (
             <div className="card p-8 text-center">
-              <p className="text-lg font-semibold text-itqan-600">You&apos;re all caught up!</p>
+              <p className="text-lg font-semibold text-wabil-600">You&apos;re all caught up!</p>
               <p className="muted mt-2">Try a smart multi-ayah test or listen to a full parah.</p>
               <div className="mt-4 flex flex-wrap justify-center gap-2">
                 <button type="button" className="btn-primary" onClick={() => setTab("smart")}>

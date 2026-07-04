@@ -4,7 +4,7 @@ import type { RecitationResult } from "@/lib/arabic";
 import type { Word } from "@/lib/quran";
 
 function ring(accuracy: number): string {
-  if (accuracy >= 90) return "text-itqan-600";
+  if (accuracy >= 90) return "text-wabil-600";
   if (accuracy >= 70) return "text-amber-500";
   return "text-red-500";
 }
@@ -56,7 +56,7 @@ export function ScoreCard({
 
           if (t.status === "correct") {
             return (
-              <span key={i} className={`${base} text-itqan-600`}>
+              <span key={i} className={`${base} text-wabil-600`}>
                 {t.expected}
               </span>
             );
@@ -89,7 +89,7 @@ export function ScoreCard({
       </div>
 
       <div className="muted flex flex-wrap gap-3 text-xs">
-        <span><span className="text-itqan-600">&#9679;</span> correct</span>
+        <span><span className="text-wabil-600">&#9679;</span> correct</span>
         <span><span className="text-amber-600">&#9679;</span> mispronounced</span>
         <span><span className="text-red-500">&#9679;</span> missed</span>
         {words?.some((w) => w.audioUrl) && <span>· tap a highlighted word to hear it</span>}

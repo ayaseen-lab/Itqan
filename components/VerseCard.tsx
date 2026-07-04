@@ -37,8 +37,8 @@ function TranslationBlock({ verse }: { verse: Verse }) {
 function actionClass(active: boolean) {
   return `shrink-0 rounded-lg px-3 py-1.5 text-sm font-medium transition-all duration-200 whitespace-nowrap ${
     active
-      ? "bg-itqan-600 text-white shadow-md"
-      : "border hover:border-itqan-400 hover:bg-itqan-50 dark:hover:bg-itqan-950"
+      ? "bg-wabil-600 text-white shadow-md"
+      : "border hover:border-wabil-400 hover:bg-wabil-50 dark:hover:bg-wabil-950"
   }`;
 }
 
@@ -95,7 +95,7 @@ export function VerseCard({ verse, surahName }: { verse: Verse; surahName: strin
   return (
     <article className="card animate-fade-up p-5">
       <div className="mb-3 flex items-center justify-between">
-        <span className="grid h-7 min-w-7 place-items-center rounded-full bg-itqan-100 px-2 text-xs font-semibold text-itqan-800 dark:bg-itqan-950 dark:text-itqan-200">
+        <span className="grid h-7 min-w-7 place-items-center rounded-full bg-wabil-100 px-2 text-xs font-semibold text-wabil-800 dark:bg-wabil-950 dark:text-wabil-200">
           {verse.verseKey}
         </span>
         <AudioPlayer src={verse.audioUrl} />
@@ -117,7 +117,7 @@ export function VerseCard({ verse, surahName }: { verse: Verse; surahName: strin
           onClick={toggleHifz}
           className={
             mounted && inHifz
-              ? "btn shrink-0 bg-itqan-100 text-itqan-800 dark:bg-itqan-950 dark:text-itqan-200"
+              ? "btn shrink-0 bg-wabil-100 text-wabil-800 dark:bg-wabil-950 dark:text-wabil-200"
               : "btn-primary shrink-0 !px-3 !py-1.5 text-sm"
           }
           suppressHydrationWarning

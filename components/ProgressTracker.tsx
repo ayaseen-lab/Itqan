@@ -67,19 +67,19 @@ export function ProgressTracker() {
   return (
     <section className="card overflow-hidden">
       <div
-        className="flex flex-wrap items-start justify-between gap-3 border-b px-5 py-4"
+        className="flex flex-wrap items-start justify-between gap-2 border-b px-4 py-3.5 sm:gap-3 sm:px-5 sm:py-4"
         style={{ borderColor: "rgb(var(--border))" }}
       >
-        <div>
+        <div className="min-w-0">
           <h2 className="text-base font-semibold">Today&apos;s progress</h2>
           <p className="muted text-xs">Your daily study, Hifz goals &amp; Hadith</p>
         </div>
-        <Link href="/profile" className="text-xs font-medium text-itqan-600 hover:underline">
+        <Link href="/profile" className="shrink-0 text-xs font-medium text-wabil-400 hover:underline">
           Full stats →
         </Link>
       </div>
 
-      <div className="space-y-5 p-5">
+      <div className="space-y-4 p-4 sm:space-y-5 sm:p-5">
         <div className="grid gap-4 sm:grid-cols-2">
           <ProgressBar
             label="Translation & study"
@@ -96,7 +96,7 @@ export function ProgressTracker() {
 
         <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
           <div className="rounded-xl border p-3 text-center" style={{ borderColor: "rgb(var(--border))" }}>
-            <div className="text-xl font-bold tabular-nums text-itqan-600">
+            <div className="text-xl font-bold tabular-nums text-wabil-600">
               {lifetime.translation + lifetime.reading + lifetime.tafseer}
             </div>
             <div className="muted text-xs">Total study</div>
@@ -118,7 +118,7 @@ export function ProgressTracker() {
         </div>
 
         <div className="rounded-xl border p-4 text-sm" style={{ borderColor: "rgb(var(--border))" }}>
-          <p className="mb-3 font-medium text-itqan-600">Daily goals</p>
+          <p className="mb-3 font-medium text-wabil-600">Daily goals</p>
           <div className="grid gap-3 sm:grid-cols-2">
             <label className="block">
               <span className="muted mb-1 block text-xs">Translation / study goal</span>
@@ -150,7 +150,7 @@ export function ProgressTracker() {
         >
           <div className="mb-2 flex flex-wrap items-center justify-between gap-2">
             <h3 className="text-sm font-semibold">Hadith of the day</h3>
-            <Link href="/hadith" className="text-xs font-medium text-itqan-600 hover:underline">
+            <Link href="/hadith" className="text-xs font-medium text-wabil-600 hover:underline">
               More →
             </Link>
           </div>
@@ -168,7 +168,7 @@ export function ProgressTracker() {
           <div className="mt-3 flex flex-wrap items-center justify-between gap-2">
             <div className="muted space-y-0.5 text-xs">
               <p>
-                <span className="font-medium text-itqan-600">Ref:</span> {formatHadithRef(hadith)}
+                <span className="font-medium text-wabil-600">Ref:</span> {formatHadithRef(hadith)}
               </p>
               <p>
                 {hadith.source}

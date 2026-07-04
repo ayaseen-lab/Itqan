@@ -23,15 +23,15 @@ export function LogoWordmark({
   return (
     <span className="flex flex-col leading-none">
       <span
-        className={`text-lg font-bold tracking-tight ${
+        className={`text-sm font-bold tracking-tight sm:text-base ${
           light ? "text-[#f0d78c]" : "text-gradient"
         }`}
       >
-        Itqan
+        WabilHuda
       </span>
       {subtitle && (
         <span
-          className={`quran-text text-[11px] font-normal tracking-wide ${
+          className={`quran-text hidden text-[10px] font-normal tracking-wide min-[380px]:block ${
             light ? "text-white/65" : "muted"
           }`}
           translate="no"

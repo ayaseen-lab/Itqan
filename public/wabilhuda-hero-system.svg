@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 520" fill="none" role="img" aria-label="Itqan system overview: Quran reading, tajweed, Hifz, tasbih, hadith and tafseer">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 520" fill="none" role="img" aria-label="WabilHuda system overview: Quran reading, tajweed, Hifz, tasbih, hadith and tafseer">
   <defs>
     <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
       <stop offset="0" stop-color="#0b1220"/>
@@ -24,7 +24,7 @@
   <circle cx="120" cy="420" r="110" fill="#fbbf24" fill-opacity="0.08"/>
 
   <!-- Title -->
-  <text x="40" y="52" fill="#ecfdf5" font-family="system-ui, sans-serif" font-size="22" font-weight="700">Itqan  your Quran learning system</text>
+  <text x="40" y="52" fill="#ecfdf5" font-family="system-ui, sans-serif" font-size="22" font-weight="700">WabilHuda  your Quran learning system</text>
   <text x="40" y="78" fill="#a7f3d0" font-family="system-ui, sans-serif" font-size="13">Read · Memorize · Tajweed · Tafseer · Dhikr</text>
 
   <!-- Feature cards row 1 -->

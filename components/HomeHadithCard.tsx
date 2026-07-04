@@ -32,7 +32,7 @@ export function HomeHadithCard() {
             })}
           </p>
         </div>
-        <Link href="/hadith" className="text-xs font-medium text-itqan-600 hover:underline">
+        <Link href="/hadith" className="text-xs font-medium text-wabil-600 hover:underline">
           More →
         </Link>
       </div>
@@ -48,7 +48,7 @@ export function HomeHadithCard() {
         <div className="mt-auto flex flex-wrap items-center justify-between gap-2 pt-2">
           <div className="muted space-y-0.5 text-xs">
             <p>
-              <span className="font-medium text-itqan-600">Ref:</span> {formatHadithRef(hadith)}
+              <span className="font-medium text-wabil-600">Ref:</span> {formatHadithRef(hadith)}
             </p>
             <p>
               {hadith.source}

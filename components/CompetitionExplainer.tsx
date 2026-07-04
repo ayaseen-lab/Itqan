@@ -68,12 +68,12 @@ export function CompetitionExplainer({ onStart }: { onStart: () => void }) {
           <article
             key={step.title}
             className={`card-interactive animate-fade-up p-5 transition-all duration-500 ${
-              active === i ? "ring-2 ring-itqan-500/50 scale-[1.02]" : "opacity-90"
+              active === i ? "ring-2 ring-wabil-500/50 scale-[1.02]" : "opacity-90"
             }`}
             style={{ animationDelay: `${i * 80}ms` }}
             onMouseEnter={() => setActive(i)}
           >
-            <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-2xl bg-itqan-600 text-sm font-bold text-white shadow-md">
+            <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-2xl bg-wabil-600 text-sm font-bold text-white shadow-md">
               {step.icon}
             </div>
             <h2 className="font-semibold">{step.title}</h2>
@@ -86,7 +86,7 @@ export function CompetitionExplainer({ onStart }: { onStart: () => void }) {
         <h2 className="text-lg font-semibold">What you can do</h2>
         <ul className="grid gap-2 text-sm sm:grid-cols-2">
           {[
-            "Parents monitor children’s time on Itqan",
+            "Parents monitor children’s time on WabilHuda",
             "Children log in with the family invite code",
             "Family vs family scoreboards",
             "Friendly quizzes that count as tests",
@@ -94,7 +94,7 @@ export function CompetitionExplainer({ onStart }: { onStart: () => void }) {
             "Invite codes for relatives & friends",
           ].map((item) => (
             <li key={item} className="flex items-start gap-2">
-              <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-itqan-500" />
+              <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-wabil-500" />
               {item}
             </li>
           ))}

@@ -48,7 +48,7 @@ export default function SetupPage() {
 
       <div
         className={`card p-4 text-sm ${
-          ready ? "border-itqan-500/40 bg-itqan-500/10" : "border-amber-500/40 bg-amber-500/10"
+          ready ? "border-wabil-500/40 bg-wabil-500/10" : "border-amber-500/40 bg-amber-500/10"
         }`}
       >
         <p className="font-semibold">
@@ -84,7 +84,7 @@ export default function SetupPage() {
             href={SQL_EDITOR}
             target="_blank"
             rel="noopener noreferrer"
-            className="font-semibold text-itqan-600 underline"
+            className="font-semibold text-wabil-600 underline"
           >
             Supabase SQL Editor
           </a>{" "}

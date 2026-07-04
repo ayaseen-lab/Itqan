@@ -180,7 +180,7 @@ export default function PrayerPage() {
 
       {status === "loading" && (
         <div className="card p-10 text-center">
-          <div className="mx-auto h-8 w-8 animate-spin rounded-full border-2 border-itqan-500 border-t-transparent" />
+          <div className="mx-auto h-8 w-8 animate-spin rounded-full border-2 border-wabil-500 border-t-transparent" />
           <p className="muted mt-3 text-sm">Loading prayer times…</p>
         </div>
       )}
@@ -199,7 +199,7 @@ export default function PrayerPage() {
               <div
                 key={String(p.key)}
                 className={`card card-hover flex items-center justify-between p-5 ${
-                  isNext ? "ring-2 ring-itqan-500" : ""
+                  isNext ? "ring-2 ring-wabil-500" : ""
                 }`}
                 style={isNext ? { backgroundImage: "linear-gradient(135deg, rgb(var(--accent-soft)), transparent)" } : undefined}
               >
@@ -211,7 +211,7 @@ export default function PrayerPage() {
                   </span>
                   <div>
                     <div className="font-semibold">{p.label}</div>
-                    {isNext && <div className="text-xs font-medium text-itqan-500">Next prayer</div>}
+                    {isNext && <div className="text-xs font-medium text-wabil-500">Next prayer</div>}
                   </div>
                 </div>
                 <div className="text-lg font-bold tabular-nums">{format12(data.timings[p.key])}</div>

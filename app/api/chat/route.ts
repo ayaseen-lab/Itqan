@@ -1,8 +1,8 @@
 import { NextResponse } from "next/server";
-import { answerFromKnowledge } from "@/lib/itqanKnowledge";
+import { answerFromKnowledge } from "@/lib/wabilhudaKnowledge";
 
 /**
- * Itqan AI assistant — no Gemini required.
+ * WabilHuda AI assistant — no Gemini required.
  * 1. Built-in knowledge engine (always free, works offline)
  * 2. Optional Groq API (free tier, llama models) if GROQ_API_KEY is set
  */
@@ -22,7 +22,7 @@ interface ChatMessage {
   content: string;
 }
 
-const SYSTEM = `You are Itqan, a humble Quran learning assistant for Urdu-speaking Muslims.
+const SYSTEM = `You are WabilHuda, a humble Quran learning assistant for Urdu-speaking Muslims.
 - Ground answers in Quran, authentic Hadith, and recognized Tafseer.
 - Distinguish Quranic text from your commentary. Label commentary clearly.
 - Be encouraging about Hifz. Keep answers concise and practical.
@@ -91,7 +91,7 @@ export async function POST(req: Request) {
   // 1. Built-in knowledge engine (instant, free, no key)
   const local = answerFromKnowledge(query, body.context);
   if (local) {
-    return NextResponse.json({ reply: local, source: "itqan-knowledge" });
+    return NextResponse.json({ reply: local, source: "wabilhuda-knowledge" });
   }
 
   // 2. Optional Groq (free cloud LLM)
@@ -107,11 +107,11 @@ export async function POST(req: Request) {
   // 3. Graceful fallback
   return NextResponse.json({
     reply:
-      "I'm Itqan's built-in assistant. I can help with:\n\n" +
+      "I'm WabilHuda's built-in assistant. I can help with:\n\n" +
       "• **Tajweed rules** and pronunciation tips\n" +
       "• **Hifz/memorisation** techniques\n" +
       "• **Surah virtues** (Al-Fatihah, Al-Ikhlas, Ayat al-Kursi…)\n" +
-      "• **How to use** Itqan features\n\n" +
+      "• **How to use** WabilHuda features\n\n" +
       "Try asking: *\"Give me a tip to memorize faster\"* or *\"Explain tajweed colours\"*\n\n" +
       "For advanced AI answers, add a free **GROQ_API_KEY** in `.env.local` (get one at console.groq.com).",
     source: "fallback",

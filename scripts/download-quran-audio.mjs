@@ -37,7 +37,7 @@ function fetchToFile(url, dest) {
     const proto = url.startsWith("https") ? https : http;
     const request = proto.get(
       url,
-      { headers: { "User-Agent": "Itqan-Quran-App/1.0 (audio bundle setup)" } },
+      { headers: { "User-Agent": "WabilHuda-Quran-App/1.0 (audio bundle setup)" } },
       (res) => {
         if (res.statusCode >= 300 && res.statusCode < 400 && res.headers.location) {
           fetchToFile(res.headers.location, dest).then(resolve).catch(reject);
