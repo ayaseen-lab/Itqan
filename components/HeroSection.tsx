@@ -6,10 +6,9 @@ const QUICK_LINKS = [
   { href: "/quran", label: "Recitation", icon: "book" },
   { href: "/memorize", label: "AI Hifz", icon: "brain" },
   { href: "/hadith", label: "Hadith", icon: "scroll" },
-  { href: "/family", label: "Family", icon: "family" },
-  { href: "/competition", label: "Healthy", icon: "trophy" },
+  { href: "/competition", label: "Competition", icon: "trophy" },
   { href: "/tasbih", label: "Tasbih", icon: "beads" },
-  { href: "/juz", label: "Juz", icon: "layers" },
+  { href: "/juz", label: "Juz (Para)", icon: "layers" },
   { href: "/prayer", label: "Prayer", icon: "clock" },
   { href: "/names", label: "99 Names", icon: "sparkles" },
   { href: "/duas", label: "Duas", icon: "heart" },
@@ -158,14 +157,23 @@ export function HeroSection() {
               </span>
             </div>
 
-            <blockquote className="hero-dedication mx-auto mt-8 max-w-xl lg:mx-0">
-              <div className="space-y-1.5 text-sm leading-relaxed text-cream/90">
-                <p>
+            <blockquote className="hero-dedication mx-auto mt-8 max-w-2xl lg:mx-0 lg:max-w-none">
+              <div className="hero-dedication-text space-y-2 text-sm leading-relaxed text-cream/90 sm:text-[0.95rem]">
+                <p className="hero-dedication-line hero-dedication-line--1 hero-dedication-line--nowrap">
                   Remember parents in your prayers, especially my{" "}
-                  <span className="font-semibold text-[#f0d78c]">Taya Abu</span>{" "}
-                  <span className="text-cream/70">(Atta ur Rehman)</span>.
+                  <span className="hero-dedication-name font-semibold text-[#f0d78c]">
+                    Taya Abu (Atta ur Rehman)
+                  </span>{" "}
+                  <span className="hero-dedication-emoji" aria-hidden="true">
+                    🤍
+                  </span>
                 </p>
-                <p>Remember all Muslim marhumain in your prayers.</p>
+                <p className="hero-dedication-line hero-dedication-line--2">
+                  Please also remember all Muslim marhumain in your prayers.{" "}
+                  <span className="hero-dedication-emoji" aria-hidden="true">
+                    🤲
+                  </span>
+                </p>
               </div>
               <p
                 className="quran-text hero-ayah mt-4 text-center text-[#f0d78c]"

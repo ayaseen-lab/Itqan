@@ -38,8 +38,8 @@ export default function JuzPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold">30 Juz (Para)</h1>
-        <p className="muted mt-1 text-sm">Browse the Quran by traditional Juz divisions</p>
+        <h1 className="text-2xl font-bold">Juz (Para)</h1>
+        <p className="muted mt-1 text-sm">Browse the Quran by traditional Juz / Para divisions</p>
       </div>
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
         {JUZ_META.map((j) => {
@@ -54,7 +54,7 @@ export default function JuzPage() {
                 {j.id}
               </span>
               <span className="min-w-0">
-                <span className="block font-semibold">Juz {j.id}</span>
+                <span className="block font-semibold">Juz (Para) {j.id}</span>
                 <span className="muted block truncate text-xs">{j.label}</span>
                 <span className="text-xs text-itqan-600">Start: {j.start}</span>
               </span>

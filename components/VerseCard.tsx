@@ -10,16 +10,8 @@ import { WordByWord } from "./WordByWord";
 import { TajweedText } from "./TajweedText";
 import { TafseerPanel } from "./TafseerPanel";
 import { TafheemPanel } from "./TafheemPanel";
-import { TajweedTarteelPanel } from "./TajweedTarteelPanel";
 
-type Tab = "words" | "tajweed" | "tafheem" | "tafseer";
-
-const TABS: { id: Tab; label: string }[] = [
-  { id: "words", label: "Word by word" },
-  { id: "tajweed", label: "Tajweed & Tarteel" },
-  { id: "tafheem", label: "Tafheem" },
-  { id: "tafseer", label: "Tafseer" },
-];
+type Tab = "words" | "tafheem" | "tafseer";
 
 function TranslationBlock({ verse }: { verse: Verse }) {
   const { urdu, english } = verse.translations;
@@ -27,25 +19,27 @@ function TranslationBlock({ verse }: { verse: Verse }) {
     return <p className="muted text-sm">Translation not available.</p>;
   }
   return (
-    <div className="space-y-2 rounded-xl border p-3" style={{ borderColor: "rgb(var(--border))", backgroundColor: "rgb(var(--surface) / 0.4)" }}>
+    <div className="space-y-2">
       {urdu && (
         <p className="urdu-text text-lg leading-relaxed" dir="rtl" translate="no" lang="ur">
           {urdu}
         </p>
       )}
-      {urdu && (
-        <p className="muted text-xs" dir="rtl" lang="ur">
-          اردو ترجمہ
-        </p>
-      )}
       {english && (
-        <p className="text-sm leading-relaxed">
-          <span className="muted text-xs font-medium uppercase tracking-wide">English · </span>
+        <p className="text-sm leading-relaxed text-stone-600 dark:text-stone-300">
           {english}
         </p>
       )}
     </div>
   );
+}
+
+function actionClass(active: boolean) {
+  return `shrink-0 rounded-lg px-3 py-1.5 text-sm font-medium transition-all duration-200 whitespace-nowrap ${
+    active
+      ? "bg-itqan-600 text-white shadow-md"
+      : "border hover:border-itqan-400 hover:bg-itqan-50 dark:hover:bg-itqan-950"
+  }`;
 }
 
 export function VerseCard({ verse, surahName }: { verse: Verse; surahName: string }) {
@@ -56,8 +50,6 @@ export function VerseCard({ verse, surahName }: { verse: Verse; surahName: strin
   const removeCard = useHifzStore((s) => s.removeCard);
   const inHifz = useHifzStore((s) => Boolean(s.cards[verse.verseKey]));
   const openChat = useChatStore((s) => s.openWith);
-  const toggleBookmark = useAppStore((s) => s.toggleBookmark);
-  const bookmarked = useAppStore((s) => s.isBookmarked(verse.verseKey));
   const setLastRead = useAppStore((s) => s.setLastRead);
 
   useEffect(() => setMounted(true), []);
@@ -96,6 +88,10 @@ export function VerseCard({ verse, surahName }: { verse: Verse; surahName: strin
     );
   }
 
+  function selectTab(id: Tab) {
+    setTab((cur) => (cur === id ? null : id));
+  }
+
   return (
     <article className="card animate-fade-up p-5">
       <div className="mb-3 flex items-center justify-between">
@@ -106,83 +102,84 @@ export function VerseCard({ verse, surahName }: { verse: Verse; surahName: strin
       </div>
 
       <div className="mb-4 space-y-3">
-        <TajweedText
-          html={verse.textTajweed}
-          plainText={verse.textUthmani}
-          showLegend={tab === "tajweed"}
-        />
+        <TajweedText html={verse.textTajweed} plainText={verse.textUthmani} showLegend={false} />
         <TranslationBlock verse={verse} />
       </div>
 
-      <div className="flex flex-wrap gap-2 border-t pt-3" style={{ borderColor: "rgb(var(--border))" }}>
+      {/* Single action row */}
+      <div
+        className="flex flex-nowrap items-center gap-1.5 overflow-x-auto pb-1 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+        role="toolbar"
+        aria-label="Ayah actions"
+      >
         <button
           type="button"
           onClick={toggleHifz}
-          className={mounted && inHifz ? "btn bg-itqan-100 text-itqan-800 dark:bg-itqan-950 dark:text-itqan-200" : "btn-primary"}
+          className={
+            mounted && inHifz
+              ? "btn shrink-0 bg-itqan-100 text-itqan-800 dark:bg-itqan-950 dark:text-itqan-200"
+              : "btn-primary shrink-0 !px-3 !py-1.5 text-sm"
+          }
           suppressHydrationWarning
         >
           {mounted && inHifz ? "In Hifz ✓" : "Add to Hifz"}
         </button>
+
         <button
           type="button"
-          onClick={() => toggleBookmark(verse.verseKey)}
-          className={`btn-ghost gap-1 ${mounted && bookmarked ? "text-itqan-600" : ""}`}
-          suppressHydrationWarning
+          role="tab"
+          aria-selected={tab === "words"}
+          onClick={() => selectTab("words")}
+          className={actionClass(tab === "words")}
+          style={tab === "words" ? undefined : { borderColor: "rgb(var(--border))" }}
         >
-          <svg width="14" height="14" viewBox="0 0 24 24" fill={mounted && bookmarked ? "currentColor" : "none"} stroke="currentColor" strokeWidth="2" aria-hidden="true">
-            <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z" />
-          </svg>
-          {mounted && bookmarked ? "Saved" : "Save"}
+          Word by word
         </button>
-        <button type="button" onClick={askAi} className="btn-ghost">
+
+        <button
+          type="button"
+          role="tab"
+          aria-selected={tab === "tafheem"}
+          onClick={() => selectTab("tafheem")}
+          className={actionClass(tab === "tafheem")}
+          style={tab === "tafheem" ? undefined : { borderColor: "rgb(var(--border))" }}
+        >
+          Tafheem
+        </button>
+
+        <button
+          type="button"
+          role="tab"
+          aria-selected={tab === "tafseer"}
+          onClick={() => selectTab("tafseer")}
+          className={actionClass(tab === "tafseer")}
+          style={tab === "tafseer" ? undefined : { borderColor: "rgb(var(--border))" }}
+        >
+          Tafseer (Urdu + English)
+        </button>
+
+        <button type="button" onClick={askAi} className="btn-ghost shrink-0 !px-3 !py-1.5 text-sm">
           Ask AI
         </button>
       </div>
 
-      <div className="mt-4">
-        <div className="flex flex-wrap gap-1.5" role="tablist">
-          {TABS.map((t) => (
-            <button
-              key={t.id}
-              type="button"
-              role="tab"
-              aria-selected={tab === t.id}
-              onClick={() => setTab((cur) => (cur === t.id ? null : t.id))}
-              className={`rounded-lg px-3 py-1.5 text-sm font-medium transition-all duration-200 ${
-                tab === t.id
-                  ? "bg-itqan-600 text-white shadow-md"
-                  : "border hover:border-itqan-400 hover:bg-itqan-50 dark:hover:bg-itqan-950"
-              }`}
-              style={tab === t.id ? undefined : { borderColor: "rgb(var(--border))" }}
-            >
-              {t.label}
-            </button>
-          ))}
+      {tab && (
+        <div key={tab} className="mt-4 animate-fade-up pt-1">
+          {tab === "words" && <WordByWord words={verse.words} />}
+          {tab === "tafheem" && (
+            <TafheemPanel verseKey={verse.verseKey} chapterId={verse.chapterId} />
+          )}
+          {tab === "tafseer" && (
+            <TafseerPanel
+              verseKey={verse.verseKey}
+              surahName={surahName}
+              arabic={verse.textUthmani}
+              english={verse.translations.english}
+              urdu={verse.translations.urdu}
+            />
+          )}
         </div>
-
-        {tab && (
-          <div
-            key={tab}
-            className="mt-4 animate-fade-up border-t pt-4"
-            style={{ borderColor: "rgb(var(--border))" }}
-          >
-            {tab === "words" && <WordByWord words={verse.words} />}
-            {tab === "tajweed" && <TajweedTarteelPanel verse={verse} />}
-            {tab === "tafheem" && (
-              <TafheemPanel verseKey={verse.verseKey} chapterId={verse.chapterId} />
-            )}
-            {tab === "tafseer" && (
-              <TafseerPanel
-                verseKey={verse.verseKey}
-                surahName={surahName}
-                arabic={verse.textUthmani}
-                english={verse.translations.english}
-                urdu={verse.translations.urdu}
-              />
-            )}
-          </div>
-        )}
-      </div>
+      )}
     </article>
   );
 }

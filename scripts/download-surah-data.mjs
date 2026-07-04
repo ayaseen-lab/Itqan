@@ -46,7 +46,7 @@ function pad3(n) {
 }
 
 async function downloadSurah(chapterId) {
-  const params = new URLSearchParams({
+  const enParams = new URLSearchParams({
     words: "true",
     word_fields: "text_uthmani,transliteration",
     language: "en",
@@ -54,8 +54,27 @@ async function downloadSurah(chapterId) {
     fields: "text_uthmani",
     per_page: "300",
   });
+  const urParams = new URLSearchParams({
+    words: "true",
+    word_fields: "text_uthmani",
+    language: "ur",
+    per_page: "300",
+  });
 
-  const data = await apiGet(`${API}/verses/by_chapter/${chapterId}?${params}`);
+  const [data, urduData] = await Promise.all([
+    apiGet(`${API}/verses/by_chapter/${chapterId}?${enParams}`),
+    apiGet(`${API}/verses/by_chapter/${chapterId}?${urParams}`).catch(() => ({ verses: [] })),
+  ]);
+
+  const urduWordMap = new Map();
+  for (const v of urduData.verses || []) {
+    for (const w of v.words || []) {
+      if (w.char_type_name === "word" && w.translation?.text) {
+        urduWordMap.set(`${v.verse_key}:${w.position}`, w.translation.text);
+      }
+    }
+  }
+
   const verses = (data.verses || []).map((v) => {
     const translations = v.translations || [];
     const urdu = translations.find((t) => Number(t.resource_id) === URDU_ID);
@@ -63,14 +82,21 @@ async function downloadSurah(chapterId) {
 
     const words = (v.words || [])
       .filter((w) => w.char_type_name === "word")
-      .map((w) => ({
-        position: w.position,
-        text: w.text_uthmani || w.text || "",
-        transliteration: w.transliteration?.text ?? null,
-        translation: w.translation?.text ?? null,
-        translationUrdu: null,
-        audioUrl: `/api/audio?k=${pad3(chapterId)}${String(v.verse_number).padStart(3, "0")}`,
-      }));
+      .map((w) => {
+        const audio = w.audio_url || w.audio?.url || null;
+        return {
+          position: w.position,
+          text: w.text_uthmani || w.text || "",
+          transliteration: w.transliteration?.text ?? null,
+          translation: w.translation?.text ?? null,
+          translationUrdu: urduWordMap.get(`${v.verse_key}:${w.position}`) ?? null,
+          audioUrl: audio
+            ? audio.startsWith("http")
+              ? audio
+              : `https://audio.qurancdn.com/${audio.replace(/^\//, "")}`
+            : null,
+        };
+      });
 
     return {
       id: v.id,

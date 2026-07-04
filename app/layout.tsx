@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import dynamic from "next/dynamic";
 import { Amiri, Noto_Nastaliq_Urdu } from "next/font/google";
 import "./globals.css";
 import { AppShell } from "@/components/AppShell";
@@ -6,8 +7,16 @@ import { StoreHydrator } from "@/components/StoreHydrator";
 import { QuranBackground } from "@/components/QuranBackground";
 import { AppProviders } from "@/components/AppProviders";
 import { ClientChat } from "@/components/ClientChat";
-import { CursorFX } from "@/components/CursorFX";
-import { TimeTracker } from "@/components/TimeTracker";
+
+const CursorFX = dynamic(
+  () => import("@/components/CursorFX").then((m) => m.CursorFX),
+  { ssr: false },
+);
+
+const TimeTracker = dynamic(
+  () => import("@/components/TimeTracker").then((m) => m.TimeTracker),
+  { ssr: false },
+);
 
 const amiri = Amiri({
   weight: ["400", "700"],
@@ -54,6 +63,9 @@ export default function RootLayout({
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
         <meta name="google" content="notranslate" />
+        <link rel="preconnect" href="https://api.quran.com" />
+        <link rel="preconnect" href="https://cdn.jsdelivr.net" />
+        <link rel="dns-prefetch" href="https://audio.qurancdn.com" />
       </head>
       <body className={`${amiri.variable} ${notoUrdu.variable} relative min-h-screen antialiased`}>
         <QuranBackground />

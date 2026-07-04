@@ -9,7 +9,47 @@ export interface Hadith {
   english: string;
   urdu: string;
   source: string;
+  /** Classic collection reference number(s), e.g. "Bukhari 1". */
+  reference?: string;
   narrator?: string;
+}
+
+/** Classic reference numbers for display. */
+const HADITH_REFS: Record<number, string> = {
+  1: "Bukhari 1 · Muslim 1907",
+  2: "Bukhari 6018 · Muslim 47",
+  3: "Bukhari 13 · Muslim 45",
+  4: "Bukhari 10 · Muslim 40",
+  5: "Tirmidhi 1987",
+  6: "Bukhari 5027",
+  7: "Muslim 55",
+  8: "Ibn Majah 2340",
+  9: "Tirmidhi 1956",
+  10: "Bukhari 2989 · Muslim 1009",
+  11: "Bukhari 5997 · Muslim 2318",
+  12: "Muslim 2664",
+  13: "Muslim 91",
+  14: "Muslim 223",
+  15: "Muslim 2699",
+  16: "Muslim 36",
+  17: "Bukhari 6064 · Muslim 2559",
+  18: "Bukhari 2442 · Muslim 2580",
+  19: "Tirmidhi 1162",
+  20: "Ahmad 3/12",
+  21: "Tirmidhi 1924",
+  22: "Bukhari 6014 · Muslim 47",
+  23: "Ibn Majah 224",
+  24: "Tirmidhi 2501",
+  25: "Nasa'i 3104",
+  26: "Bukhari 1426",
+  27: "Ahmad 1/387",
+  28: "Muslim 35",
+  29: "Tirmidhi 1920",
+  30: "Bukhari 69",
+};
+
+export function formatHadithRef(h: Hadith): string {
+  return h.reference || HADITH_REFS[h.id] || `No. ${h.id}`;
 }
 
 export const HADITH_COLLECTION: Hadith[] = [

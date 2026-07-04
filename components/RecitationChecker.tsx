@@ -73,6 +73,7 @@ export function RecitationChecker({
       onInterim: (text) => setInterim(text),
       onFinal: (text) => {
         setListening(false);
+        captureRef.current = null;
         if (text) {
           setResult(scoreRecitation(expectedText, text));
         } else {
@@ -81,6 +82,7 @@ export function RecitationChecker({
       },
       onError: (message) => {
         setListening(false);
+        captureRef.current = null;
         setError(friendlyMicError(message));
       },
     });
@@ -94,7 +96,7 @@ export function RecitationChecker({
     setListening(true);
   }
 
-  function stop() {
+  function stopManual() {
     captureRef.current?.stop();
   }
 
@@ -114,17 +116,22 @@ export function RecitationChecker({
     <div className="space-y-3">
       <div className="flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-center">
         {listening ? (
-          <button
-            type="button"
-            onClick={stop}
-            className="btn min-h-11 w-full bg-red-500 text-white hover:bg-red-600 sm:w-auto"
-          >
-            <span className="relative flex h-2.5 w-2.5">
-              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-white opacity-75" />
-              <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-white" />
+          <div className="flex w-full flex-col gap-2 sm:w-auto sm:flex-row sm:items-center">
+            <span className="inline-flex min-h-11 items-center gap-2 rounded-xl bg-itqan-600 px-4 py-2 text-sm font-medium text-white">
+              <span className="relative flex h-2.5 w-2.5">
+                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-white opacity-75" />
+                <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-white" />
+              </span>
+              Listening…
             </span>
-            Stop &amp; check
-          </button>
+            <button
+              type="button"
+              onClick={stopManual}
+              className="btn-ghost min-h-11 text-xs text-red-600 sm:min-h-0"
+            >
+              Stop early
+            </button>
+          </div>
         ) : (
           <button
             type="button"
@@ -139,8 +146,10 @@ export function RecitationChecker({
             {starting ? "Starting mic…" : "Check my recitation"}
           </button>
         )}
-        <span className="muted text-xs sm:max-w-[14rem]">
-          Recite the ayah aloud. Use headphones if you hear echo.
+        <span className="muted text-xs sm:max-w-[16rem]">
+          {listening
+            ? "Stops automatically when you finish speaking."
+            : "Recite the ayah aloud. Stops by itself when you pause."}
         </span>
       </div>
 

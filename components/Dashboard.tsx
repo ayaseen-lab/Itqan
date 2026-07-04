@@ -22,16 +22,8 @@ export function Dashboard() {
   // Avoid hydration mismatch: render neutral state until mounted.
   const stats = mounted ? computeStats(cards) : { total: 0, due: 0, learning: 0, mature: 0 };
 
-  if (mounted && stats.total === 0) {
-    return (
-      <section className="card p-6">
-        <h2 className="text-lg font-semibold">Your Hifz journey starts here</h2>
-        <p className="muted mt-1">
-          Open any Surah and tap <span className="font-medium">Add to Hifz</span> on a verse to
-          begin. Your review schedule will appear here.
-        </p>
-      </section>
-    );
+  if (!mounted || stats.total === 0) {
+    return null;
   }
 
   return (

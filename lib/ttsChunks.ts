@@ -1,6 +1,19 @@
 /** Shared TTS chunking — keep client + server in sync. */
 
-const MAX_CHUNK = 180;
+const MAX_CHUNK = 160;
+
+function hardSplit(text: string, maxLen: number): string[] {
+  const out: string[] = [];
+  let rest = text.trim();
+  while (rest.length > maxLen) {
+    let cut = rest.lastIndexOf(" ", maxLen);
+    if (cut < maxLen * 0.4) cut = maxLen;
+    out.push(rest.slice(0, cut).trim());
+    rest = rest.slice(cut).trim();
+  }
+  if (rest) out.push(rest);
+  return out;
+}
 
 export function chunkTextForTts(text: string): string[] {
   const cleaned = text.replace(/\s+/g, " ").trim();
@@ -10,17 +23,34 @@ export function chunkTextForTts(text: string): string[] {
   const parts = cleaned.split(/(?<=[.!?۔؟])\s+/);
   const chunks: string[] = [];
   let buf = "";
+
+  const flushBuf = () => {
+    if (!buf) return;
+    if (buf.length <= MAX_CHUNK) {
+      chunks.push(buf);
+    } else {
+      chunks.push(...hardSplit(buf, MAX_CHUNK));
+    }
+    buf = "";
+  };
+
   for (const part of parts) {
+    if (part.length > MAX_CHUNK) {
+      flushBuf();
+      chunks.push(...hardSplit(part, MAX_CHUNK));
+      continue;
+    }
     const next = buf ? `${buf} ${part}` : part;
     if (next.length > MAX_CHUNK && buf) {
-      chunks.push(buf);
+      flushBuf();
       buf = part;
     } else {
       buf = next;
     }
   }
-  if (buf) chunks.push(buf);
-  return chunks.length ? chunks : [cleaned.slice(0, MAX_CHUNK)];
+  flushBuf();
+
+  return chunks.length ? chunks : hardSplit(cleaned, MAX_CHUNK);
 }
 
 export function plainFromHtml(html: string, lang: "ur" | "en" = "en"): string {
@@ -40,7 +70,6 @@ export function plainFromHtml(html: string, lang: "ur" | "en" = "en"): string {
     .trim();
 
   if (lang === "en") {
-    // Arabic script confuses English voices; long digit runs are footnote/db ids.
     t = t.replace(/[\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF]+/g, " ");
     t = t.replace(/\b\d{4,}\b/g, " ");
     t = t.replace(/\s+/g, " ").trim();

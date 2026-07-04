@@ -10,13 +10,11 @@ interface TafheemPanelProps {
   chapterId: number;
 }
 
-function speakableText(tafheem: TafheemContent): string {
-  if (tafheem.plainText?.trim()) return tafheem.plainText.trim();
-  if (tafheem.translation?.trim()) return tafheem.translation.trim();
-  return tafheem.segments
-    .filter((s) => s.type === "text")
-    .map((s) => s.value)
-    .join(" ")
+/** Strip footnote/db digit noise for cleaner TTS. */
+function cleanSpeakable(text: string): string {
+  return text
+    .replace(/\b\d{5,}\b/g, " ")
+    .replace(/\s+/g, " ")
     .trim();
 }
 
@@ -47,7 +45,23 @@ export function TafheemPanel({ verseKey, chapterId }: TafheemPanelProps) {
     };
   }, [verseKey, chapterId]);
 
-  const mainNarration = useMemo(() => (tafheem ? speakableText(tafheem) : ""), [tafheem]);
+  // Main listen = translation only (short, reliable). Footnotes have their own buttons.
+  const translationNarration = useMemo(() => {
+    if (!tafheem) return "";
+    const t =
+      tafheem.translation?.trim() ||
+      tafheem.segments
+        .filter((s) => s.type === "text")
+        .map((s) => s.value)
+        .join(" ")
+        .trim();
+    return cleanSpeakable(t);
+  }, [tafheem]);
+
+  const commentaryNarration = useMemo(() => {
+    if (!tafheem?.footnotes.length) return "";
+    return cleanSpeakable(tafheem.footnotes.map((f) => f.text).filter(Boolean).join(" "));
+  }, [tafheem]);
 
   return (
     <div className="space-y-4">
@@ -55,8 +69,11 @@ export function TafheemPanel({ verseKey, chapterId }: TafheemPanelProps) {
         <span className="rounded-full bg-itqan-100 px-3 py-1 text-xs font-semibold text-itqan-800 dark:bg-itqan-950 dark:text-itqan-200">
           تفہیم القرآن · مولانا مودودی
         </span>
-        {tafheem && mainNarration && (
-          <NarrationPlayer text={mainNarration} lang="ur" label="سنیں" />
+        {tafheem && translationNarration && (
+          <NarrationPlayer text={translationNarration} lang="ur" label="سنیں" />
+        )}
+        {tafheem && commentaryNarration && (
+          <NarrationPlayer text={commentaryNarration} lang="ur" label="سنیں تشریح" />
         )}
       </div>
 
@@ -100,12 +117,12 @@ export function TafheemPanel({ verseKey, chapterId }: TafheemPanelProps) {
                   className="rounded-lg border p-3"
                   style={{ borderColor: "rgb(var(--border))" }}
                 >
-                  <div className="mb-2 flex items-center gap-2">
+                  <div className="mb-2 flex flex-wrap items-center gap-2">
                     <span className="inline-flex h-5 min-w-5 items-center justify-center rounded bg-itqan-100 px-1.5 text-xs font-bold text-itqan-800 dark:bg-itqan-950 dark:text-itqan-200">
                       {fn.number}
                     </span>
                     {fn.text && (
-                      <NarrationPlayer text={fn.text} lang="ur" label="سنیں" />
+                      <NarrationPlayer text={cleanSpeakable(fn.text)} lang="ur" label="سنیں" />
                     )}
                   </div>
                   <p className="urdu-text text-base leading-loose" dir="rtl" lang="ur" translate="no">

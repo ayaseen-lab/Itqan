@@ -23,8 +23,11 @@ const LABEL: Record<TafsirLang, string> = {
 };
 
 function textToHtml(text: string): string {
-  return text
-    .split(/\n{2,}/)
+  // Prefer blank-line paragraphs; also break long single-newline blocks.
+  const blocks = text.includes("\n\n")
+    ? text.split(/\n{2,}/)
+    : text.split(/\n+/);
+  return blocks
     .map((p) => p.trim())
     .filter(Boolean)
     .map((p) => `<p>${p.replace(/\n/g, "<br>")}</p>`)

@@ -127,9 +127,11 @@ export function TafseerPanel(props: TafseerPanelProps) {
       )}
 
       {!loading && tafsir && (
-        <div>
+        <div className="overflow-visible">
           <div
-            className={`tafsir-content text-sm ${lang === "ur" ? "urdu-text leading-loose" : ""}`}
+            className={`tafsir-content overflow-visible text-sm leading-relaxed ${
+              lang === "ur" ? "urdu-text leading-loose" : "tafsir-content--en"
+            }`}
             dir={lang === "ur" ? "rtl" : "ltr"}
             lang={lang === "ur" ? "ur" : "en"}
             dangerouslySetInnerHTML={{ __html: tafsir.text }}

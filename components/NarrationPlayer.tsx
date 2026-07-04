@@ -10,6 +10,10 @@ interface NarrationPlayerProps {
   label?: string;
 }
 
+/** Minimal silent WAV — unlocks audio on iOS/Android after a user tap. */
+const SILENT_WAV =
+  "data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQAAAAA=";
+
 function playAudioBlob(audio: HTMLAudioElement, blob: Blob): Promise<void> {
   return new Promise((resolve, reject) => {
     const url = URL.createObjectURL(blob);
@@ -36,11 +40,24 @@ function playAudioBlob(audio: HTMLAudioElement, blob: Blob): Promise<void> {
   });
 }
 
-async function fetchChunk(text: string, lang: "ur" | "en", index: number): Promise<Blob> {
+/** Unlock playback while still inside the user-gesture stack. */
+async function unlockAudio(audio: HTMLAudioElement): Promise<void> {
+  try {
+    audio.src = SILENT_WAV;
+    audio.load();
+    await audio.play();
+    audio.pause();
+    audio.currentTime = 0;
+  } catch {
+    /* some browsers reject silent play — continue anyway */
+  }
+}
+
+async function fetchChunkAudio(chunkText: string, lang: "ur" | "en"): Promise<Blob> {
   const res = await fetch("/api/tts", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ text, lang, chunk: index }),
+    body: JSON.stringify({ text: chunkText, lang }),
   });
   if (!res.ok) throw new Error(`tts ${res.status}`);
   const ct = res.headers.get("content-type") ?? "";
@@ -56,6 +73,7 @@ export function NarrationPlayer({ text, lang, label }: NarrationPlayerProps) {
   const [playing, setPlaying] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const stopRef = useRef(false);
 
   useEffect(() => {
@@ -106,26 +124,39 @@ export function NarrationPlayer({ text, lang, label }: NarrationPlayerProps) {
 
   const runPlayback = useCallback(async () => {
     const cleaned = text.replace(/\s+/g, " ").trim();
-    if (!cleaned || !audioRef.current) return;
+    const audio = audioRef.current;
+    if (!cleaned || !audio) return;
 
     stopRef.current = false;
     setLoading(true);
     setError(false);
+    setErrorMsg(null);
+
+    // Must run before any await so mobile browsers keep the user gesture.
+    await unlockAudio(audio);
 
     const chunks = chunkTextForTts(cleaned);
+    if (!chunks.length) {
+      setLoading(false);
+      setError(true);
+      setErrorMsg(lang === "ur" ? "آڈیو کے لیے متن نہیں ملا۔" : "No text to speak.");
+      return;
+    }
 
     try {
-      await ensureVoicesLoaded();
+      void ensureVoicesLoaded();
       setPlaying(true);
       setLoading(false);
 
       for (let i = 0; i < chunks.length; i++) {
         if (stopRef.current) break;
         try {
-          const blob = await fetchChunk(cleaned, lang, i);
-          await playAudioBlob(audioRef.current, blob);
+          const blob = await fetchChunkAudio(chunks[i], lang);
+          if (stopRef.current) break;
+          await playAudioBlob(audio, blob);
         } catch {
           if (stopRef.current) break;
+          // Fall back for remaining text
           await runBrowserFallback(chunks.slice(i).join(" "));
           break;
         }
@@ -136,10 +167,16 @@ export function NarrationPlayer({ text, lang, label }: NarrationPlayerProps) {
           await runBrowserFallback(cleaned);
         } catch {
           setError(true);
+          setErrorMsg(
+            lang === "ur"
+              ? "آڈیو دستیاب نہیں — دوبارہ کوشش کریں"
+              : "Audio unavailable — tap to retry",
+          );
         }
       }
     } finally {
       if (!stopRef.current) setPlaying(false);
+      setLoading(false);
     }
   }, [text, lang, runBrowserFallback]);
 
@@ -154,42 +191,45 @@ export function NarrationPlayer({ text, lang, label }: NarrationPlayerProps) {
   if (!text.trim()) return null;
 
   return (
-    <button
-      type="button"
-      onClick={toggle}
-      disabled={loading}
-      className="inline-flex min-h-11 items-center gap-2 rounded-full bg-itqan-600 px-4 py-2.5 text-sm font-medium text-white shadow-md transition-all touch-manipulation hover:bg-itqan-700 hover:shadow-lg active:scale-[0.98] disabled:opacity-60"
-    >
-      {loading ? (
-        <svg className="h-4 w-4 animate-spin" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-          <circle cx="12" cy="12" r="9" stroke="currentColor" strokeWidth="2" opacity="0.35" />
-          <path d="M12 3a9 9 0 0 1 9 9" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-        </svg>
-      ) : playing ? (
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-          <rect x="6" y="5" width="4" height="14" rx="1" />
-          <rect x="14" y="5" width="4" height="14" rx="1" />
-        </svg>
-      ) : (
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-          <path d="M8 5v14l11-7z" />
-        </svg>
-      )}
-      <span>
-        {playing
-          ? lang === "ur"
-            ? "روکیں"
-            : "Stop"
-          : loading
+    <div className="inline-flex flex-col items-start gap-1">
+      <button
+        type="button"
+        onClick={toggle}
+        disabled={loading}
+        className="inline-flex min-h-11 items-center gap-2 rounded-full bg-itqan-600 px-4 py-2.5 text-sm font-medium text-white shadow-md transition-all touch-manipulation hover:bg-itqan-700 hover:shadow-lg active:scale-[0.98] disabled:opacity-60"
+      >
+        {loading ? (
+          <svg className="h-4 w-4 animate-spin" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <circle cx="12" cy="12" r="9" stroke="currentColor" strokeWidth="2" opacity="0.35" />
+            <path d="M12 3a9 9 0 0 1 9 9" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+          </svg>
+        ) : playing ? (
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+            <rect x="6" y="5" width="4" height="14" rx="1" />
+            <rect x="14" y="5" width="4" height="14" rx="1" />
+          </svg>
+        ) : (
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+            <path d="M8 5v14l11-7z" />
+          </svg>
+        )}
+        <span>
+          {playing
             ? lang === "ur"
-              ? "لوڈ…"
-              : "Loading…"
-            : error
+              ? "روکیں"
+              : "Stop"
+            : loading
               ? lang === "ur"
-                ? "دوبارہ"
-                : "Retry"
-              : label ?? (lang === "ur" ? "سنیں" : "Listen")}
-      </span>
-    </button>
+                ? "لوڈ…"
+                : "Loading…"
+              : error
+                ? lang === "ur"
+                  ? "دوبارہ"
+                  : "Retry"
+                : label ?? (lang === "ur" ? "سنیں" : "Listen")}
+        </span>
+      </button>
+      {errorMsg && <p className="max-w-[14rem] text-[11px] text-red-500">{errorMsg}</p>}
+    </div>
   );
 }

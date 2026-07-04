@@ -199,14 +199,18 @@ function mapChapter(c: any): Chapter {
 }
 
 export async function getVerses(chapterId: number): Promise<Verse[]> {
+  // Prefer live API so word-by-word includes Urdu + English meanings for every word.
+  // Bundled JSON is incomplete (translationUrdu is often null).
+  try {
+    const live = await fetchVersesFromApi(chapterId);
+    if (live.length > 0) return live;
+  } catch {
+    /* fall through */
+  }
+
   const bundled = await loadBundledSurah(chapterId);
   if (bundled.length > 0) return bundled;
-
-  try {
-    return await fetchVersesFromApi(chapterId);
-  } catch {
-    return getOfflineVerses(chapterId);
-  }
+  return getOfflineVerses(chapterId);
 }
 
 function pickTranslation(
@@ -270,13 +274,16 @@ async function fetchVersesFromApi(chapterId: number): Promise<Verse[]> {
     fetchTajweedMap(chapterId),
   ]);
 
-  // Build a lookup of Urdu word meanings keyed by "verseKey:position".
+  // Urdu word meanings keyed by verseKey:position and verseKey:text (fallback).
   const urduWordMap = new Map<string, string>();
+  const urduByText = new Map<string, string>();
   for (const v of urduData.verses ?? []) {
     for (const w of v.words ?? []) {
-      if (w.char_type_name === "word" && w.translation?.text) {
-        urduWordMap.set(`${v.verse_key}:${w.position}`, w.translation.text);
-      }
+      if (w.char_type_name !== "word" || !w.translation?.text) continue;
+      const key = `${v.verse_key}:${w.position}`;
+      urduWordMap.set(key, w.translation.text);
+      const arabic = w.text_uthmani ?? w.text ?? "";
+      if (arabic) urduByText.set(`${v.verse_key}:${arabic}`, w.translation.text);
     }
   }
 
@@ -288,14 +295,22 @@ async function fetchVersesFromApi(chapterId: number): Promise<Verse[]> {
 
     const words: Word[] = (v.words ?? [])
       .filter((w: any) => w.char_type_name === "word")
-      .map((w: any) => ({
-        position: w.position,
-        text: w.text_uthmani ?? w.text ?? "",
-        transliteration: w.transliteration?.text ?? null,
-        translation: w.translation?.text ?? null,
-        translationUrdu: urduWordMap.get(`${v.verse_key}:${w.position}`) ?? null,
-        audioUrl: null,
-      }));
+      .map((w: any) => {
+        const arabic = w.text_uthmani ?? w.text ?? "";
+        const en = w.translation?.text ?? null;
+        const urFromMap =
+          urduWordMap.get(`${v.verse_key}:${w.position}`) ??
+          urduByText.get(`${v.verse_key}:${arabic}`) ??
+          null;
+        return {
+          position: w.position,
+          text: arabic,
+          transliteration: w.transliteration?.text ?? null,
+          translation: en,
+          translationUrdu: urFromMap,
+          audioUrl: wordAudioUrl(w.audio_url ?? w.audio?.url),
+        };
+      });
 
     return {
       id: v.id,
@@ -314,60 +329,81 @@ async function fetchVersesFromApi(chapterId: number): Promise<Verse[]> {
   });
 }
 
-/** Strip footnote markers and unsafe tags from Quran.com tafsir HTML. */
+/** Strip footnote markers, scripts, and inline colours (break dark mode). */
 function sanitizeTafsirHtml(html: string): string {
   return html
     .replace(/<sup\b[^>]*>[\s\S]*?<\/sup>/gi, "")
     .replace(/\sfoot_note\s*=\s*["']?\d+["']?/gi, "")
-    .replace(/<\/?(script|style|iframe)\b[^>]*>/gi, "");
+    .replace(/<\/?(script|style|iframe)\b[^>]*>/gi, "")
+    .replace(/\sstyle\s*=\s*("[^"]*"|'[^']*')/gi, "")
+    .replace(/<\/?font\b[^>]*>/gi, "");
+}
+
+function plainLen(html: string): number {
+  return html
+    .replace(/<[^>]+>/g, " ")
+    .replace(/\s+/g, " ")
+    .trim().length;
+}
+
+function wordAudioUrl(raw: string | null | undefined): string | null {
+  if (!raw?.trim()) return null;
+  const path = raw.trim();
+  if (path.startsWith("http") || path.startsWith("/api/")) return path;
+  // Quran.com word audio paths look like "wbw/001_001_001.mp3"
+  return `https://audio.qurancdn.com/${path.replace(/^\//, "")}`;
+}
+
+/**
+ * Working Quran.com endpoint for English Ibn Kathir (abridged).
+ * Note: /quran/tafsirs/169?verse_key=… returns empty — do not use it.
+ */
+async function fetchQuranComEnglishTafsir(verseKey: string): Promise<Tafsir | null> {
+  try {
+    const data = await publicGet<{
+      tafsir?: {
+        text?: string;
+        resource_name?: string;
+      };
+    }>(`/tafsirs/${ENGLISH_TAFSIR_ID}/by_ayah/${encodeURIComponent(verseKey)}`);
+
+    const text = data.tafsir?.text?.trim();
+    if (!text) return null;
+
+    return {
+      text: sanitizeTafsirHtml(text),
+      resourceName: data.tafsir?.resource_name ?? "Tafsir Ibn Kathir (English)",
+    };
+  } catch {
+    return null;
+  }
 }
 
 /**
  * Fetch Ibn Kathir Tafsir for a single ayah (English or Urdu).
- * Prefers spa5k CDN (clean plain text) for both languages.
+ * Urdu: spa5k CDN. English: longer of spa5k vs Quran.com.
  */
 export async function getTafsir(verseKey: string, lang: TafsirLang = "en"): Promise<Tafsir | null> {
-  const primary = await getTafsirByLang(verseKey, lang);
-  if (primary) {
-    return { text: primary.text, resourceName: primary.resourceName };
+  if (lang === "ur") {
+    const ur = await getTafsirByLang(verseKey, "ur");
+    return ur ? { text: ur.text, resourceName: ur.resourceName } : null;
   }
 
-  // English-only fallback: Quran.com (sanitize messy HTML footnotes).
-  if (lang !== "en") return null;
+  // Quran.com by_ayah has the full abridged English Ibn Kathir; spa5k is often shorter.
+  const [spa5k, quranCom] = await Promise.all([
+    getTafsirByLang(verseKey, "en"),
+    fetchQuranComEnglishTafsir(verseKey),
+  ]);
 
-  const paths = [
-    `/quran/tafsirs/${ENGLISH_TAFSIR_ID}?verse_key=${encodeURIComponent(verseKey)}`,
-    `/verses/${encodeURIComponent(verseKey)}/tafsirs/${ENGLISH_TAFSIR_ID}`,
-  ];
+  const spa5kTafsir = spa5k
+    ? { text: spa5k.text, resourceName: spa5k.resourceName }
+    : null;
 
-  for (const path of paths) {
-    try {
-      const data = await publicGet<{
-        tafsir?: any;
-        tafsirs?: any[];
-        resource?: { resource_name?: string };
-      }>(path);
-
-      const list = Array.isArray(data.tafsirs) ? data.tafsirs : [];
-      const t =
-        data.tafsir ??
-        list.find((x) => x?.verse_key === verseKey && x?.text) ??
-        list.find((x) => x?.text) ??
-        null;
-
-      if (!t?.text) continue;
-
-      return {
-        text: sanitizeTafsirHtml(t.text),
-        resourceName:
-          t.resource_name ?? data.resource?.resource_name ?? "Tafsir Ibn Kathir (English)",
-      };
-    } catch {
-      /* try next path */
-    }
+  if (quranCom && plainLen(quranCom.text) >= 80) return quranCom;
+  if (spa5kTafsir && quranCom) {
+    return plainLen(quranCom.text) >= plainLen(spa5kTafsir.text) ? quranCom : spa5kTafsir;
   }
-
-  return null;
+  return quranCom ?? spa5kTafsir;
 }
 
 /** Convenience: fetch a single verse by "chapter:verse" key. */

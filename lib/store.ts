@@ -42,6 +42,14 @@ interface HifzState {
     verseNumber: number;
     textUthmani: string;
   }) => void;
+  addCards: (
+    inputs: Array<{
+      verseKey: string;
+      chapterId: number;
+      verseNumber: number;
+      textUthmani: string;
+    }>,
+  ) => number;
   removeCard: (verseKey: string) => void;
   review: (verseKey: string, rating: Rating) => void;
   hasCard: (verseKey: string) => boolean;
@@ -93,6 +101,20 @@ export const useHifzStore = create<HifzState>()(
             gami: applyActivity(state.gami, cards, XP_PER_NEW_VERSE, false, true),
           };
         }),
+      addCards: (inputs) => {
+        const state = get();
+        const cards = { ...state.cards };
+        let gami = state.gami;
+        let added = 0;
+        for (const input of inputs) {
+          if (cards[input.verseKey]) continue;
+          cards[input.verseKey] = createCard(input);
+          gami = applyActivity(gami, cards, XP_PER_NEW_VERSE, false, true);
+          added += 1;
+        }
+        if (added > 0) set({ cards, gami });
+        return added;
+      },
       removeCard: (verseKey) =>
         set((state) => {
           const next = { ...state.cards };

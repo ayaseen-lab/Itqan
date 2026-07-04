@@ -7,7 +7,7 @@ import { useAppStore } from "@/lib/appStore";
 
 const QUICK = [
   { href: "/hadith", label: "Daily Hadith" },
-  { href: "/juz", label: "30 Juz" },
+  { href: "/juz", label: "Juz (Para)" },
   { href: "/names", label: "99 Names" },
   { href: "/duas", label: "Duas" },
   { href: "/prayer", label: "Prayer Times" },

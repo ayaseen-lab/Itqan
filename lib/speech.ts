@@ -2,7 +2,7 @@
 
 /**
  * Web Speech API wrapper for Arabic recitation capture.
- * Requests microphone permission first (required on mobile browsers).
+ * Auto-stops when the speaker pauses (silence), so no manual Stop is required.
  */
 
 interface RecognitionAlternative {
@@ -30,7 +30,14 @@ interface SpeechRecognitionLike {
   onresult: ((event: SpeechRecognitionEventLike) => void) | null;
   onerror: ((event: { error: string }) => void) | null;
   onend: (() => void) | null;
+  onspeechend?: (() => void) | null;
+  onsoundend?: (() => void) | null;
 }
+
+/** Pause after last speech before auto-stop (ms). */
+const SILENCE_MS = 1400;
+/** Hard cap so a stuck session always ends. */
+const MAX_LISTEN_MS = 45_000;
 
 function getRecognitionCtor(): (new () => SpeechRecognitionLike) | null {
   if (typeof window === "undefined") return null;
@@ -63,7 +70,6 @@ export async function requestMicrophoneAccess(): Promise<{ ok: true } | { ok: fa
       },
       video: false,
     });
-    // Release tracks immediately — SpeechRecognition uses its own capture.
     for (const track of stream.getTracks()) track.stop();
     return { ok: true };
   } catch (err) {
@@ -88,11 +94,13 @@ export interface CaptureHandlers {
   onError: (message: string) => void;
   onEnd?: () => void;
   lang?: string;
+  /** Override silence auto-stop delay (ms). */
+  silenceMs?: number;
 }
 
 /**
  * Start listening after mic permission is granted.
- * On mobile, call requestMicrophoneAccess() first from a user gesture.
+ * Stops automatically when the user pauses speaking (silence), or on max duration.
  */
 export function startRecitation(handlers: CaptureHandlers): RecitationCapture | null {
   const Ctor = getRecognitionCtor();
@@ -100,16 +108,56 @@ export function startRecitation(handlers: CaptureHandlers): RecitationCapture | 
 
   const recognition = new Ctor();
   recognition.lang = handlers.lang ?? "ar-SA";
-  // continuous works better for full ayahs on desktop; mobile often prefers shorter sessions
-  const mobile = typeof navigator !== "undefined" && /Mobi|Android|iPhone|iPad/i.test(navigator.userAgent);
-  recognition.continuous = !mobile;
+  // continuous=true so we capture a full ayah; silence timer ends the session.
+  recognition.continuous = true;
   recognition.interimResults = true;
   recognition.maxAlternatives = 1;
 
   let finalText = "";
   let stopped = false;
+  let heardSpeech = false;
+  let silenceTimer: ReturnType<typeof setTimeout> | null = null;
+  let maxTimer: ReturnType<typeof setTimeout> | null = null;
+  const silenceMs = handlers.silenceMs ?? SILENCE_MS;
+
+  const clearTimers = () => {
+    if (silenceTimer) {
+      clearTimeout(silenceTimer);
+      silenceTimer = null;
+    }
+    if (maxTimer) {
+      clearTimeout(maxTimer);
+      maxTimer = null;
+    }
+  };
+
+  const finishStop = () => {
+    if (stopped) return;
+    stopped = true;
+    clearTimers();
+    try {
+      recognition.stop();
+    } catch {
+      try {
+        recognition.abort();
+      } catch {
+        /* ignore */
+      }
+    }
+  };
+
+  const armSilenceTimer = () => {
+    if (silenceTimer) clearTimeout(silenceTimer);
+    silenceTimer = setTimeout(() => {
+      // Only auto-stop once we've heard something (or interim text exists).
+      if (!stopped && heardSpeech) {
+        finishStop();
+      }
+    }, silenceMs);
+  };
 
   recognition.onresult = (event) => {
+    heardSpeech = true;
     let interim = "";
     for (let i = event.resultIndex; i < event.results.length; i++) {
       const result = event.results[i];
@@ -121,14 +169,43 @@ export function startRecitation(handlers: CaptureHandlers): RecitationCapture | 
       }
     }
     handlers.onInterim?.((finalText + interim).trim());
+    armSilenceTimer();
+  };
+
+  // Browser-native “speech ended” — stop shortly after.
+  recognition.onspeechend = () => {
+    if (silenceTimer) clearTimeout(silenceTimer);
+    silenceTimer = setTimeout(() => {
+      if (!stopped && heardSpeech) finishStop();
+    }, 350);
+  };
+
+  recognition.onsoundend = () => {
+    if (heardSpeech && !stopped) armSilenceTimer();
   };
 
   recognition.onerror = (event) => {
-    if (stopped && event.error === "aborted") return;
-    handlers.onError(event.error || "speech-recognition-error");
+    if (stopped && (event.error === "aborted" || event.error === "no-speech")) return;
+    // no-speech while still listening: let max timer / silence handle it
+    if (event.error === "no-speech" && !stopped) {
+      if (heardSpeech) {
+        finishStop();
+        return;
+      }
+      // Keep listening a bit longer for late start
+      armSilenceTimer();
+      return;
+    }
+    if (!stopped) {
+      stopped = true;
+      clearTimers();
+      handlers.onError(event.error || "speech-recognition-error");
+    }
   };
 
   recognition.onend = () => {
+    clearTimers();
+    if (!stopped) stopped = true;
     handlers.onFinal(finalText.trim());
     handlers.onEnd?.();
   };
@@ -140,18 +217,20 @@ export function startRecitation(handlers: CaptureHandlers): RecitationCapture | 
     return null;
   }
 
+  // If user never speaks, end with empty final (UI shows “no speech”).
+  maxTimer = setTimeout(() => {
+    if (!stopped) finishStop();
+  }, MAX_LISTEN_MS);
+
+  // Start silence clock only after first sound; also a grace period for slow starters.
+  silenceTimer = setTimeout(() => {
+    if (!stopped && !heardSpeech) {
+      // Still waiting — extend once more, then give up via max timer.
+      return;
+    }
+  }, silenceMs);
+
   return {
-    stop: () => {
-      stopped = true;
-      try {
-        recognition.stop();
-      } catch {
-        try {
-          recognition.abort();
-        } catch {
-          /* ignore */
-        }
-      }
-    },
+    stop: () => finishStop(),
   };
 }

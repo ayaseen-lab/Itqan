@@ -10,6 +10,7 @@ function WordChip({ word, tajweedHtml }: { word: Word; tajweedHtml: string }) {
   function playWord() {
     if (!word.audioUrl) return;
     const audio = new Audio(word.audioUrl);
+    audio.setAttribute("playsinline", "true");
     void audio.play();
   }
 
@@ -22,7 +23,8 @@ function WordChip({ word, tajweedHtml }: { word: Word; tajweedHtml: string }) {
         onClick={() => setOpen((v) => !v)}
         onMouseEnter={() => setOpen(true)}
         onMouseLeave={() => setOpen(false)}
-        className="group flex flex-col items-center rounded-lg px-2 py-1.5 text-center transition-colors hover:bg-itqan-100 dark:hover:bg-itqan-950"
+        className="group flex min-w-[4.5rem] flex-col items-center rounded-xl border px-2 py-2 text-center transition-colors hover:border-itqan-400 hover:bg-itqan-100/80 dark:hover:bg-itqan-950"
+        style={{ borderColor: "rgb(var(--border))" }}
       >
         <span
           className="tajweed-text quran-text block text-2xl leading-loose"
@@ -30,14 +32,18 @@ function WordChip({ word, tajweedHtml }: { word: Word; tajweedHtml: string }) {
           lang="ar"
           dangerouslySetInnerHTML={{ __html: tajweedHtml }}
         />
-        {word.translationUrdu && (
-          <span className="urdu-text block text-sm leading-tight text-itqan-700 dark:text-itqan-300" dir="rtl">
-            {word.translationUrdu}
-          </span>
-        )}
-        {word.translation && (
-          <span className="muted block text-[11px] leading-tight">{word.translation}</span>
-        )}
+        <span className="mt-1 block text-[9px] font-medium uppercase tracking-wide text-itqan-600/80">
+          اردو
+        </span>
+        <span className="urdu-text block min-h-[1.1rem] text-sm leading-tight text-itqan-800 dark:text-itqan-200" dir="rtl">
+          {word.translationUrdu?.trim() || "—"}
+        </span>
+        <span className="muted mt-1 block text-[9px] font-medium uppercase tracking-wide">
+          EN
+        </span>
+        <span className="muted block min-h-[1rem] text-[11px] leading-tight">
+          {word.translation?.trim() || "—"}
+        </span>
       </button>
 
       {open && hasDetail && (
@@ -71,15 +77,23 @@ function WordChip({ word, tajweedHtml }: { word: Word; tajweedHtml: string }) {
 }
 
 export function WordByWord({ words }: { words: Word[] }) {
-  if (!words || words.length === 0) return null;
+  if (!words || words.length === 0) {
+    return <p className="muted text-sm">Word-by-word data isn&apos;t available for this ayah.</p>;
+  }
   const wordTexts = words.map((w) => w.text);
   const annotated = annotateWordsTajweed(wordTexts);
 
   return (
-    <div className="flex flex-row-reverse flex-wrap justify-start gap-1.5" dir="rtl">
-      {words.map((w, i) => (
-        <WordChip key={`${w.position}-${i}`} word={w} tajweedHtml={annotated[i] ?? w.text} />
-      ))}
+    <div className="space-y-3">
+      <p className="muted text-xs">
+        Each word shows tajweed colours, Urdu meaning, and English meaning.
+      </p>
+      {/* dir=rtl so words flow right-to-left in natural Quran order (no row-reverse) */}
+      <div className="flex flex-wrap gap-2" dir="rtl">
+        {words.map((w, i) => (
+          <WordChip key={`${w.position}-${i}`} word={w} tajweedHtml={annotated[i] ?? w.text} />
+        ))}
+      </div>
     </div>
   );
 }

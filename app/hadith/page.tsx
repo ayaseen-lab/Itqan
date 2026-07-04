@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { getDailyHadith, HADITH_COLLECTION, type Hadith } from "@/lib/hadith";
+import { formatHadithRef, getDailyHadith, HADITH_COLLECTION, type Hadith } from "@/lib/hadith";
 import { isTtsSupported, speak, stopSpeaking } from "@/lib/tts";
 
 export default function HadithPage() {
@@ -63,6 +63,9 @@ export default function HadithPage() {
           </div>
         </div>
         <div className="muted mt-6 flex flex-wrap items-center gap-3 border-t pt-4 text-sm" style={{ borderColor: "rgb(var(--border))" }}>
+          <span>
+            <span className="font-medium text-itqan-600">Ref:</span> {formatHadithRef(hadith)}
+          </span>
           <span>Source: {hadith.source}</span>
           {hadith.narrator && <span>Narrator: {hadith.narrator}</span>}
         </div>

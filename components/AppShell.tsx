@@ -14,20 +14,18 @@ import { SiteFooter } from "./SiteFooter";
 
 type NavItem = { href: string; label: string; icon: string; badge?: boolean };
 
-/** All features shown flat — no "More" submenu. */
+/** Main site navigation. */
 const NAV: NavItem[] = [
   { href: "/", label: "Home", icon: "home" },
   { href: "/quran", label: "Recitation", icon: "book" },
   { href: "/memorize", label: "AI Hifz", icon: "brain", badge: true },
   { href: "/hadith", label: "Hadith", icon: "scroll" },
-  { href: "/family", label: "Family", icon: "family" },
-  { href: "/competition", label: "Healthy", icon: "trophy" },
-  { href: "/juz", label: "Juz", icon: "layers" },
+  { href: "/juz", label: "Juz (Para)", icon: "layers" },
   { href: "/names", label: "99 Names", icon: "sparkles" },
   { href: "/duas", label: "Duas", icon: "heart" },
   { href: "/tasbih", label: "Tasbih", icon: "beads" },
   { href: "/prayer", label: "Prayer", icon: "clock" },
-  { href: "/profile", label: "Account", icon: "user" },
+  { href: "/competition", label: "Competition", icon: "trophy" },
 ];
 
 const MOBILE_BOTTOM = ["/", "/quran", "/memorize", "/hadith"];
@@ -162,34 +160,26 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             <LogoWordmark subtitle="إتقان" light={isHome} />
           </Link>
 
-          {/* Desktop: scrollable flat nav — all features visible */}
-          <nav className="hidden flex-1 items-center gap-0.5 overflow-x-auto px-2 lg:flex [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+          {/* Desktop: boxed nav pills */}
+          <nav className="hidden flex-1 items-center gap-1.5 overflow-x-auto px-2 lg:flex [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
             {NAV.map((item) => {
               const active = isActive(pathname, item.href);
               return (
                 <Link
                   key={item.href}
                   href={item.href}
-                  className={`nav-link relative shrink-0 whitespace-nowrap rounded-lg px-2.5 py-1.5 text-xs font-medium xl:px-3 xl:text-sm ${
+                  className={`nav-pill relative shrink-0 whitespace-nowrap ${
                     active
                       ? isHome
-                        ? "nav-link--active-home text-[#f0d78c]"
-                        : "nav-link--active text-itqan-500"
+                        ? "nav-pill--active-home"
+                        : "nav-pill--active"
                       : isHome
-                        ? "nav-link--home text-white/70"
-                        : "nav-link--default muted"
+                        ? "nav-pill--home"
+                        : "nav-pill--default"
                   }`}
                 >
                   <span className="relative z-10">{item.label}</span>
                   {item.badge && <DueBadge />}
-                  <span className="nav-link-bg" aria-hidden="true" />
-                  {active && (
-                    <span
-                      className={`nav-link-underline absolute inset-x-1.5 -bottom-0.5 h-0.5 rounded-full ${
-                        isHome ? "bg-[#f0d78c]" : "bg-itqan-500"
-                      }`}
-                    />
-                  )}
                 </Link>
               );
             })}

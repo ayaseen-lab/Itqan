@@ -25,7 +25,8 @@ function WordTajweedChip({
   translationUrdu: string | null;
 }) {
   return (
-    <div className="flex flex-col items-center rounded-xl border px-2 py-2 transition-colors hover:border-itqan-400 hover:bg-itqan-50/50 dark:hover:bg-itqan-950/30"
+    <div
+      className="flex min-w-[4.5rem] flex-col items-center rounded-xl border px-2 py-2 transition-colors hover:border-itqan-400 hover:bg-itqan-50/50 dark:hover:bg-itqan-950/30"
       style={{ borderColor: "rgb(var(--border))" }}
     >
       <span
@@ -37,14 +38,18 @@ function WordTajweedChip({
       {transliteration && (
         <span className="muted mt-0.5 text-[10px]">{transliteration}</span>
       )}
-      {translationUrdu && (
-        <span className="urdu-text mt-0.5 text-xs leading-tight" dir="rtl">
-          {translationUrdu}
-        </span>
-      )}
-      {translation && (
-        <span className="muted mt-0.5 text-[10px] leading-tight">{translation}</span>
-      )}
+      <span className="mt-1 block text-[9px] font-medium uppercase tracking-wide text-itqan-600/80">
+        اردو
+      </span>
+      <span className="urdu-text block min-h-[1.1rem] text-xs leading-tight" dir="rtl">
+        {translationUrdu?.trim() || "—"}
+      </span>
+      <span className="muted mt-1 block text-[9px] font-medium uppercase tracking-wide">
+        EN
+      </span>
+      <span className="muted block min-h-[1rem] text-[10px] leading-tight">
+        {translation?.trim() || "—"}
+      </span>
     </div>
   );
 }
@@ -78,7 +83,7 @@ export function TajweedTarteelPanel({ verse }: { verse: Verse }) {
       {/* Word by word tajweed */}
       <section className="space-y-3">
         <h4 className="text-sm font-semibold">Word by word — Tajweed</h4>
-        <div className="flex flex-row-reverse flex-wrap justify-start gap-2" dir="rtl">
+        <div className="flex flex-wrap gap-2" dir="rtl">
           {verse.words.map((w, i) => (
             <WordTajweedChip
               key={`${w.position}-${i}`}
