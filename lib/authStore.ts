@@ -20,11 +20,11 @@ export interface UserProfile {
   id: string;
   name: string;
   email: string;
+  phone?: string;
   joinedAt: number;
   dailyGoal: number;
-  provider?: "supabase" | "google" | "local";
+  provider?: "supabase" | "local";
   picture?: string;
-  googleId?: string;
   emailConfirmed?: boolean;
 }
 
@@ -37,28 +37,29 @@ interface AuthState {
     fullName: string,
     email: string,
     password: string,
+    phone: string,
     opts?: { familyInviteCode?: string; asChild?: boolean },
   ) => Promise<AuthResult>;
   signIn: (email: string, password: string) => Promise<AuthResult>;
   signOut: () => Promise<void>;
   requestPasswordReset: (email: string) => Promise<AuthResult>;
   updatePassword: (password: string) => Promise<AuthResult>;
-  updateProfile: (patch: Partial<Pick<UserProfile, "name" | "email" | "dailyGoal">>) => Promise<void>;
-  /** Legacy local-only helpers kept for Google button compatibility. */
-  signInLocal: (name: string, email: string) => void;
-  signInWithGoogle: (profile: {
-    name: string;
-    email: string;
-    picture?: string;
-    googleId: string;
-  }) => void;
+  updateProfile: (
+    patch: Partial<Pick<UserProfile, "name" | "email" | "phone" | "dailyGoal">>,
+  ) => Promise<void>;
+  /** Offline / misconfigured fallback — local profile only. */
+  signInLocal: (name: string, email: string, phone?: string) => void;
 }
 
-function profileFromRow(row: Profile): UserProfile {
+function profileFromRow(row: Profile, user?: User | null): UserProfile {
   return {
     id: row.id,
     name: row.full_name || row.email.split("@")[0],
     email: row.email,
+    phone:
+      row.phone ??
+      (user?.user_metadata?.phone as string | undefined) ??
+      undefined,
     joinedAt: new Date(row.created_at).getTime(),
     dailyGoal: row.daily_goal,
     provider: "supabase",
@@ -67,7 +68,7 @@ function profileFromRow(row: Profile): UserProfile {
 }
 
 function profileFromUser(user: User, row?: Profile | null): UserProfile {
-  if (row) return profileFromRow(row);
+  if (row) return profileFromRow(row, user);
   return {
     id: user.id,
     name:
@@ -75,6 +76,7 @@ function profileFromUser(user: User, row?: Profile | null): UserProfile {
       user.email?.split("@")[0] ||
       "User",
     email: user.email ?? "",
+    phone: (user.user_metadata?.phone as string | undefined) ?? undefined,
     joinedAt: user.created_at ? new Date(user.created_at).getTime() : Date.now(),
     dailyGoal: 5,
     provider: "supabase",
@@ -98,20 +100,19 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     void syncMyProgressToday();
   },
 
-  signUp: async (fullName, email, password, opts) => {
-    const result = await sbSignUp({
+  signUp: async (fullName, email, password, phone, opts) => {
+    return sbSignUp({
       fullName,
       email,
       password,
+      phone,
       familyInviteCode: opts?.familyInviteCode,
       asChild: opts?.asChild,
     });
-    return result;
   },
 
   signIn: async (email, password) => {
-    const result = await sbSignIn(email, password);
-    return result;
+    return sbSignIn(email, password);
   },
 
   signOut: async () => {
@@ -131,6 +132,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
       ...user,
       name: patch.name ?? user.name,
       email: patch.email ?? user.email,
+      phone: patch.phone ?? user.phone,
       dailyGoal: patch.dailyGoal ?? user.dailyGoal,
     };
     set({ user: next });
@@ -138,34 +140,22 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     if (user.provider === "supabase" && isSupabaseConfigured()) {
       await updateProfileFields(user.id, {
         full_name: next.name,
+        phone: next.phone ?? null,
         daily_goal: next.dailyGoal,
       });
     }
   },
 
-  signInLocal: (name, email) =>
+  signInLocal: (name, email, phone) =>
     set({
       user: {
         id: crypto.randomUUID(),
         name: name.trim(),
         email: email.trim().toLowerCase(),
+        phone: phone?.trim() || undefined,
         joinedAt: Date.now(),
         dailyGoal: 5,
         provider: "local",
-      },
-    }),
-
-  signInWithGoogle: ({ name, email, picture, googleId }) =>
-    set({
-      user: {
-        id: googleId,
-        name: name.trim(),
-        email: email.trim().toLowerCase(),
-        joinedAt: Date.now(),
-        dailyGoal: 5,
-        provider: "google",
-        picture,
-        googleId,
       },
     }),
 }));

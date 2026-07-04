@@ -3,7 +3,7 @@
 ## One-time setup
 
 1. Open the [SQL Editor](https://supabase.com/dashboard/project/fjwvivjkuboopijjusuu/sql) for project `fjwvivjkuboopijjusuu`.
-2. Paste and run `migrations/001_wabilhuda_core.sql`.
+2. Paste and run `migrations/001_wabilhuda_core.sql`, then `migrations/002_profiles_phone.sql`.
 3. **Authentication → URL configuration**
    - Site URL: `https://wabilhuda.com` (use `http://localhost:3000` for local dev)
    - Redirect URLs: `https://wabilhuda.com/**`, `https://wabilhuda.com/auth/reset-password`, `http://localhost:3000/**`, `http://localhost:3000/auth/reset-password`

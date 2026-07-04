@@ -99,9 +99,9 @@ export default function ProfilePage() {
         <div className="min-w-0 flex-1">
           <h1 className="text-2xl font-bold">{user.name}</h1>
           <p className="muted text-sm">{user.email}</p>
+          {user.phone && <p className="muted text-sm">{user.phone}</p>}
           <p className="muted text-xs">
             Member since {new Date(user.joinedAt).toLocaleDateString()}
-            {user.provider ? ` · ${user.provider}` : ""}
           </p>
         </div>
         <button

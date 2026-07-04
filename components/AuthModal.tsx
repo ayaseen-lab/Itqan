@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useAuthStore } from "@/lib/authStore";
-import { GoogleSignInButton } from "./GoogleSignInButton";
+import { isValidPhone } from "@/lib/supabase/auth";
 import { AnimatedModal } from "./AnimatedModal";
 
 type Mode = "signin" | "signup" | "forgot";
@@ -20,12 +20,12 @@ export function AuthModal({
   const signIn = useAuthStore((s) => s.signIn);
   const signUp = useAuthStore((s) => s.signUp);
   const requestPasswordReset = useAuthStore((s) => s.requestPasswordReset);
-  const signInWithGoogle = useAuthStore((s) => s.signInWithGoogle);
   const signInLocal = useAuthStore((s) => s.signInLocal);
 
   const [mode, setMode] = useState<Mode>(initialMode);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
   const [inviteCode, setInviteCode] = useState("");
   const [asChild, setAsChild] = useState(false);
@@ -58,12 +58,15 @@ export function AuthModal({
 
     try {
       if (!configured) {
-        // Offline / misconfigured fallback — local profile only
-        if (!name.trim() || !email.trim()) {
-          setError("Name and email are required.");
+        if (!name.trim() || !email.trim() || !phone.trim()) {
+          setError("Name, email, and phone number are required.");
           return;
         }
-        signInLocal(name, email);
+        if (!isValidPhone(phone)) {
+          setError("Please enter a valid phone number (10–15 digits).");
+          return;
+        }
+        signInLocal(name, email, phone);
         onClose();
         return;
       }
@@ -83,6 +86,14 @@ export function AuthModal({
           setError("Please enter your name.");
           return;
         }
+        if (!phone.trim()) {
+          setError("Please enter your phone number.");
+          return;
+        }
+        if (!isValidPhone(phone)) {
+          setError("Please enter a valid phone number (10–15 digits).");
+          return;
+        }
         if (password.length < 6) {
           setError("Password must be at least 6 characters.");
           return;
@@ -91,12 +102,11 @@ export function AuthModal({
           setError("Children need a parent family invite code to join.");
           return;
         }
-        const result = await signUp(name, email, password, {
+        const result = await signUp(name, email, password, phone, {
           familyInviteCode: inviteCode.trim() || undefined,
           asChild,
         });
         if (!result.ok) {
-          // Confirmation-required is a soft success message
           if (/check your email|confirm your email/i.test(result.error)) {
             setInfo(result.error);
             setMode("signin");
@@ -120,25 +130,15 @@ export function AuthModal({
     }
   }
 
-  function handleGoogleSuccess(profile: {
-    name: string;
-    email: string;
-    picture?: string;
-    googleId: string;
-  }) {
-    signInWithGoogle(profile);
-    onClose();
-  }
-
   const title =
     mode === "signup" ? "Create your account" : mode === "forgot" ? "Reset password" : "Welcome back";
 
   const subtitle =
     mode === "signup"
-      ? "Register with name, email, and password. Children can join with a parent invite code."
+      ? "Register with your name, email, phone number, and password."
       : mode === "forgot"
         ? "We will email a reset link to your registered address."
-        : "Sign in to sync family progress and competitions.";
+        : "Sign in with your email and password.";
 
   return (
     <AnimatedModal open={open} onClose={onClose} className="!max-w-md !p-6">
@@ -152,20 +152,6 @@ export function AuthModal({
       )}
 
       <div className="mt-5 space-y-4">
-        {mode === "signin" && (
-          <>
-            <GoogleSignInButton
-              onSuccess={handleGoogleSuccess}
-              onError={() => setError("Google sign-in failed. Please try again.")}
-            />
-            <div className="flex items-center gap-3">
-              <div className="h-px flex-1" style={{ backgroundColor: "rgb(var(--border))" }} />
-              <span className="muted text-xs">or email</span>
-              <div className="h-px flex-1" style={{ backgroundColor: "rgb(var(--border))" }} />
-            </div>
-          </>
-        )}
-
         {error && <p className="text-sm text-red-500">{error}</p>}
         {info && <p className="text-sm text-wabil-600 dark:text-wabil-300">{info}</p>}
 
@@ -196,6 +182,22 @@ export function AuthModal({
               required
             />
           </label>
+
+          {(mode === "signup" || !configured) && (
+            <label className="block">
+              <span className="mb-1 block text-sm font-medium">Phone number</span>
+              <input
+                type="tel"
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)}
+                className="field"
+                placeholder="+92 300 1234567"
+                autoComplete="tel"
+                inputMode="tel"
+                required
+              />
+            </label>
+          )}
 
           {mode !== "forgot" && configured && (
             <label className="block">

@@ -5,6 +5,14 @@ import type { Profile } from "./types";
 
 export type AuthResult = { ok: true } | { ok: false; error: string };
 
+export function normalizePhone(phone: string): string {
+  return phone.trim().replace(/[\s\-().]/g, "");
+}
+
+export function isValidPhone(phone: string): boolean {
+  return /^\+?\d{10,15}$/.test(normalizePhone(phone));
+}
+
 function mapError(err: unknown): string {
   const msg = err instanceof Error ? err.message : String(err);
   if (/invalid login credentials/i.test(msg)) return "Incorrect email or password.";
@@ -19,6 +27,7 @@ export async function signUp(input: {
   email: string;
   password: string;
   fullName: string;
+  phone: string;
   familyInviteCode?: string;
   asChild?: boolean;
 }): Promise<AuthResult> {
@@ -26,13 +35,18 @@ export async function signUp(input: {
   const supabase = createClient();
   const email = input.email.trim().toLowerCase();
   const fullName = input.fullName.trim();
+  const phone = normalizePhone(input.phone);
   const invite = input.familyInviteCode?.trim().toUpperCase();
+
+  if (!isValidPhone(phone)) {
+    return { ok: false, error: "Please enter a valid phone number (10–15 digits)." };
+  }
 
   const { data, error } = await supabase.auth.signUp({
     email,
     password: input.password,
     options: {
-      data: { full_name: fullName },
+      data: { full_name: fullName, phone },
       emailRedirectTo: typeof window !== "undefined" ? `${window.location.origin}/profile` : undefined,
     },
   });
@@ -40,11 +54,20 @@ export async function signUp(input: {
   if (error) return { ok: false, error: mapError(error) };
 
   if (data.user) {
-    await supabase.from("profiles").upsert({
+    const { error: profileErr } = await supabase.from("profiles").upsert({
       id: data.user.id,
       email,
       full_name: fullName,
+      phone,
     });
+    // Older DBs may not have profiles.phone yet — still save name/email.
+    if (profileErr) {
+      await supabase.from("profiles").upsert({
+        id: data.user.id,
+        email,
+        full_name: fullName,
+      });
+    }
   }
 
   if (data.user && !data.session) {
@@ -117,14 +140,16 @@ export async function fetchProfile(userId: string): Promise<Profile | null> {
 
 export async function updateProfileFields(
   userId: string,
-  patch: Partial<Pick<Profile, "full_name" | "daily_goal" | "avatar_url">>,
+  patch: Partial<Pick<Profile, "full_name" | "phone" | "daily_goal" | "avatar_url">>,
 ): Promise<AuthResult> {
   if (!isSupabaseConfigured()) return { ok: false, error: "Supabase is not configured." };
   const supabase = createClient();
-  const { error } = await supabase
-    .from("profiles")
-    .update({ ...patch, updated_at: new Date().toISOString() })
-    .eq("id", userId);
+  const payload = { ...patch, updated_at: new Date().toISOString() };
+  let { error } = await supabase.from("profiles").update(payload).eq("id", userId);
+  if (error && patch.phone !== undefined && /phone/i.test(error.message)) {
+    const { phone: _phone, ...rest } = payload;
+    ({ error } = await supabase.from("profiles").update(rest).eq("id", userId));
+  }
   if (error) return { ok: false, error: mapError(error) };
   return { ok: true };
 }
