@@ -1,14 +1,49 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import type { Metadata } from "next";
 import { getChapter, getVerses } from "@/lib/quran";
 import { VerseCard } from "@/components/VerseCard";
 import { AddSurahButton } from "@/components/AddSurahButton";
 import { SurahAudioPrefetch } from "@/components/SurahAudioPrefetch";
+import { SurahJsonLd } from "@/components/JsonLd";
+import { pageMetadata } from "@/lib/seo";
+import { OFFLINE_CHAPTERS } from "@/lib/offlineData";
 
 export const revalidate = 604800; // 7 days
 
 export function generateStaticParams() {
   return Array.from({ length: 114 }, (_, i) => ({ id: String(i + 1) }));
+}
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}): Promise<Metadata> {
+  const { id } = await params;
+  const chapterId = Number(id);
+  const fallback = OFFLINE_CHAPTERS.find((c) => c.id === chapterId);
+  const chapter = fallback ?? (await getChapter(chapterId).catch(() => null));
+
+  if (!chapter) {
+    return pageMetadata({
+      title: `Surah ${chapterId}`,
+      description: `Read Surah ${chapterId} online with Arabic, translation, tajweed, and Tafseer on WabilHuda.`,
+      path: `/surah/${chapterId}`,
+    });
+  }
+
+  return pageMetadata({
+    title: `Surah ${chapter.nameSimple} (${chapter.translatedName})`,
+    description: `Read Surah ${chapter.nameSimple} (${chapter.nameArabic}) — ${chapter.versesCount} verses, ${chapter.revelationPlace}. Arabic with Urdu & English translation, tajweed colours, audio & Tafseer.`,
+    path: `/surah/${chapterId}`,
+    keywords: [
+      `Surah ${chapter.nameSimple}`,
+      chapter.translatedName,
+      "read Quran online",
+      "Quran translation",
+    ],
+  });
 }
 
 export default async function SurahPage({
@@ -56,6 +91,14 @@ export default async function SurahPage({
 
   return (
     <div className="space-y-6">
+      <SurahJsonLd
+        id={chapter.id}
+        name={chapter.nameSimple}
+        arabicName={chapter.nameArabic}
+        translatedName={chapter.translatedName}
+        verseCount={chapter.versesCount}
+        revelationPlace={chapter.revelationPlace}
+      />
       <SurahAudioPrefetch chapterId={chapterId} verseCount={chapter.versesCount} />
       <div className="card p-6 text-center">
         <p className="quran-text text-4xl" dir="rtl" translate="no">{chapter.nameArabic}</p>

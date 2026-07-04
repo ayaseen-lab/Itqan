@@ -1,4 +1,13 @@
 import Link from "next/link";
+import { pageMetadata } from "@/lib/seo";
+
+export const metadata = pageMetadata({
+  title: "Juz (Para) — 30 Parts of the Quran",
+  description:
+    "Browse the Quran by all 30 Juz (Para) with start verses and quick links to each section. Traditional Hifz divisions on WabilHuda.",
+  path: "/juz",
+  keywords: ["Quran Juz", "Para list", "30 Juz Quran", "Hifz para"],
+});
 
 /** Standard 30 Juz metadata (first verse of each Juz). */
 const JUZ_META: { id: number; start: string; label: string }[] = [

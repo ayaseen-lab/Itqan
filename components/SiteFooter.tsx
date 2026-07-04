@@ -51,6 +51,13 @@ export function SiteFooter() {
               {link.label}
             </Link>
           ))}
+          <a
+            href="https://wabilhuda.com/sitemap.xml"
+            className="rounded-lg border px-3 py-2 text-xs font-medium transition-colors hover:border-wabil-400 hover:text-wabil-400 sm:py-1.5"
+            style={{ borderColor: "rgb(var(--border))" }}
+          >
+            Sitemap
+          </a>
         </nav>
 
         <div className="flex w-full max-w-sm flex-col items-stretch gap-2.5 sm:max-w-none sm:flex-row sm:flex-wrap sm:items-center sm:justify-center sm:gap-3">
@@ -77,7 +84,11 @@ export function SiteFooter() {
         </div>
 
         <p className="muted text-[11px]">
-          © {new Date().getFullYear()} WabilHuda · All rights reserved
+          © {new Date().getFullYear()}{" "}
+          <a href="https://wabilhuda.com" className="hover:text-wabil-400">
+            WabilHuda
+          </a>{" "}
+          · All rights reserved
         </p>
       </div>
     </footer>

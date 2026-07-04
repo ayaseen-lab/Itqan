@@ -1,6 +1,15 @@
 import Link from "next/link";
 import { getChapters, type Chapter } from "@/lib/quran";
 import { SurahList } from "@/components/SurahList";
+import { pageMetadata } from "@/lib/seo";
+
+export const metadata = pageMetadata({
+  title: "Read the Holy Quran Online",
+  description:
+    "Browse all 114 Surahs with Uthmani Arabic, tajweed colours, Urdu & English translation, word-by-word breakdown, audio recitation, and Tafseer.",
+  path: "/quran",
+  keywords: ["read Quran online", "Quran with translation", "114 Surahs", "Uthmani Quran"],
+});
 
 export const revalidate = 604800;
 

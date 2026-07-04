@@ -4,6 +4,21 @@ import { TasbihWidget } from "@/components/TasbihWidget";
 import { Dashboard } from "@/components/Dashboard";
 import { HomeSurahStrip } from "@/components/HomeSurahStrip";
 import { RaahbanCareerCard } from "@/components/RaahbanCareerCard";
+import { HomeSeoSection } from "@/components/HomeSeoSection";
+import { pageMetadata } from "@/lib/seo";
+
+export const metadata = pageMetadata({
+  title: "WabilHuda — وبالهدى | AI Quran Learning Platform",
+  description:
+    "Free AI Quran app for Hifz memorization, tajweed recitation, Hadith, Tafseer, digital tasbih & prayer times. Urdu & English — wabilhuda.com",
+  path: "/",
+  keywords: [
+    "Quran app Pakistan",
+    "learn Hifz online free",
+    "Quran with tajweed colours",
+    "Islamic learning app",
+  ],
+});
 
 export default function HomePage() {
   return (
@@ -40,6 +55,8 @@ export default function HomePage() {
           <RaahbanCareerCard />
         </section>
       </div>
+
+      <HomeSeoSection />
     </div>
   );
 }

@@ -9,6 +9,8 @@ import { QuranBackground } from "@/components/QuranBackground";
 import { AppProviders } from "@/components/AppProviders";
 import { ClientChat } from "@/components/ClientChat";
 import { ClientExtras } from "@/components/ClientExtras";
+import { SiteJsonLd } from "@/components/JsonLd";
+import { ROOT_METADATA } from "@/lib/seo";
 
 const amiri = Amiri({
   weight: ["400", "700"],
@@ -26,21 +28,7 @@ const notoUrdu = Noto_Nastaliq_Urdu({
   preload: false,
 });
 
-export const metadata: Metadata = {
-  title: "WabilHuda — وبالهدى | AI Quran Learning Platform",
-  description:
-    "WabilHuda (وبالهدى): AI-powered Quran memorization, tajweed, Hadith, Tafseer, and Hifz — built for Urdu-speaking learners worldwide.",
-  metadataBase: new URL("https://wabilhuda.com"),
-  applicationName: "WabilHuda",
-  openGraph: {
-    title: "WabilHuda — وبالهدى",
-    description:
-      "AI-powered Quran memorization, tajweed, Hadith, Tafseer, and Hifz.",
-    url: "https://wabilhuda.com",
-    siteName: "WabilHuda",
-    type: "website",
-  },
-};
+export const metadata: Metadata = ROOT_METADATA;
 
 const themeScript = `
 (function () {
@@ -68,6 +56,7 @@ export default function RootLayout({
         <link rel="preconnect" href="https://api.quran.com" />
         <link rel="preconnect" href="https://cdn.jsdelivr.net" />
         <link rel="dns-prefetch" href="https://audio.qurancdn.com" />
+        <SiteJsonLd />
       </head>
       <body className={`${amiri.variable} ${notoUrdu.variable} relative min-h-screen antialiased`}>
         <QuranBackground />

@@ -1,0 +1,28 @@
+# WabilHuda (wabilhuda.com)
+
+> Free AI-powered Quran learning platform for Hifz, tajweed recitation, Hadith, Tafseer, tasbih, and prayer times.
+
+## Primary pages
+
+- Home: https://wabilhuda.com/
+- Read Quran (114 Surahs): https://wabilhuda.com/quran
+- AI Hifz memorization: https://wabilhuda.com/memorize
+- Hadith of the day: https://wabilhuda.com/hadith
+- Juz (Para) browser: https://wabilhuda.com/juz
+- 99 Names of Allah: https://wabilhuda.com/names
+- Everyday Duas: https://wabilhuda.com/duas
+- Digital Tasbih: https://wabilhuda.com/tasbih
+- Prayer times: https://wabilhuda.com/prayer
+
+## Features
+
+- Uthmani Arabic with tajweed colour coding
+- Urdu and English translations, word-by-word, Tafseer
+- AI Hifz coach with spaced repetition
+- Microphone recitation checking
+- Family learning and healthy competitions
+
+## Contact
+
+- Creator: Ahmad Yaseen
+- Website: https://wabilhuda.com
